@@ -1,0 +1,204 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and general page setup */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Navigation styles */
+nav {
+    background-color: #333;
+    padding: 1rem 2rem;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav ul li {
+    margin-left: 2rem;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+nav ul li a:hover {
+    color: #ff6347; /* Highlight color */
+}
+
+/* Sticky nav */
+nav.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem 2rem;
+}
+
+/* Hero section */
+.hero {
+    height: 100vh;
+    background-color: #3e3e3e;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.hero .highlight {
+    color: #ff6347;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.hero .btn {
+    background-color: #ff6347;
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.hero .btn:hover {
+    background-color: #ff4500;
+}
+
+/* Section styles */
+section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+section p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* Project cards */
+.project-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+}
+
+.project-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.project-card p {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Contact Section */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+footer h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+footer p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+footer .contact-info {
+    list-style-type: none;
+    padding: 0;
+}
+
+footer .contact-info li {
+    font-size: 1rem;
+    margin: 10px 0;
+}
+
+footer .special-link {
+    color: #ff6347;
+    text-decoration: none;
+}
+
+footer .special-link:hover {
+    color: #ff4500;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        margin: 1rem 0;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .project-card {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    footer {
+        text-align: left;
+    }
+}
