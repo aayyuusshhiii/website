@@ -1,204 +1,154 @@
-/* Reset some default styles */
+/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body and general page setup */
 body {
     font-family: Arial, sans-serif;
+    line-height: 1.6;
     background-color: #f4f4f4;
     color: #333;
-    line-height: 1.6;
-    overflow-x: hidden;
 }
 
-/* Navigation styles */
-nav {
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+header {
     background-color: #333;
-    padding: 1rem 2rem;
-    position: absolute;
-    width: 100%;
-    z-index: 10;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 10px;
+}
+
+header p {
+    font-style: italic;
+}
+
+nav {
+    background-color: #444;
 }
 
 nav ul {
-    list-style-type: none;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    list-style: none;
 }
 
 nav ul li {
-    margin-left: 2rem;
+    margin: 0 15px;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 1.1rem;
-    text-transform: uppercase;
+    font-size: 18px;
 }
 
 nav ul li a:hover {
-    color: #ff6347; /* Highlight color */
+    text-decoration: underline;
 }
 
-/* Sticky nav */
-nav.sticky {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 0.5rem 2rem;
+.section {
+    padding: 40px 0;
 }
 
-/* Hero section */
-.hero {
-    height: 100vh;
-    background-color: #3e3e3e;
-    color: white;
+.section h2 {
     text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
 }
 
-.hero h1 {
-    font-size: 3rem;
+ul {
+    list-style-type: none;
+}
+
+ul li {
     margin-bottom: 10px;
 }
 
-.hero .highlight {
-    color: #ff6347;
-}
-
-.hero p {
-    font-size: 1.2rem;
+.project {
     margin-bottom: 20px;
 }
 
-.hero .btn {
-    background-color: #ff6347;
-    color: white;
-    text-decoration: none;
-    padding: 0.8rem 2rem;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+.project h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
-.hero .btn:hover {
-    background-color: #ff4500;
+.project p {
+    font-size: 16px;
+    color: #555;
 }
 
-/* Section styles */
-section {
-    padding: 60px 20px;
-    text-align: center;
-}
-
-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-section p {
-    font-size: 1.1rem;
-    color: #666;
-}
-
-/* Project cards */
-.project-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    transition: transform 0.3s ease-in-out;
-}
-
-.project-card:hover {
-    transform: translateY(-10px);
-}
-
-.project-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-.project-card p {
-    font-size: 1rem;
-    color: #777;
-}
-
-/* Contact Section */
 footer {
     background-color: #333;
     color: white;
-    padding: 40px 20px;
     text-align: center;
-}
-
-footer h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    padding: 10px;
 }
 
 footer p {
-    font-size: 1rem;
-    margin-bottom: 20px;
+    font-size: 14px;
 }
 
-footer .contact-info {
-    list-style-type: none;
-    padding: 0;
+a {
+    color: #444;
 }
 
-footer .contact-info li {
-    font-size: 1rem;
-    margin: 10px 0;
+a:hover {
+    text-decoration: underline;
 }
 
-footer .special-link {
-    color: #ff6347;
-    text-decoration: none;
-}
-
-footer .special-link:hover {
-    color: #ff4500;
-}
-
-/* Responsive styles */
+/* Responsive Design */
 @media (max-width: 768px) {
     nav ul {
         flex-direction: column;
-        align-items: center;
     }
 
     nav ul li {
-        margin: 1rem 0;
+        margin: 10px 0;
     }
 
-    .hero h1 {
-        font-size: 2.5rem;
+    header h1 {
+        font-size: 24px;
     }
 
-    .hero p {
-        font-size: 1rem;
+    .section h2 {
+        font-size: 24px;
     }
 
-    .project-card {
-        margin-left: 0;
-        margin-right: 0;
+    .container {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 20px;
     }
 
-    footer {
-        text-align: left;
+    header p {
+        font-size: 14px;
+    }
+
+    .section h2 {
+        font-size: 20px;
+    }
+
+    .project h3 {
+        font-size: 18px;
+    }
+
+    .project p {
+        font-size: 14px;
     }
 }
