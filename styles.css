@@ -1,0 +1,170 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #282c34;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+nav {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+/* Logo Styling */
+.logo {
+    display: inline-block;
+    text-decoration: none; /* Remove underline */
+    transition: transform 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+/* Styling for the GIF logo */
+.logo-gif {
+    width: 50px; /* Adjust width as needed */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 50%; /* Optional: adds rounded corners to the GIF */
+    transition: transform 0.3s ease; /* Add transition for scaling */
+}
+
+.logo:hover .logo-gif {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.logo:hover {
+    color: #333; /* Change color on hover */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    color: #ff4081;
+}
+
+.hero {
+    margin-top: 100px;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero .highlight {
+    color: #ff4081;
+}
+
+.hero p {
+    font-size: 1.5rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #ff4081;
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #e81d62;
+}
+
+section {
+    padding: 4rem 0;
+    text-align: center;
+}
+
+#about, #projects {
+    background-color: #f4f4f4;
+    padding: 50px;
+}
+
+.project-card {
+    background: white;
+    padding: 2rem;
+    margin: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    background-color: #282c34;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Contact Section Styling */
+#contact {
+    background-color: #282c34; /* Dark background color */
+    padding: 40px 20px;
+    text-align: center;
+    color: #ffffff; /* Light text color for contrast */
+}
+
+#contact h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #ffffff; /* Light color for the heading */
+}
+
+#contact p {
+    font-size: 1.1em;
+    color: #cccccc; /* Softer color for the paragraph text */
+    margin-bottom: 30px;
+}
+
+.contact-info {
+    list-style-type: none; /* Remove bullets */
+    padding: 0;
+    margin: 0;
+}
+
+.contact-info li {
+    font-size: 1.1em;
+    margin: 10px 0;
+    color: #ffffff; /* Light color for list items */
+}
+
+.contact-info a {
+    color: #ff4081;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #61dafb; /* Change to a soft blue on hover for a nice effect */
+}
