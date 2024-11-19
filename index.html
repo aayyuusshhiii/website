@@ -1,87 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>AAYUSHI SHARMA | Civil Engineering Student</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineer Portfolio</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>AAYUSHI SHARMA</h1>
-            <p>Civil Engineering Student | Aspiring Structural Engineer</p>
-        </div>
-    </header>
-
+  <header>
     <nav>
-        <ul>
-            <li><a href="#about">About Me</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+      <h1>My Portfolio</h1>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </nav>
+  </header>
 
-    <section id="about" class="section">
-        <div class="container">
-            <h2>About Me</h2>
-            <p>I am an undergraduate Civil Engineering student with a passion for structural analysis, project management, and sustainable infrastructure. I am actively seeking opportunities to apply my skills in real-world engineering projects.</p>
-        </div>
-    </section>
+  <section id="hero">
+    <h2>Welcome to My World!</h2>
+    <p>Creating with passion, engineering with heart.</p>
+    <button onclick="scrollToSection('about')">Explore More</button>
+  </section>
 
-    <section id="skills" class="section">
-        <div class="container">
-            <h2>Skills</h2>
-            <ul>
-                <li>AutoCAD</li>
-                <li>Structural Analysis</li>
-                <li>Project Management</li>
-                <li>Revit</li>
-                <li>Concrete and Steel Design</li>
-                <li>Matlab, Python for Engineering Simulations</li>
-            </ul>
-        </div>
-    </section>
+  <section id="about">
+    <h2>About Me</h2>
+    <p>Hello! I'm an Engineer with a knack for creativity and problem-solving. I love designing solutions that make life easier and better.</p>
+  </section>
 
-    <section id="projects" class="section">
-        <div class="container">
-            <h2>Projects</h2>
-            <div class="project">
-                <h3>Bridge Design Project</h3>
-                <p>Designed a conceptual bridge structure for a local community using AutoCAD and structural analysis software. Focused on cost-effective materials and environmental sustainability.</p>
-            </div>
-            <div class="project">
-                <h3>Building Construction Project</h3>
-                <p>Assisted in the planning and construction of a small residential building, focusing on the structural integrity of the design and overseeing quality control processes.</p>
-            </div>
-        </div>
-    </section>
+  <section id="projects">
+    <h2>My Projects</h2>
+    <div class="project">
+      <h3>Project 1</h3>
+      <p>A wonderful project that brings joy and functionality.</p>
+    </div>
+    <div class="project">
+      <h3>Project 2</h3>
+      <p>A creation that combines aesthetics and engineering.</p>
+    </div>
+  </section>
 
-    <section id="education" class="section">
-        <div class="container">
-            <h2>Education</h2>
-            <p><strong>Bachelor's of Civil Engineering</strong><br>Cosmos College of Management and Technology, 2025 (Expected)</p>
-        </div>
-    </section>
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <form id="contact-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" required></textarea>
+      
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
 
-    <section id="contact" class="section">
-        <div class="container">
-            <h2>Contact</h2>
-            <p>Email: coming soon </p>
-            <p>LinkedIn: <a href="https://www.linkedin.com/">coming soon</a></p>
-            <p>GitHub: <a href="https://github.com/">coming soon</a></p>
-        </div>
-    </section>
+  <footer>
+    <p>© 2024 My Portfolio. Made with ❤️</p>
+  </footer>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 AAYUSHI SHARMA | All Rights Reserved</p>
-        </div>
-    </footer>
-    
-    <script src="scripts.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
