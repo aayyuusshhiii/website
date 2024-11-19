@@ -1,83 +1,170 @@
-:root {
-  --pink: #ffc0cb;
-  --lavender: #e6e6fa;
-  --cream: #fffdd0;
-  --peach: #ffe5b4;
-  --soft-red: #ff6f61;
-  --white: #ffffff;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--cream);
-  color: #333;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 header {
-  background: var(--pink);
-  padding: 1rem;
+    background: #282c34;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-header h1 {
-  color: var(--soft-red);
+nav {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+/* Logo Styling */
+.logo {
+    display: inline-block;
+    text-decoration: none; /* Remove underline */
+    transition: transform 0.3s ease, color 0.3s ease; /* Smooth transitions */
 }
 
-header ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 1rem;
+/* Styling for the GIF logo */
+.logo-gif {
+    width: 50px; /* Adjust width as needed */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 50%; /* Optional: adds rounded corners to the GIF */
+    transition: transform 0.3s ease; /* Add transition for scaling */
 }
 
-header a {
-  text-decoration: none;
-  color: var(--soft-red);
-  font-weight: bold;
+.logo:hover .logo-gif {
+    transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
-#hero {
-  text-align: center;
-  padding: 5rem 1rem;
-  background: var(--lavender);
+.logo:hover {
+    color: #333; /* Change color on hover */
 }
 
-#hero h2 {
-  color: var(--soft-red);
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
 }
 
-#hero button {
-  background: var(--soft-red);
-  color: var(--white);
-  border: none;
-  padding: 1rem 2rem;
-  cursor: pointer;
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
 }
 
-#hero button:hover {
-  background: var(--pink);
+.nav-links a:hover {
+    color: #ff4081;
+}
+
+.hero {
+    margin-top: 100px;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero .highlight {
+    color: #ff4081;
+}
+
+.hero p {
+    font-size: 1.5rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #ff4081;
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #e81d62;
 }
 
 section {
-  padding: 3rem 1rem;
+    padding: 4rem 0;
+    text-align: center;
 }
 
-section h2 {
-  color: var(--soft-red);
-  text-align: center;
+#about, #projects {
+    background-color: #f4f4f4;
+    padding: 50px;
 }
 
-.project {
-  background: var(--peach);
-  margin: 1rem 0;
-  padding: 1rem;
-  border-radius: 8px;
+.project-card {
+    background: white;
+    padding: 2rem;
+    margin: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 footer {
-  text-align: center;
-  padding: 1rem;
-  background: var(--pink);
-  color: var(--white);
+    background-color: #282c34;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Contact Section Styling */
+#contact {
+    background-color: #282c34; /* Dark background color */
+    padding: 40px 20px;
+    text-align: center;
+    color: #ffffff; /* Light text color for contrast */
+}
+
+#contact h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #ffffff; /* Light color for the heading */
+}
+
+#contact p {
+    font-size: 1.1em;
+    color: #cccccc; /* Softer color for the paragraph text */
+    margin-bottom: 30px;
+}
+
+.contact-info {
+    list-style-type: none; /* Remove bullets */
+    padding: 0;
+    margin: 0;
+}
+
+.contact-info li {
+    font-size: 1.1em;
+    margin: 10px 0;
+    color: #ffffff; /* Light color for list items */
+}
+
+.contact-info a {
+    color: #ff4081;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #61dafb; /* Change to a soft blue on hover for a nice effect */
 }
