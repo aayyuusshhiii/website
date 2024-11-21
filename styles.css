@@ -170,8 +170,29 @@ footer {
     color: #61dafb; /* Change to a soft blue on hover for a nice effect */
 }
 
-footer hr {
-  border: none;
-  border-top: 1px solid #ff6f61; /* Soft red */
-  margin: 1rem 0;
+/* Contact Footer Styles */
+#contact {
+  text-align: center;
+  background-color: #ffc0cb; /* Light pink */
+  padding: 1.5rem;
+  color: #333; /* Dark text for contrast */
+}
+
+#contact .contact-info {
+  list-style: none;
+  padding: 0;
+}
+
+#contact .special-link {
+  color: #ff6f61; /* Soft red */
+  text-decoration: none;
+}
+
+/* Copyright Footer Styles */
+#copyright {
+  text-align: center;
+  background-color: #ffe5e0; /* Softer pink */
+  padding: 1rem;
+  color: #333;
+  position: relative; /* Ensures it stays within the flow of the page */
 }
