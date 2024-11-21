@@ -126,6 +126,10 @@ footer {
     padding: 2rem;
     text-align: center;
 }
+footer .copyright {
+  color: #fff; /* White text */
+  font-size: 0.9rem;
+}
 
 /* Contact Section Styling */
 #contact {
@@ -169,7 +173,4 @@ footer {
     color: #61dafb; /* Change to a soft blue on hover for a nice effect */
 }
 
-footer .copyright {
-  color: #fff; /* White text */
-  font-size: 0.9rem;
-}
+
