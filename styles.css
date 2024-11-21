@@ -191,7 +191,7 @@ footer {
 /* Copyright Footer Styles */
 #copyright {
   text-align: center;
-  background-color: #ffe5e0; /* Softer pink */
+  background-color: #282c34; 
   padding: 1rem;
   color: #333;
   position: relative; /* Ensures it stays within the flow of the page */
