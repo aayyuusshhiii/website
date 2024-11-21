@@ -168,3 +168,8 @@ footer {
 .contact-info a:hover {
     color: #61dafb; /* Change to a soft blue on hover for a nice effect */
 }
+
+footer .copyright {
+  color: #fff; /* White text */
+  font-size: 0.9rem;
+}
