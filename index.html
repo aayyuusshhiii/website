@@ -104,7 +104,7 @@
     function createFruit() {
       const fruit = document.createElement('div');
       fruit.classList.add('fruit');
-      fruit.style.left = `${Math.random() * (fruitArea.offsetWidth - 50)}px`;
+      fruit.style.left = ${Math.random() * (fruitArea.offsetWidth - 50)}px;
 
       const fruitImage = document.createElement('img');
       fruitImage.src = 'https://example.com/fruit-image.png'; // Replace with a fruit image URL
@@ -118,7 +118,7 @@
 
       const fallInterval = setInterval(() => {
         positionY += fallSpeed;
-        fruit.style.top = `${positionY}px`;
+        fruit.style.top = ${positionY}px;
 
         // If the fruit reaches the bottom of the screen, remove it
         if (positionY > fruitArea.offsetHeight) {
@@ -404,8 +404,8 @@
       const randomY = Math.random() * maxY;
 
       heart.style.position = 'absolute';
-      heart.style.left = `${randomX}px`;
-      heart.style.top = `${randomY}px`;
+      heart.style.left = ${randomX}px;
+      heart.style.top = ${randomY}px;
     }
   </script>
 </body>
