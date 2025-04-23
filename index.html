@@ -15,11 +15,147 @@
       color: #4d4d4d;
       min-height: 100vh;
     }
-<div class="fruit-game">
-  <h2>🍉 Cut the Fruits!</h2>
-  <p>Score: <span id="fruitScore">0</span></p>
-  <div id="fruitArea"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>❤️AAYUSHI❤️ - Fruit Cutting Game</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff1f3, #ffe4ec, #f5e1f7);
+      color: #4d4d4d;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .fruit-game {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #fruitArea {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background-color: #fff9fb;
+      overflow: hidden;
+      border: 2px solid #f3cbdc;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .fruit {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s;
+    }
+
+    .fruit img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .score {
+      font-size: 24px;
+      color: #d36c8c;
+    }
+
+    .btn {
+      background: #f7a1c4;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 30px;
+      margin-top: 20px;
+      display: inline-block;
+      font-weight: 600;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: #ec7ba8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fruit-game">
+    <h2>🍉 Cut the Fruits!</h2>
+    <p class="score">Score: <span id="fruitScore">0</span></p>
+    <div id="fruitArea"></div>
+    <button class="btn" onclick="resetGame()">Reset Game</button>
+  </div>
+
+  <script>
+    let score = 0;
+    const fruitArea = document.getElementById('fruitArea');
+    const scoreDisplay = document.getElementById('fruitScore');
+    let fruitInterval;
+
+    // Generate a random fruit at the top of the screen
+    function createFruit() {
+      const fruit = document.createElement('div');
+      fruit.classList.add('fruit');
+      fruit.style.left = `${Math.random() * (fruitArea.offsetWidth - 50)}px`;
+
+      const fruitImage = document.createElement('img');
+      fruitImage.src = 'https://example.com/fruit-image.png'; // Replace with a fruit image URL
+      fruit.appendChild(fruitImage);
+
+      fruitArea.appendChild(fruit);
+
+      // Move fruit down
+      let positionY = -50; // Start above the screen
+      const fallSpeed = 2 + Math.random() * 4; // Random fall speed
+
+      const fallInterval = setInterval(() => {
+        positionY += fallSpeed;
+        fruit.style.top = `${positionY}px`;
+
+        // If the fruit reaches the bottom of the screen, remove it
+        if (positionY > fruitArea.offsetHeight) {
+          clearInterval(fallInterval);
+          fruit.remove();
+        }
+      }, 10);
+
+      // Add click event to cut the fruit
+      fruit.addEventListener('click', () => {
+        score++;
+        scoreDisplay.textContent = score;
+        fruit.remove(); // Remove fruit after cutting
+      });
+    }
+
+    // Start generating fruits every 1.5 seconds
+    function startGame() {
+      fruitInterval = setInterval(createFruit, 1500);
+    }
+
+    // Reset the game
+    function resetGame() {
+      score = 0;
+      scoreDisplay.textContent = score;
+      clearInterval(fruitInterval); // Stop the game
+      fruitArea.innerHTML = ''; // Clear all fruits
+      startGame(); // Restart the game
+    }
+
+    // Start the game
+    startGame();
+  </script>
+
+</body>
+</html>
+
       }
       }
 
