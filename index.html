@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>❤️AAYUSHI❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css"> <!-- Optional: your external CSS file -->
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -240,11 +239,29 @@
     heart.addEventListener('click', () => {
       score++;
       scoreDisplay.textContent = score;
+      moveHeart();
     });
 
     function resetGame() {
       score = 0;
       scoreDisplay.textContent = score;
+    }
+
+    // Function to move heart randomly within the game container
+    function moveHeart() {
+      const container = document.querySelector('.game-container');
+      const heartWidth = heart.offsetWidth;
+      const heartHeight = heart.offsetHeight;
+
+      const maxX = container.clientWidth - heartWidth;
+      const maxY = container.clientHeight - heartHeight;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      heart.style.position = 'absolute';
+      heart.style.left = `${randomX}px`;
+      heart.style.top = `${randomY}px`;
     }
   </script>
 </body>
