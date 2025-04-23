@@ -6,27 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>❤️AAYUSHI❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"> <!-- Optional: your external CSS file -->
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-  <meta charset="UTF-8">
-  <title>Click the Heart Game</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="game-container">
-    <h1>Click the ❤️!</h1>
-    <div id="heart" class="heart">❤️</div>
-    <p>Score: <span id="score">0</span></p>
-    <button onclick="resetGame()">Reset</button>
-  </div>
-
-  <script src="game.js"></script>
-</body>
-</html>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Poppins', sans-serif;
@@ -46,11 +28,10 @@
     }
 
     .logo {
-  display: flex;
-  align-items: center;
-  height: 100px;
-}
-
+      display: flex;
+      align-items: center;
+      height: 70px;
+    }
 
     .nav-links {
       list-style: none;
@@ -88,7 +69,7 @@
       background-color: #ffe4ec;
       border: 4px solid #f3cbdc;
       margin: 20px auto;
-      background-image: url('your-photo.jpg'); /* Replace with your image */
+      background-image: url('your-photo.jpg');
       background-size: cover;
       background-position: center;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -115,32 +96,6 @@
       max-width: 1000px;
       margin: 40px auto;
       padding: 0 20px;
-    }
-
-    .section-circle {
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #fff9f0, #fceaf6);
-      border: 2px solid #f3d1e5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 40px auto;
-      padding: 30px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .section-circle:hover {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-      transform: scale(1.05);
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      color: #a05278;
-      font-weight: 600;
     }
 
     .section-box {
@@ -184,6 +139,21 @@
       font-size: 14px;
       padding: 15px;
     }
+
+    .game-container {
+      text-align: center;
+      margin: 50px 0;
+    }
+
+    .heart {
+      font-size: 50px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .heart:hover {
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body>
@@ -193,7 +163,6 @@
     Your browser does not support the audio element.
   </audio>
 
-  <!-- HEADER -->
   <header id="home">
     <nav>
       <a href="https://www.aayushisharma.com.np/" class="logo">
@@ -215,14 +184,12 @@
     </div>
   </header>
 
-  <!-- ABOUT ME -->
-<div id="about-me" style="text-align: center; padding: 40px 20px;">
-  <h2 style="color: #d36c8c;">About Me</h2>
-  <p style="font-size: 18px; color: ##000000; text-shadow: 0 0 8px rgba(211, 108, 140, 0.4); max-width: 800px; margin: auto;">
-    Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
-  </p>
-</div>
-
+  <section id="about-me" style="text-align: center; padding: 40px 20px;">
+    <h2 style="color: #d36c8c;">About Me</h2>
+    <p style="font-size: 18px; color: #000; text-shadow: 0 0 8px rgba(211, 108, 140, 0.4); max-width: 800px; margin: auto;">
+      Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
+    </p>
+  </section>
 
   <!-- PROJECTS -->
   <div class="container">
@@ -242,6 +209,14 @@
     </div>
   </div>
 
+  <!-- GAME -->
+  <div class="game-container">
+    <h1>Click the ❤️!</h1>
+    <div id="heart" class="heart">❤️</div>
+    <p>Score: <span id="score">0</span></p>
+    <button onclick="resetGame()">Reset</button>
+  </div>
+
   <!-- CONTACT -->
   <footer id="contact">
     <h2>Contact Me</h2>
@@ -252,10 +227,25 @@
     </ul>
   </footer>
 
-  <!-- COPYRIGHT -->
   <footer id="copyright">
     <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
   </footer>
 
+  <!-- JS GAME SCRIPT -->
+  <script>
+    let score = 0;
+    const heart = document.getElementById('heart');
+    const scoreDisplay = document.getElementById('score');
+
+    heart.addEventListener('click', () => {
+      score++;
+      scoreDisplay.textContent = score;
+    });
+
+    function resetGame() {
+      score = 0;
+      scoreDisplay.textContent = score;
+    }
+  </script>
 </body>
 </html>
