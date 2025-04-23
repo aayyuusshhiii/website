@@ -12,58 +12,164 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+
+      .fruit-game {
+  text-align: center;
+  margin-top: 50px;
+}
+
+#fruitArea {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-color: #fff9fb;
+  overflow: hidden;
+  border: 2px solid #f3cbdc;
+  border-radius: 15px;
+}
+
+.fruit {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s;
+}
     }
     
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #fff0f5;
+  text-align: center;
+  padding-top: 50px;
+}
+
+.game-container {
+  background: #ffe4ec;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  width: 300px;
+  margin: auto;
+}
+
+.heart {
+  font-size: 60px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.heart:hover {
+  transform: scale(1.2);
+}
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: #fff0f5;
+      background: linear-gradient(135deg, #007BFF, #0056b3);
+      color: white;
+      min-height: 100vh;
+    }
+
+    nav {
+      background-color: rgba(0, 0, 50, 0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100px;
+}
+
+.logo-gif {
+  background-color: #fff0f5;
+  border-radius: 6px;
+  height: 70px;
+  width: auto;
+  display: block;
+}
+
+
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #FFD700;
+    }
+
+    .hero {
       text-align: center;
-      padding-top: 50px;
+      padding: 100px 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
     }
 
-    .game-container {
-      background: #ffe4ec;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      width: 300px;
-      margin: auto;
+    .highlight {
+      color: #FFD700;
     }
 
-    .heart {
-      font-size: 60px;
-      cursor: pointer;
-      transition: transform 0.2s;
+    .btn {
+      background: #ff4081;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 30px;
+      margin-top: 20px;
+      display: inline-block;
+      font-weight: 600;
+      transition: transform 0.3s, background 0.3s;
     }
 
-    .heart:hover {
-      transform: scale(1.2);
+    .btn:hover {
+      transform: scale(1.05);
+      background: #e73370;
     }
 
-    .fruit-game {
-      text-align: center;
-      margin-top: 50px;
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
-    #fruitArea {
-      position: relative;
-      width: 100%;
-      height: 400px;
-      background-color: #fff9fb;
-      overflow: hidden;
-      border: 2px solid #f3cbdc;
-      border-radius: 15px;
+    ./* General section styling for rectangular boxes */
+.section-box {
+  background: linear-gradient(135deg, #fff9f0, #fceaf6);
+  border: 2px solid #f3d1e5;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 30px 0;
+  backdrop-filter: blur(10px);
+  color: #4d4d4d;
+}
+
+/* Hover effect ONLY for project sections */
+.project:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+}
+  
+    h2 {
+      margin-bottom: 10px;
+      color: #fff;
+      font-weight: 600;
     }
 
-    .fruit {
-      width: 50px;
-      height: 50px;
-      position: absolute;
-      cursor: pointer;
-      user-select: none;
-      transition: transform 0.2s;
-    }
-    
     footer {
       background: rgba(0, 0, 50, 0.8);
       backdrop-filter: blur(10px);
@@ -125,17 +231,22 @@
       </p>
     </div>
 
-    <!-- Fruit Game -->
-    <div class="fruit-game">
-      <h2>Fruit Cutting Game</h2>
-      <div id="fruitArea"></div>
-      <p>Score: <span id="fruitScore">0</span></p>
+    <!-- PROJECT 1 -->
+    <div class="section-box project" id="sattobatto">
+      <h2>Sattobatto Project</h2>
+      <p>Developed a community walkway project with sustainable materials.</p>
     </div>
 
-    <!-- Heart Game -->
-    <div class="game-container">
-      <div class="heart" id="heart">❤️</div>
-      <p>Score: <span id="score">0</span></p>
+    <!-- PROJECT 2 -->
+    <div class="section-box project" id="limesurki">
+      <h2>LimeSurikki Project</h2>
+      <p>Worked on traditional lime mortar techniques for heritage structures.</p>
+    </div>
+
+    <!-- PROJECT 3 -->
+    <div class="section-box project" id="retainingwall">
+      <h2>Retaining Wall Design</h2>
+      <p>Designed a gravity retaining wall for a hillside community site.</p>
     </div>
   </div>
 
@@ -154,60 +265,7 @@
     <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
   </footer>
 
-  <script>
-    // Heart click game
-    const heart = document.getElementById('heart');
-    const scoreDisplay = document.getElementById('score');
-    let score = 0;
-
-    heart.addEventListener("click", () => {
-      score++;
-      scoreDisplay.textContent = score;
-
-      // Move heart randomly
-      const x = Math.random() * window.innerWidth * 0.8;
-      const y = Math.random() * window.innerHeight * 0.6;
-      heart.style.position = 'absolute';
-      heart.style.left = `${x}px`;
-      heart.style.top = `${y}px`;
-    });
-
-    // Fruit cutting game
-    const fruitArea = document.getElementById("fruitArea");
-    const fruitScore = document.getElementById("fruitScore");
-    let fruitGameScore = 0;
-
-    function createFruit() {
-      const fruit = document.createElement("img");
-      fruit.src = "https://i.imgur.com/Kz5TQWf.png"; // Fruit image
-      fruit.className = "fruit";
-
-      fruit.style.left = Math.random() * (fruitArea.offsetWidth - 50) + "px";
-      fruit.style.top = "-50px";
-
-      fruitArea.appendChild(fruit);
-
-      let position = 0;
-      const fallInterval = setInterval(() => {
-        position += 3;
-        fruit.style.top = position + "px";
-        if (position > fruitArea.offsetHeight) {
-          clearInterval(fallInterval);
-          fruit.remove();
-        }
-      }, 20);
-
-      fruit.addEventListener("click", () => {
-        fruitGameScore++;
-        fruitScore.textContent = fruitGameScore;
-        clearInterval(fallInterval);
-        fruit.remove();
-      });
-    }
-
-    // Drop fruits every 1 second
-    setInterval(createFruit, 1000);
-  </script>
-
 </body>
 </html>
+
+
