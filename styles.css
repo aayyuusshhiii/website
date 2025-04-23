@@ -86,25 +86,22 @@
       padding: 0 20px;
     }
 
-    .section-box {
-      background: rgba(255, 255, 0, 0.15);
-      border: 1px solid rgba(255, 255, 0, 0.5);
-      border-radius: 15px;
-      padding: 30px;
-      margin: 30px 0;
-      backdrop-filter: blur(10px);
-      color: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+    ./* General section styling for rectangular boxes */
+.section-box {
+  background: linear-gradient(135deg, #fff9f0, #fceaf6);
+  border: 2px solid #f3d1e5;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 30px 0;
+  backdrop-filter: blur(10px);
+  color: #4d4d4d;
+}
 
-    .section-box:hover {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    #about-me:hover {
-      transform: translateY(-10px);
-    }
-
+/* Hover effect ONLY for project sections */
+.project:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+}
     .project:hover {
       transform: translateX(10px);
     }
