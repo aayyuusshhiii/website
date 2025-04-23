@@ -102,10 +102,7 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   transform: scale(1.02);
 }
-    .project:hover {
-      transform: translateX(10px);
-    }
-
+  
     h2 {
       margin-bottom: 10px;
       color: #fff;
