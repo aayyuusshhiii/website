@@ -12,32 +12,63 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+
+      .fruit-game {
+  text-align: center;
+  margin-top: 50px;
+}
+
+#fruitArea {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-color: #fff9fb;
+  overflow: hidden;
+  border: 2px solid #f3cbdc;
+  border-radius: 15px;
+}
+
+.fruit {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s;
+}
     }
+    
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #fff0f5;
+  text-align: center;
+  padding-top: 50px;
+}
+
+.game-container {
+  background: #ffe4ec;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  width: 300px;
+  margin: auto;
+}
+
+.heart {
+  font-size: 60px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.heart:hover {
+  transform: scale(1.2);
+}
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: #fff0f5;
-      text-align: center;
-      padding-top: 50px;
-    }
-
-    .game-container {
-      background: #ffe4ec;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      width: 300px;
-      margin: auto;
-    }
-
-    .heart {
-      font-size: 60px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .heart:hover {
-      transform: scale(1.2);
+      background: linear-gradient(135deg, #007BFF, #0056b3);
+      color: white;
+      min-height: 100vh;
     }
 
     nav {
@@ -49,20 +80,21 @@
       padding: 15px 40px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100px;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      height: 100px;
-    }
+.logo-gif {
+  background-color: #fff0f5;
+  border-radius: 6px;
+  height: 70px;
+  width: auto;
+  display: block;
+}
 
-    .logo-gif {
-      background-color: #fff0f5;
-      border-radius: 6px;
-      height: 70px;
-      width: auto;
-      display: block;
-    }
+
 
     .nav-links {
       list-style: none;
@@ -115,21 +147,23 @@
       padding: 0 20px;
     }
 
-    .section-box {
-      background: linear-gradient(135deg, #fff9f0, #fceaf6);
-      border: 2px solid #f3d1e5;
-      border-radius: 15px;
-      padding: 30px;
-      margin: 30px 0;
-      backdrop-filter: blur(10px);
-      color: #4d4d4d;
-    }
+    ./* General section styling for rectangular boxes */
+.section-box {
+  background: linear-gradient(135deg, #fff9f0, #fceaf6);
+  border: 2px solid #f3d1e5;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 30px 0;
+  backdrop-filter: blur(10px);
+  color: #4d4d4d;
+}
 
-    .project:hover {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-      transform: scale(1.02);
-    }
-
+/* Hover effect ONLY for project sections */
+.project:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+}
+  
     h2 {
       margin-bottom: 10px;
       color: #fff;
@@ -233,3 +267,5 @@
 
 </body>
 </html>
+
+
