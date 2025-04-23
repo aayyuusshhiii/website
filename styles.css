@@ -1,170 +1,192 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="logo.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️AAYUSHI❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-body {
-    line-height: 1.6;
-    background-color:#EE82EE;
-    color: #333;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-header {
-    background: #282c34;
-    color: white;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f9f9f9;
+            color: #333;
+        }
 
-nav {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.6);
-}
-/* Logo Styling */
-.logo {
-    display: inline-block;
-    text-decoration: none; /* Remove underline */
-    transition: transform 0.3s ease, color 0.3s ease; /* Smooth transitions */
-}
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #007BFF; /* Blue */
+            padding: 10px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-/* Styling for the GIF logo */
-.logo-gif {
-    width: 50px; /* Adjust width as needed */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 50%; /* Optional: adds rounded corners to the GIF */
-    transition: transform 0.3s ease; /* Add transition for scaling */
-}
+        .logo-gif {
+            height: 50px;
+        }
 
-.logo:hover .logo-gif {
-    transform: scale(1.1); /* Slightly enlarge on hover */
-}
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
 
-.logo:hover {
-    color: #333; /* Change color on hover */
-}
+        .nav-links li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-}
+        .hero {
+            text-align: center;
+            background-color: #007BFF; /* Blue */
+            padding: 100px 20px;
+            color: white;
+        }
 
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-}
+        .highlight {
+            color: #FFD700; /* Gold-ish highlight */
+        }
 
-.nav-links a:hover {
-    color: #ff4081;
-}
+        .btn {
+            background: #ff4081;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 20px;
+        }
 
-.hero {
-    margin-top: 100px;
-}
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
 
-.hero h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-}
+        .section-box {
+            background-color: #FFF176; /* Yellow */
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            transition: transform 0.4s ease;
+        }
 
-.hero .highlight {
-    color: #008000 ;
-}
+        /* Float on hover - up/down for about me */
+        #about-me:hover {
+            transform: translateY(-15px);
+        }
 
-.hero p {
-    font-size: 1.5rem;
-}
+        /* Float on hover - left/right for projects */
+        .project:hover {
+            transform: translateX(10px);
+        }
 
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #ff4081;
-    color: white;
-    border-radius: 50px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
+        h2 {
+            margin-bottom: 10px;
+            color: #222;
+        }
 
-.btn:hover {
-    background-color: #e81d62;
-}
+        footer {
+            background: #222;
+            color: #ccc;
+            padding: 30px 20px;
+            text-align: center;
+        }
 
-section {
-    padding: 4rem 0;
-    text-align: center;
-}
+        .contact-info {
+            list-style: none;
+            padding: 0;
+        }
 
-#about, #projects {
-    background-color: #f4f4f4;
-    padding: 50px;
-}
+        .contact-info li {
+            margin: 5px 0;
+        }
 
-.project-card {
-    background: white;
-    padding: 2rem;
-    margin: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .special-link {
+            color: #ff4081;
+            text-decoration: none;
+        }
 
-footer {
-    background-color: #282c34;
-    color: white;
-    padding: 2rem;
-    text-align: center;
-}
+        #copyright {
+            background: #111;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
 
-/* Contact Section Styling */
-#contact {
-    background-color: #282c34; /* Dark background color */
-    padding: 40px 20px;
-    text-align: center;
-    color: #ffffff; /* Light text color for contrast */
-}
+    <!-- HEADER -->
+    <header id="home">
+        <nav>
+            <a href="https://www.aayushisharma.com.np/" class="logo">
+                <img src="logo.svg" alt="Logo" class="logo-gif">
+            </a>
+            <ul class="nav-links">
+                <li><a href="https://www.aayushisharma.com.np/">Home</a></li>
+                <li><a href="#about-me">About</a></li>
+                <li><a href="#sattobatto">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="hero">
+            <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
+            <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
+            <a href="#sattobatto" class="btn">View My Work</a>
+        </div>
+    </header>
 
-#contact h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
-    color: #ffffff; /* Light color for the heading */
-}
+    <!-- ABOUT ME -->
+    <div class="container">
+        <div class="section-box" id="about-me">
+            <h2>About Me</h2>
+            <p>
+                Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
+            </p>
+        </div>
 
-#contact p {
-    font-size: 1.1em;
-    color: #cccccc; /* Softer color for the paragraph text */
-    margin-bottom: 30px;
-}
+        <!-- PROJECT 1 -->
+        <div class="section-box project" id="sattobatto">
+            <h2>Sattobatto Project</h2>
+            <p>Developed a community walkway project with sustainable materials.</p>
+        </div>
 
-.contact-info {
-    list-style-type: none; /* Remove bullets */
-    padding: 0;
-    margin: 0;
-}
+        <!-- PROJECT 2 -->
+        <div class="section-box project" id="limesurki">
+            <h2>LimeSurikki Project</h2>
+            <p>Worked on traditional lime mortar techniques for heritage structures.</p>
+        </div>
 
-.contact-info li {
-    font-size: 1.1em;
-    margin: 10px 0;
-    color: #ffffff; /* Light color for list items */
-}
+        <!-- PROJECT 3 -->
+        <div class="section-box project" id="retainingwall">
+            <h2>Retaining Wall Design</h2>
+            <p>Designed a gravity retaining wall for a hillside community site.</p>
+        </div>
+    </div>
 
-.contact-info a {
-    color: #ff4081;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
+    <!-- CONTACT -->
+    <footer id="contact">
+        <h2>Contact Me</h2>
+        <p>If you'd like to get in touch, feel free to reach out through any of the methods below.</p>
+        <ul class="contact-info">
+            <li>Email: <a href="mailto:comingsoon@gmail.com" class="special-link">comingsoon@gmail.com</a></li>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/aayushi-sharma-bb83a0293/" class="special-link">LinkedIn</a></li>
+        </ul>
+    </footer>
 
-.contact-info a:hover {
-    color: #61dafb; /* Change to a soft blue on hover for a nice effect */
-}
+    <!-- COPYRIGHT -->
+    <footer id="copyright">
+        <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
