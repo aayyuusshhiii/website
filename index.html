@@ -56,10 +56,24 @@
       padding: 100px 20px;
       background-color: #fff0f5;
       border-bottom: 2px solid #f6d4df;
+      position: relative;
     }
 
     .highlight {
       color: #d36c8c;
+    }
+
+    .photo-placeholder {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #ffe4ec;
+      border: 4px solid #f3cbdc;
+      margin: 20px auto;
+      background-image: url('your-photo.jpg'); /* Replace with your image */
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     .btn {
@@ -85,25 +99,24 @@
       padding: 0 20px;
     }
 
-    .section-box {
-      background: linear-gradient(135deg, #fff9f0, #fceaf6, #f2e5ff);
+    .section-circle {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fff9f0, #fceaf6);
       border: 2px solid #f3d1e5;
-      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 40px auto;
       padding: 30px;
-      margin: 30px 0;
+      text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .section-box:hover {
+    .section-circle:hover {
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    #about-me:hover {
-      transform: translateY(-10px);
-    }
-
-    .project:hover {
-      transform: translateX(10px);
+      transform: scale(1.05);
     }
 
     h2 {
@@ -142,6 +155,11 @@
 </head>
 <body>
 
+  <audio autoplay loop hidden>
+    <source src="soft-background-music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
   <!-- HEADER -->
   <header id="home">
     <nav>
@@ -157,6 +175,7 @@
     </nav>
 
     <div class="hero">
+      <div class="photo-placeholder"></div>
       <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
       <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
       <a href="#sattobatto" class="btn">View My Work</a>
@@ -164,31 +183,10 @@
   </header>
 
   <!-- ABOUT ME -->
-  <div class="container">
-    <div class="section-box" id="about-me">
-      <h2>About Me</h2>
-      <p>
-        Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
-      </p>
-    </div>
-
-    <!-- PROJECT 1 -->
-    <div class="section-box project" id="sattobatto">
-      <h2>Sattobatto Project</h2>
-      <p>Developed a community walkway project with sustainable materials.</p>
-    </div>
-
-    <!-- PROJECT 2 -->
-    <div class="section-box project" id="limesurki">
-      <h2>LimeSurikki Project</h2>
-      <p>Worked on traditional lime mortar techniques for heritage structures.</p>
-    </div>
-
-    <!-- PROJECT 3 -->
-    <div class="section-box project" id="retainingwall">
-      <h2>Retaining Wall Design</h2>
-      <p>Designed a gravity retaining wall for a hillside community site.</p>
-    </div>
+  <div class="section-circle" id="about-me">
+    <p>
+      Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
+    </p>
   </div>
 
   <!-- CONTACT -->
@@ -201,7 +199,6 @@
     </ul>
   </footer>
 
-  <!-- COPYRIGHT -->
   <footer id="copyright">
     <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
   </footer>
