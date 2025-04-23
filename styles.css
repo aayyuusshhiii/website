@@ -1,192 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="logo.ico" type="image/x-icon">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>❤️AAYUSHI❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="logo.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>❤️AAYUSHI❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f9f9f9;
-            color: #333;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #007BFF, #0056b3);
+      color: white;
+      min-height: 100vh;
+    }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #007BFF; /* Blue */
-            padding: 10px 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    nav {
+      background-color: rgba(0, 0, 50, 0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 
-        .logo-gif {
-            height: 50px;
-        }
+    .logo-gif {
+      height: 50px;
+    }
 
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
 
-        .nav-links li a {
-            text-decoration: none;
-            color: white;
-            font-weight: 600;
-        }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
 
-        .hero {
-            text-align: center;
-            background-color: #007BFF; /* Blue */
-            padding: 100px 20px;
-            color: white;
-        }
+    .nav-links a:hover {
+      color: #FFD700;
+    }
 
-        .highlight {
-            color: #FFD700; /* Gold-ish highlight */
-        }
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
+    }
 
-        .btn {
-            background: #ff4081;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 25px;
-            display: inline-block;
-            margin-top: 20px;
-        }
+    .highlight {
+      color: #FFD700;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+    .btn {
+      background: #ff4081;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 30px;
+      margin-top: 20px;
+      display: inline-block;
+      font-weight: 600;
+      transition: transform 0.3s, background 0.3s;
+    }
 
-        .section-box {
-            background-color: #FFF176; /* Yellow */
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 30px 0;
-            transition: transform 0.4s ease;
-        }
+    .btn:hover {
+      transform: scale(1.05);
+      background: #e73370;
+    }
 
-        /* Float on hover - up/down for about me */
-        #about-me:hover {
-            transform: translateY(-15px);
-        }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-        /* Float on hover - left/right for projects */
-        .project:hover {
-            transform: translateX(10px);
-        }
+    .section-box {
+      background: rgba(255, 255, 0, 0.15);
+      border: 1px solid rgba(255, 255, 0, 0.5);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px 0;
+      backdrop-filter: blur(10px);
+      color: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        h2 {
-            margin-bottom: 10px;
-            color: #222;
-        }
+    .section-box:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
 
-        footer {
-            background: #222;
-            color: #ccc;
-            padding: 30px 20px;
-            text-align: center;
-        }
+    #about-me:hover {
+      transform: translateY(-10px);
+    }
 
-        .contact-info {
-            list-style: none;
-            padding: 0;
-        }
+    .project:hover {
+      transform: translateX(10px);
+    }
 
-        .contact-info li {
-            margin: 5px 0;
-        }
+    h2 {
+      margin-bottom: 10px;
+      color: #fff;
+      font-weight: 600;
+    }
 
-        .special-link {
-            color: #ff4081;
-            text-decoration: none;
-        }
+    footer {
+      background: rgba(0, 0, 50, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
 
-        #copyright {
-            background: #111;
-            font-size: 14px;
-        }
-    </style>
+    .contact-info {
+      list-style: none;
+      padding: 0;
+    }
+
+    .contact-info li {
+      margin: 5px 0;
+    }
+
+    .special-link {
+      color: #ff4081;
+      text-decoration: none;
+    }
+
+    #copyright {
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 14px;
+      padding: 15px;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header id="home">
-        <nav>
-            <a href="https://www.aayushisharma.com.np/" class="logo">
-                <img src="logo.svg" alt="Logo" class="logo-gif">
-            </a>
-            <ul class="nav-links">
-                <li><a href="https://www.aayushisharma.com.np/">Home</a></li>
-                <li><a href="#about-me">About</a></li>
-                <li><a href="#sattobatto">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="hero">
-            <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
-            <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
-            <a href="#sattobatto" class="btn">View My Work</a>
-        </div>
-    </header>
+  <!-- HEADER -->
+  <header id="home">
+    <nav>
+      <a href="https://www.aayushisharma.com.np/" class="logo">
+        <img src="logo.svg" alt="Logo" class="logo-gif">
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about-me">About</a></li>
+        <li><a href="#sattobatto">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
 
-    <!-- ABOUT ME -->
-    <div class="container">
-        <div class="section-box" id="about-me">
-            <h2>About Me</h2>
-            <p>
-                Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
-            </p>
-        </div>
+    <div class="hero">
+      <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
+      <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
+      <a href="#sattobatto" class="btn">View My Work</a>
+    </div>
+  </header>
 
-        <!-- PROJECT 1 -->
-        <div class="section-box project" id="sattobatto">
-            <h2>Sattobatto Project</h2>
-            <p>Developed a community walkway project with sustainable materials.</p>
-        </div>
-
-        <!-- PROJECT 2 -->
-        <div class="section-box project" id="limesurki">
-            <h2>LimeSurikki Project</h2>
-            <p>Worked on traditional lime mortar techniques for heritage structures.</p>
-        </div>
-
-        <!-- PROJECT 3 -->
-        <div class="section-box project" id="retainingwall">
-            <h2>Retaining Wall Design</h2>
-            <p>Designed a gravity retaining wall for a hillside community site.</p>
-        </div>
+  <!-- ABOUT ME -->
+  <div class="container">
+    <div class="section-box" id="about-me">
+      <h2>About Me</h2>
+      <p>
+        Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
+      </p>
     </div>
 
-    <!-- CONTACT -->
-    <footer id="contact">
-        <h2>Contact Me</h2>
-        <p>If you'd like to get in touch, feel free to reach out through any of the methods below.</p>
-        <ul class="contact-info">
-            <li>Email: <a href="mailto:comingsoon@gmail.com" class="special-link">comingsoon@gmail.com</a></li>
-            <li>LinkedIn: <a href="https://www.linkedin.com/in/aayushi-sharma-bb83a0293/" class="special-link">LinkedIn</a></li>
-        </ul>
-    </footer>
+    <!-- PROJECT 1 -->
+    <div class="section-box project" id="sattobatto">
+      <h2>Sattobatto Project</h2>
+      <p>Developed a community walkway project with sustainable materials.</p>
+    </div>
 
-    <!-- COPYRIGHT -->
-    <footer id="copyright">
-        <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
-    </footer>
+    <!-- PROJECT 2 -->
+    <div class="section-box project" id="limesurki">
+      <h2>LimeSurikki Project</h2>
+      <p>Worked on traditional lime mortar techniques for heritage structures.</p>
+    </div>
+
+    <!-- PROJECT 3 -->
+    <div class="section-box project" id="retainingwall">
+      <h2>Retaining Wall Design</h2>
+      <p>Designed a gravity retaining wall for a hillside community site.</p>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <footer id="contact">
+    <h2>Contact Me</h2>
+    <p>If you'd like to get in touch, feel free to reach out through any of the methods below.</p>
+    <ul class="contact-info">
+      <li>Email: <a href="mailto:comingsoon@gmail.com" class="special-link">comingsoon@gmail.com</a></li>
+      <li>LinkedIn: <a href="https://www.linkedin.com/in/aayushi-sharma-bb83a0293/" class="special-link">LinkedIn</a></li>
+    </ul>
+  </footer>
+
+  <!-- COPYRIGHT -->
+  <footer id="copyright">
+    <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
+  </footer>
 
 </body>
 </html>
