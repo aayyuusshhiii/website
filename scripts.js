@@ -9,18 +9,16 @@ document.getElementById('contact-form').addEventListener('submit', function (eve
   event.preventDefault();
   alert('Thank you for your message! I will get back to you soon.');
 });
-
-// You can add interactivity later if needed. For now, this file can be left empty or used for additional features.
-let score = 0;
-const heart = document.getElementById("heart");
-const scoreDisplay = document.getElementById("score");
-
 heart.addEventListener("click", () => {
   score++;
   scoreDisplay.textContent = score;
-});
 
-function resetGame() {
-  score = 0;
-  scoreDisplay.textContent = score;
+  // Move heart to a random position
+  const x = Math.random() * window.innerWidth * 0.8;
+  const y = Math.random() * window.innerHeight * 0.6;
+  heart.style.position = 'absolute';
+  heart.style.left = `${x}px`;
+  heart.style.top = `${y}px`;
+});
+lay.textContent = score;
 }
