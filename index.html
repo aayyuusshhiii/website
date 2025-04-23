@@ -6,173 +6,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>❤️AAYUSHI❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #fff1f3, #ffe4ec, #f5e1f7);
-      color: #4d4d4d;
-      min-height: 100vh;
-    }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>❤️AAYUSHI❤️ - Fruit Cutting Game</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #fff1f3, #ffe4ec, #f5e1f7);
-      color: #4d4d4d;
-      min-height: 100vh;
+      background: #fff0f5;
       text-align: center;
+      padding-top: 50px;
     }
 
-    .fruit-game {
-      text-align: center;
-      margin-top: 50px;
+    .game-container {
+      background: #ffe4ec;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      width: 300px;
+      margin: auto;
     }
 
-    #fruitArea {
-      position: relative;
-      width: 100%;
-      height: 400px;
-      background-color: #fff9fb;
-      overflow: hidden;
-      border: 2px solid #f3cbdc;
-      border-radius: 15px;
-      margin-top: 20px;
-    }
-
-    .fruit {
-      width: 50px;
-      height: 50px;
-      position: absolute;
+    .heart {
+      font-size: 60px;
       cursor: pointer;
-      user-select: none;
       transition: transform 0.2s;
     }
 
-    .fruit img {
-      width: 100%;
-      height: 100%;
+    .heart:hover {
+      transform: scale(1.2);
     }
-
-    .score {
-      font-size: 24px;
-      color: #d36c8c;
-    }
-
-    .btn {
-      background: #f7a1c4;
-      color: white;
-      padding: 12px 30px;
-      text-decoration: none;
-      border-radius: 30px;
-      margin-top: 20px;
-      display: inline-block;
-      font-weight: 600;
-      transition: transform 0.3s, background 0.3s;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      background: #ec7ba8;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="fruit-game">
-    <h2>🍉 Cut the Fruits!</h2>
-    <p class="score">Score: <span id="fruitScore">0</span></p>
-    <div id="fruitArea"></div>
-    <button class="btn" onclick="resetGame()">Reset Game</button>
-  </div>
-
-  <script>
-    let score = 0;
-    const fruitArea = document.getElementById('fruitArea');
-    const scoreDisplay = document.getElementById('fruitScore');
-    let fruitInterval;
-
-    // Generate a random fruit at the top of the screen
-    function createFruit() {
-      const fruit = document.createElement('div');
-      fruit.classList.add('fruit');
-      fruit.style.left = ${Math.random() * (fruitArea.offsetWidth - 50)}px;
-
-      const fruitImage = document.createElement('img');
-      fruitImage.src = 'https://example.com/fruit-image.png'; // Replace with a fruit image URL
-      fruit.appendChild(fruitImage);
-
-      fruitArea.appendChild(fruit);
-
-      // Move fruit down
-      let positionY = -50; // Start above the screen
-      const fallSpeed = 2 + Math.random() * 4; // Random fall speed
-
-      const fallInterval = setInterval(() => {
-        positionY += fallSpeed;
-        fruit.style.top = ${positionY}px;
-
-        // If the fruit reaches the bottom of the screen, remove it
-        if (positionY > fruitArea.offsetHeight) {
-          clearInterval(fallInterval);
-          fruit.remove();
-        }
-      }, 10);
-
-      // Add click event to cut the fruit
-      fruit.addEventListener('click', () => {
-        score++;
-        scoreDisplay.textContent = score;
-        fruit.remove(); // Remove fruit after cutting
-      });
-    }
-
-    // Start generating fruits every 1.5 seconds
-    function startGame() {
-      fruitInterval = setInterval(createFruit, 1500);
-    }
-
-    // Reset the game
-    function resetGame() {
-      score = 0;
-      scoreDisplay.textContent = score;
-      clearInterval(fruitInterval); // Stop the game
-      fruitArea.innerHTML = ''; // Clear all fruits
-      startGame(); // Restart the game
-    }
-
-    // Start the game
-    startGame();
-  </script>
-
-</body>
-</html>
-
-      }
-      }
 
     nav {
-      background-color: #fceef1;
+      background-color: rgba(0, 0, 50, 0.7);
+      backdrop-filter: blur(10px);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 40px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border-bottom: 2px solid #f8d8dd;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .logo {
       display: flex;
       align-items: center;
-      height: 60px;
+      height: 100px;
+    }
+
+    .logo-gif {
+      background-color: #fff0f5;
+      border-radius: 6px;
+      height: 70px;
+      width: auto;
+      display: block;
     }
 
     .nav-links {
@@ -182,43 +71,29 @@
     }
 
     .nav-links a {
-      color: #a05278;
+      color: white;
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
 
     .nav-links a:hover {
-      color: #d36c8c;
+      color: #FFD700;
     }
 
     .hero {
       text-align: center;
       padding: 100px 20px;
-      background-color: #fff0f5;
-      border-bottom: 2px solid #f6d4df;
-      position: relative;
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
     }
 
     .highlight {
-      color: #d36c8c;
-    }
-
-    .photo-placeholder {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background-color: #ffe4ec;
-      border: 4px solid #f3cbdc;
-      margin: 20px auto;
-      background-image: url('your-photo.jpg');
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      color: #FFD700;
     }
 
     .btn {
-      background: #f7a1c4;
+      background: #ff4081;
       color: white;
       padding: 12px 30px;
       text-decoration: none;
@@ -231,7 +106,7 @@
 
     .btn:hover {
       transform: scale(1.05);
-      background: #ec7ba8;
+      background: #e73370;
     }
 
     .container {
@@ -241,25 +116,32 @@
     }
 
     .section-box {
-      background: #fff9fb;
-      border: 2px solid #f3cbdc;
+      background: linear-gradient(135deg, #fff9f0, #fceaf6);
+      border: 2px solid #f3d1e5;
       border-radius: 15px;
       padding: 30px;
-      margin: 30px auto;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s, box-shadow 0.3s;
+      margin: 30px 0;
+      backdrop-filter: blur(10px);
+      color: #4d4d4d;
     }
 
-    .section-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    .project:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      transform: scale(1.02);
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #fff;
+      font-weight: 600;
     }
 
     footer {
-      background: #fbe9ed;
+      background: rgba(0, 0, 50, 0.8);
+      backdrop-filter: blur(10px);
       padding: 40px 20px;
       text-align: center;
-      color: #805066;
+      color: white;
     }
 
     .contact-info {
@@ -272,44 +154,24 @@
     }
 
     .special-link {
-      color: #d36c8c;
+      color: #ff4081;
       text-decoration: none;
     }
 
     #copyright {
-      background: #f3cbdc;
+      background: rgba(0, 0, 0, 0.8);
       font-size: 14px;
       padding: 15px;
     }
-
-    .game-container {
-      text-align: center;
-      margin: 50px 0;
-    }
-
-    .heart {
-      font-size: 50px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .heart:hover {
-      transform: scale(1.2);
-    }
-    
   </style>
 </head>
 <body>
 
-  <audio autoplay loop hidden>
-    <source src="soft-background-music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-
+  <!-- HEADER -->
   <header id="home">
     <nav>
       <a href="https://www.aayushisharma.com.np/" class="logo">
-        <img src="Capture.PNG" alt="Logo" class="logo-gif">
+        <img src="logo.svg" alt="Logo" class="logo-gif">
       </a>
       <ul class="nav-links">
         <li><a href="#home">Home</a></li>
@@ -320,44 +182,38 @@
     </nav>
 
     <div class="hero">
-      <div class="photo-placeholder"></div>
       <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
       <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
       <a href="#sattobatto" class="btn">View My Work</a>
     </div>
   </header>
 
-  <section id="about-me" style="text-align: center; padding: 40px 20px;">
-    <h2 style="color: #d36c8c;">About Me</h2>
-    <p style="font-size: 18px; color: #000; text-shadow: 0 0 8px rgba(211, 108, 140, 0.4); max-width: 800px; margin: auto;">
-      Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
-    </p>
-  </section>
-
-  <!-- PROJECTS -->
+  <!-- ABOUT ME -->
   <div class="container">
+    <div class="section-box" id="about-me">
+      <h2>About Me</h2>
+      <p>
+        Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
+      </p>
+    </div>
+
+    <!-- PROJECT 1 -->
     <div class="section-box project" id="sattobatto">
       <h2>Sattobatto Project</h2>
       <p>Developed a community walkway project with sustainable materials.</p>
     </div>
 
+    <!-- PROJECT 2 -->
     <div class="section-box project" id="limesurki">
       <h2>LimeSurikki Project</h2>
       <p>Worked on traditional lime mortar techniques for heritage structures.</p>
     </div>
 
+    <!-- PROJECT 3 -->
     <div class="section-box project" id="retainingwall">
       <h2>Retaining Wall Design</h2>
       <p>Designed a gravity retaining wall for a hillside community site.</p>
     </div>
-  </div>
-
-  <!-- GAME -->
-  <div class="game-container">
-    <h1>Click the ❤️!</h1>
-    <div id="heart" class="heart">❤️</div>
-    <p>Score: <span id="score">0</span></p>
-    <button onclick="resetGame()">Reset</button>
   </div>
 
   <!-- CONTACT -->
@@ -370,43 +226,10 @@
     </ul>
   </footer>
 
+  <!-- COPYRIGHT -->
   <footer id="copyright">
     <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
   </footer>
 
-  <!-- JS GAME SCRIPT -->
-  <script>
-    let score = 0;
-    const heart = document.getElementById('heart');
-    const scoreDisplay = document.getElementById('score');
-
-    heart.addEventListener('click', () => {
-      score++;
-      scoreDisplay.textContent = score;
-      moveHeart();
-    });
-
-    function resetGame() {
-      score = 0;
-      scoreDisplay.textContent = score;
-    }
-
-    // Function to move heart randomly within the game container
-    function moveHeart() {
-      const container = document.querySelector('.game-container');
-      const heartWidth = heart.offsetWidth;
-      const heartHeight = heart.offsetHeight;
-
-      const maxX = container.clientWidth - heartWidth;
-      const maxY = container.clientHeight - heartHeight;
-
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
-
-      heart.style.position = 'absolute';
-      heart.style.left = ${randomX}px;
-      heart.style.top = ${randomY}px;
-    }
-  </script>
 </body>
 </html>
