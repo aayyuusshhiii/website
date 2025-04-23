@@ -22,3 +22,39 @@ heart.addEventListener("click", () => {
 });
 lay.textContent = score;
 }
+const fruitArea = document.getElementById("fruitArea");
+const fruitScore = document.getElementById("fruitScore");
+let score = 0;
+
+function createFruit() {
+  const fruit = document.createElement("img");
+  fruit.src = "https://i.imgur.com/Kz5TQWf.png"; // Example fruit (watermelon)
+  fruit.className = "fruit";
+
+  fruit.style.left = Math.random() * (fruitArea.offsetWidth - 50) + "px";
+  fruit.style.top = "-50px";
+
+  fruitArea.appendChild(fruit);
+
+  // Animate falling
+  let position = 0;
+  const fallInterval = setInterval(() => {
+    position += 3;
+    fruit.style.top = position + "px";
+    if (position > 400) {
+      clearInterval(fallInterval);
+      fruit.remove();
+    }
+  }, 20);
+
+  fruit.addEventListener("click", () => {
+    score++;
+    fruitScore.textContent = score;
+    clearInterval(fallInterval);
+    fruit.remove();
+  });
+}
+
+// Drop fruits every 1 second
+setInterval(createFruit, 1000);
+
