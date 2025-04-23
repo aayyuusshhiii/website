@@ -6,95 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>❤️AAYUSHI❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-
-      .fruit-game {
-  text-align: center;
-  margin-top: 50px;
-}
-
-#fruitArea {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  background-color: #fff9fb;
-  overflow: hidden;
-  border: 2px solid #f3cbdc;
-  border-radius: 15px;
-}
-
-.fruit {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s;
-}
-    }
-    
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #fff0f5;
-  text-align: center;
-  padding-top: 50px;
-}
-
-.game-container {
-  background: #ffe4ec;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  width: 300px;
-  margin: auto;
-}
-
-.heart {
-  font-size: 60px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.heart:hover {
-  transform: scale(1.2);
-}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #007BFF, #0056b3);
-      color: white;
+      background: linear-gradient(135deg, #fff1f3, #ffe4ec, #f5e1f7);
+      color: #4d4d4d;
       min-height: 100vh;
     }
 
     nav {
-      background-color: rgba(0, 0, 50, 0.7);
-      backdrop-filter: blur(10px);
+      background-color: #fceef1;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 40px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-bottom: 2px solid #f8d8dd;
     }
-.logo {
-  display: flex;
-  align-items: center;
-  height: 100px;
-}
 
-.logo-gif {
-  background-color: #fff0f5;
-  border-radius: 6px;
-  height: 70px;
-  width: auto;
-  display: block;
-}
-
-
+    .logo {
+      display: flex;
+      align-items: center;
+      height: 60px;
+    }
 
     .nav-links {
       list-style: none;
@@ -103,29 +39,43 @@ body {
     }
 
     .nav-links a {
-      color: white;
+      color: #a05278;
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
 
     .nav-links a:hover {
-      color: #FFD700;
+      color: #d36c8c;
     }
 
     .hero {
       text-align: center;
       padding: 100px 20px;
-      background-color: rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(4px);
+      background-color: #fff0f5;
+      border-bottom: 2px solid #f6d4df;
+      position: relative;
     }
 
     .highlight {
-      color: #FFD700;
+      color: #d36c8c;
+    }
+
+    .photo-placeholder {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #ffe4ec;
+      border: 4px solid #f3cbdc;
+      margin: 20px auto;
+      background-image: url('your-photo.jpg');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     .btn {
-      background: #ff4081;
+      background: #f7a1c4;
       color: white;
       padding: 12px 30px;
       text-decoration: none;
@@ -138,7 +88,7 @@ body {
 
     .btn:hover {
       transform: scale(1.05);
-      background: #e73370;
+      background: #ec7ba8;
     }
 
     .container {
@@ -147,35 +97,26 @@ body {
       padding: 0 20px;
     }
 
-    ./* General section styling for rectangular boxes */
-.section-box {
-  background: linear-gradient(135deg, #fff9f0, #fceaf6);
-  border: 2px solid #f3d1e5;
-  border-radius: 15px;
-  padding: 30px;
-  margin: 30px 0;
-  backdrop-filter: blur(10px);
-  color: #4d4d4d;
-}
+    .section-box {
+      background: #fff9fb;
+      border: 2px solid #f3cbdc;
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-/* Hover effect ONLY for project sections */
-.project:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  transform: scale(1.02);
-}
-  
-    h2 {
-      margin-bottom: 10px;
-      color: #fff;
-      font-weight: 600;
+    .section-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
     footer {
-      background: rgba(0, 0, 50, 0.8);
-      backdrop-filter: blur(10px);
+      background: #fbe9ed;
       padding: 40px 20px;
       text-align: center;
-      color: white;
+      color: #805066;
     }
 
     .contact-info {
@@ -188,24 +129,43 @@ body {
     }
 
     .special-link {
-      color: #ff4081;
+      color: #d36c8c;
       text-decoration: none;
     }
 
     #copyright {
-      background: rgba(0, 0, 0, 0.8);
+      background: #f3cbdc;
       font-size: 14px;
       padding: 15px;
+    }
+
+    .game-container {
+      text-align: center;
+      margin: 50px 0;
+    }
+
+    .heart {
+      font-size: 50px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .heart:hover {
+      transform: scale(1.2);
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <audio autoplay loop hidden>
+    <source src="soft-background-music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
   <header id="home">
     <nav>
       <a href="https://www.aayushisharma.com.np/" class="logo">
-        <img src="logo.svg" alt="Logo" class="logo-gif">
+        <img src="Capture.PNG" alt="Logo" class="logo-gif">
       </a>
       <ul class="nav-links">
         <li><a href="#home">Home</a></li>
@@ -216,38 +176,44 @@ body {
     </nav>
 
     <div class="hero">
+      <div class="photo-placeholder"></div>
       <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
       <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
       <a href="#sattobatto" class="btn">View My Work</a>
     </div>
   </header>
 
-  <!-- ABOUT ME -->
-  <div class="container">
-    <div class="section-box" id="about-me">
-      <h2>About Me</h2>
-      <p>
-        Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
-      </p>
-    </div>
+  <section id="about-me" style="text-align: center; padding: 40px 20px;">
+    <h2 style="color: #d36c8c;">About Me</h2>
+    <p style="font-size: 18px; color: #000; text-shadow: 0 0 8px rgba(211, 108, 140, 0.4); max-width: 800px; margin: auto;">
+      Hello! I'm a passionate civil engineering student at Pokhara University. I love working on creative projects and learning new technologies in concrete and masonry construction.
+    </p>
+  </section>
 
-    <!-- PROJECT 1 -->
+  <!-- PROJECTS -->
+  <div class="container">
     <div class="section-box project" id="sattobatto">
       <h2>Sattobatto Project</h2>
       <p>Developed a community walkway project with sustainable materials.</p>
     </div>
 
-    <!-- PROJECT 2 -->
     <div class="section-box project" id="limesurki">
       <h2>LimeSurikki Project</h2>
       <p>Worked on traditional lime mortar techniques for heritage structures.</p>
     </div>
 
-    <!-- PROJECT 3 -->
     <div class="section-box project" id="retainingwall">
       <h2>Retaining Wall Design</h2>
       <p>Designed a gravity retaining wall for a hillside community site.</p>
     </div>
+  </div>
+
+  <!-- GAME -->
+  <div class="game-container">
+    <h1>Click the ❤️!</h1>
+    <div id="heart" class="heart">❤️</div>
+    <p>Score: <span id="score">0</span></p>
+    <button onclick="resetGame()">Reset</button>
   </div>
 
   <!-- CONTACT -->
@@ -260,12 +226,43 @@ body {
     </ul>
   </footer>
 
-  <!-- COPYRIGHT -->
   <footer id="copyright">
     <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
   </footer>
 
+  <!-- JS GAME SCRIPT -->
+  <script>
+    let score = 0;
+    const heart = document.getElementById('heart');
+    const scoreDisplay = document.getElementById('score');
+
+    heart.addEventListener('click', () => {
+      score++;
+      scoreDisplay.textContent = score;
+      moveHeart();
+    });
+
+    function resetGame() {
+      score = 0;
+      scoreDisplay.textContent = score;
+    }
+
+    // Function to move heart randomly within the game container
+    function moveHeart() {
+      const container = document.querySelector('.game-container');
+      const heartWidth = heart.offsetWidth;
+      const heartHeight = heart.offsetHeight;
+
+      const maxX = container.clientWidth - heartWidth;
+      const maxY = container.clientHeight - heartHeight;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      heart.style.position = 'absolute';
+      heart.style.left = `${randomX}px`;
+      heart.style.top = `${randomY}px`;
+    }
+  </script>
 </body>
 </html>
-
-
