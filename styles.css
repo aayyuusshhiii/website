@@ -30,12 +30,20 @@
       padding: 15px 40px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100px;
+}
+
 .logo-gif {
   background-color: #fff0f5;
   border-radius: 8px;
-  height: 100px;   /* Increased from 50px to 100px */
-  width: auto;     /* Keeps image ratio */
+  height: 100px;
+  width: auto;
+  display: block;
 }
+
 
 
     .nav-links {
