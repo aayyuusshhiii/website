@@ -125,25 +125,20 @@
       font-weight: 600;
     }
 
-  <!-- PROJECT 1 -->
-    <div class="section-box project" id="sattobatto">
-      <h2>Sattobatto Project</h2>
-      <p>Developed a community walkway project with sustainable materials.</p>
-    </div>
+    .section-box {
+      background: #fff9fb;
+      border: 2px solid #f3cbdc;
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-    <!-- PROJECT 2 -->
-    <div class="section-box project" id="limesurki">
-      <h2>LimeSurikki Project</h2>
-      <p>Worked on traditional lime mortar techniques for heritage structures.</p>
-    </div>
-
-    <!-- PROJECT 3 -->
-    <div class="section-box project" id="retainingwall">
-      <h2>Retaining Wall Design</h2>
-      <p>Designed a gravity retaining wall for a hillside community site.</p>
-    </div>
-  </div>
-
+    .section-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
 
     footer {
       background: #fbe9ed;
@@ -209,6 +204,24 @@
     </p>
   </div>
 
+  <!-- PROJECTS -->
+  <div class="container">
+    <div class="section-box project" id="sattobatto">
+      <h2>Sattobatto Project</h2>
+      <p>Developed a community walkway project with sustainable materials.</p>
+    </div>
+
+    <div class="section-box project" id="limesurki">
+      <h2>LimeSurikki Project</h2>
+      <p>Worked on traditional lime mortar techniques for heritage structures.</p>
+    </div>
+
+    <div class="section-box project" id="retainingwall">
+      <h2>Retaining Wall Design</h2>
+      <p>Designed a gravity retaining wall for a hillside community site.</p>
+    </div>
+  </div>
+
   <!-- CONTACT -->
   <footer id="contact">
     <h2>Contact Me</h2>
@@ -219,6 +232,7 @@
     </ul>
   </footer>
 
+  <!-- COPYRIGHT -->
   <footer id="copyright">
     <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
   </footer>
