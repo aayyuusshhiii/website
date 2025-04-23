@@ -13,6 +13,31 @@
       padding: 0;
       box-sizing: border-box;
     }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #fff0f5;
+  text-align: center;
+  padding-top: 50px;
+}
+
+.game-container {
+  background: #ffe4ec;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  width: 300px;
+  margin: auto;
+}
+
+.heart {
+  font-size: 60px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.heart:hover {
+  transform: scale(1.2);
+}
 
     body {
       font-family: 'Poppins', sans-serif;
