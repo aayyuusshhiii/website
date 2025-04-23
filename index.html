@@ -1,54 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="logo.ico" type="image/x-icon">
-
+    <link rel="icon" href="logo.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>❤️AAYUSHI❤️</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-</head>
-<body>
 
-    <header id="home">
-        <nav>
-<a href="https://www.aayushisharma.com.np/" class="logo">
-        <img src="logo.svg" alt="Logo" class="logo-gif">
-</a>
-            <ul class="nav-links">
-                <li><a href="https://www.aayushisharma.com.np/">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="hero">
-<div style="background-image: url('backgroun.jpg');">
-
-
-            <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA </span></h1>
-            <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
-            <a href="#projects" class="btn">View My Work</a>
-        </div>
-    </header>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: #f2f2f2;
-            padding: 20px;
+            padding: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 10px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-gif {
+            height: 50px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .hero {
+            text-align: center;
+            background-image: url('backgroun.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 20px;
+            color: white;
+        }
+
+        .highlight {
+            color: #ff4081;
+        }
+
+        .btn {
+            background: #ff4081;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 20px;
         }
 
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         .box {
@@ -59,7 +78,6 @@
             margin: 20px 0;
         }
 
-        /* Floating animation for About Me (up and down) */
         @keyframes floatUpDown {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
@@ -70,7 +88,6 @@
             animation: floatUpDown 4s ease-in-out infinite;
         }
 
-        /* Project Section */
         .projects {
             display: flex;
             justify-content: space-between;
@@ -88,21 +105,60 @@
             animation: floatLeftRight 3s ease-in-out infinite alternate;
         }
 
-        /* Floating animation for projects (side to side) */
         @keyframes floatLeftRight {
             0% { transform: translateX(0px); }
             100% { transform: translateX(10px); }
         }
 
-        h2 {
-            color: #333;
+        footer {
+            background: #222;
+            color: #ccc;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .contact-info {
+            list-style: none;
+            padding: 0;
+        }
+
+        .contact-info li {
+            margin: 5px 0;
+        }
+
+        .special-link {
+            color: #ff4081;
+            text-decoration: none;
+        }
+
+        #copyright {
+            background: #111;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
 
-        <!-- About Me Section -->
+    <header id="home">
+        <nav>
+            <a href="https://www.aayushisharma.com.np/" class="logo">
+                <img src="logo.svg" alt="Logo" class="logo-gif">
+            </a>
+            <ul class="nav-links">
+                <li><a href="https://www.aayushisharma.com.np/">Home</a></li>
+                <li><a href="#about-me">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="hero">
+            <h1>Hi, I'm <span class="highlight">AAYUSHI SHARMA</span></h1>
+            <p>AUTOCAD Designer | Civil Engineer | Interior Designer</p>
+            <a href="#projects" class="btn">View My Work</a>
+        </div>
+    </header>
+
+    <div class="container">
         <div class="box" id="about-me">
             <h2>About Me</h2>
             <p>
@@ -110,8 +166,7 @@
             </p>
         </div>
 
-        <!-- Projects Section -->
-        <div class="box">
+        <div class="box" id="projects">
             <h2>My Projects</h2>
             <div class="projects">
                 <div class="project-box">
@@ -128,29 +183,20 @@
                 </div>
             </div>
         </div>
-
     </div>
-</body>
-</html>
-
-   
 
     <footer id="contact">
         <h2>Contact Me</h2>
-<p> If you'd like to get in touch, feel free to reach out through any of the methods below.</p>
-<ul class="contact-info">
-  <li>Email: <a href="@gmail.com" class="special-link">comingsoon</a></li>      
-<li>LinkedIn: <a href="https://www.linkedin.com/in/aayushi-sharma-bb83a0293/" class="special-link"> LinkedIn</a></li>
-</ul>
-
-
+        <p>If you'd like to get in touch, feel free to reach out through any of the methods below.</p>
+        <ul class="contact-info">
+            <li>Email: <a href="mailto:comingsoon@gmail.com" class="special-link">comingsoon@gmail.com</a></li>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/aayushi-sharma-bb83a0293/" class="special-link">LinkedIn</a></li>
+        </ul>
     </footer>
-<footer id="copyright"> 
-<p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
-</footer>
 
-
-<link rel="stylesheet" href="styles.css">
+    <footer id="copyright">
+        <p>&copy; 2024 Aayushi Sharma. All Rights Reserved.</p>
+    </footer>
 
     <script src="scripts.js"></script>
 </body>
