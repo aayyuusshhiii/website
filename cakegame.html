@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Design Your Cake</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      padding: 0;
+      background: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 20px;
+      color: #d6336c;
+    }
+
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    select, input[type="color"], button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #cakePreview {
+      width: 300px;
+      height: 400px;
+      background: #fbe8f1;
+      border: 2px solid #d6336c;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 20px;
+      box-shadow: 0 0 10px #888;
+      position: relative;
+    }
+
+    .layer {
+      width: 80%;
+      height: 40px;
+      margin: 5px 0;
+      border-radius: 10px;
+    }
+
+    .decoration {
+      position: absolute;
+      top: 10px;
+      font-size: 32px;
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>Design Your Cake</h1>
+
+<div id="controls">
+  <select id="shape">
+    <option value="round">Round</option>
+    <option value="square">Square</option>
+  </select>
+
+  <select id="layers">
+    <option value="1">1 Layer</option>
+    <option value="2">2 Layers</option>
+    <option value="3">3 Layers</option>
+    <option value="4">4 Layers</option>
+  </select>
+
+  <input type="color" id="colorPicker" value="#ff69b4" />
+
+  <select id="cream">
+    <option value="Vanilla">Vanilla Cream</option>
+    <option value="Chocolate">Chocolate Cream</option>
+    <option value="Strawberry">Strawberry Cream</option>
+  </select>
+
+  <select id="decoration">
+    <option value="none">No Decoration</option>
+    <option value="🎀">Bow Tie</option>
+    <option value="🍃">Leaf</option>
+    <option value="🍓">Strawberry</option>
+    <option value="💖">Heart</option>
+  </select>
+
+  <button onclick="generateCake()">Make Cake</button>
+</div>
+
+<div id="cakePreview">
+  <!-- Cake layers will be generated here -->
+</div>
+
+<script>
+  function generateCake() {
+    const shape = document.getElementById("shape").value;
+    const layers = parseInt(document.getElementById("layers").value);
+    const color = document.getElementById("colorPicker").value;
+    const cream = document.getElementById("cream").value;
+    const decoration = document.getElementById("decoration").value;
+
+    const preview = document.getElementById("cakePreview");
+    preview.innerHTML = ''; // Clear previous cake
+
+    // Add layers
+    for (let i = 0; i < layers; i++) {
+      const layer = document.createElement("div");
+      layer.className = "layer";
+      layer.style.backgroundColor = color;
+      layer.style.border = `3px solid ${cream === "Chocolate" ? "#5c4033" :
+                                      cream === "Vanilla" ? "#f3e5ab" :
+                                      "#fc5a8d"}`;
+      layer.style.borderRadius = shape === "round" ? "50%" : "10px";
+      preview.appendChild(layer);
+    }
+
+    // Add decoration
+    if (decoration !== "none") {
+      const deco = document.createElement("div");
+      deco.className = "decoration";
+      deco.textContent = decoration;
+      preview.appendChild(deco);
+    }
+  }
+</script>
+
+</body>
+</html>
 
