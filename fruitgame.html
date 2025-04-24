@@ -95,6 +95,8 @@
   let fruits = [];
   let score = 0;
   let timeLeft = 60;
+  let fruitSpeedIncrement = 0.1; // Speed increase per second
+  let currentSpeed = 2; // Starting speed of fruits
 
   const fruitTypes = ["🍍", "🍉", "🍊", "🥭", "🍌", "🍎", "🍒", "🍇"];
   const soundEffect = new Audio('slice.mp3'); // Add your slice sound here
@@ -105,8 +107,8 @@
       emoji: emoji,
       x: Math.random() * (canvas.width - 80),
       y: canvas.height + 60,
-      speed: Math.random() * 2 + 2,
-      radius: 90,
+      speed: currentSpeed,
+      radius: 40,
       sliced: false,
       cutAnim: false
     };
@@ -185,12 +187,18 @@
     });
   }
 
-  setInterval(spawnFruit, 1000);
+  setInterval(spawnFruit, 1000); // Spawn fruit every second
   const loop = setInterval(gameLoop, 1000 / 60);
 
   const timerInterval = setInterval(() => {
     timeLeft--;
     document.getElementById("time").innerText = timeLeft;
+
+    // Increase fruit speed every second
+    if (timeLeft % 10 === 0 && timeLeft !== 0) {
+      currentSpeed += fruitSpeedIncrement;
+    }
+
     if (timeLeft === 0) {
       clearInterval(timerInterval);
       clearInterval(loop);
