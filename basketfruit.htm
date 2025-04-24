@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Fruit</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #dcedc8;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      color: #ff4081;
+    }
+
+    .fruit {
+      position: absolute;
+      font-size: 40px;
+      animation: fall 3s linear infinite;
+    }
+
+    .basket {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 60px;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="score">Score: 0</div>
+  <div class="basket">🍎</div>
+
+  <script>
+    let score = 0;
+    let basket = document.querySelector('.basket');
+    let basketLeft = window.innerWidth / 2;
+
+    function createFruit() {
+      const fruit = document.createElement('div');
+      fruit.classList.add('fruit');
+      fruit.innerHTML = '🍓';
+      fruit.style.left = Math.random() * window.innerWidth + 'px';
+
+      // Check if fruit is caught by basket
+      fruit.addEventListener('click', () => {
+        score++;
+        document.getElementById('score').innerText = `Score: ${score}`;
+        fruit.remove();
+      });
+
+      document.body.appendChild(fruit);
+
+      setTimeout(() => {
+        if (document.body.contains(fruit)) {
+          fruit.remove();
+        }
+      }, 3000); // Remove fruit after falling
+    }
+
+    // Move the basket with arrow keys
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && basketLeft > 0) {
+        basketLeft -= 10;
+        basket.style.left = basketLeft + 'px';
+      }
+      if (e.key === 'ArrowRight' && basketLeft < window.innerWidth - 50) {
+        basketLeft += 10;
+        basket.style.left = basketLeft + 'px';
+      }
+    });
+
+    // Create a new fruit every 1000ms
+    setInterval(createFruit, 1000);
+  </script>
+
+</body>
+</html>
+
