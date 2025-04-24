@@ -22,7 +22,7 @@
       padding: 10px;
       box-shadow: 2px 0 10px rgba(0,0,0,0.1);
       overflow-y: auto;
-      z-index: 3;
+      z-index: 2;
     }
 
     #sidebar h3 {
@@ -54,13 +54,8 @@
       position: absolute;
       left: 50%;
       top: 50%;
+      transform: translate(-50%, -50%) rotateX(20deg) rotateY(15deg);
       transform-style: preserve-3d;
-      animation: float3D 5s infinite alternate;
-    }
-
-    @keyframes float3D {
-      from { transform: translate(-50%, -50%) rotateX(10deg) rotateY(10deg); }
-      to { transform: translate(-50%, -50%) rotateX(-10deg) rotateY(-10deg); }
     }
 
     .layer {
@@ -69,7 +64,6 @@
       background: pink;
       box-shadow: inset 0 0 10px #fff;
       cursor: grab;
-      transition: transform 0.3s ease;
     }
 
     .decor {
@@ -83,7 +77,6 @@
       top: 0;
       left: 0;
       z-index: 0;
-      pointer-events: none;
     }
 
     #saveBtn {
@@ -97,24 +90,7 @@
       border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
-      z-index: 4;
-    }
-
-    @media (max-width: 768px) {
-      #sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      #cakeArea {
-        margin-left: 0;
-        width: 100%;
-        height: calc(100vh - 250px);
-        margin-top: 10px;
-      }
+      z-index: 2;
     }
   </style>
 </head>
@@ -123,13 +99,12 @@
 <div id="sidebar">
   <h3>🎀 Cake Tools</h3>
   <button onclick="addLayer()">Add Cake Layer</button>
-  <input type="color" id="layerColor" value="#ffcce6" />
-  <button onclick="changeShape()">Change Shape</button>
   <button onclick="addDecoration('🎀')">Add Bow</button>
   <button onclick="addDecoration('🍓')">Add Strawberry</button>
   <button onclick="addDecoration('🌟')">Add Star</button>
   <button onclick="addDecoration('🕯️')">Add Candle</button>
-  <button onclick="addDecoration('🍒')">Add Cherry</button>
+  <button onclick="changeShape()">Change Shape</button>
+  <input type="color" id="layerColor" value="#ffcce6" />
   <input type="color" id="drawColor" value="#ff66b2" />
   <button onclick="toggleDrawing()">✏️ Pencil</button>
   <button onclick="undoDraw()">↩️ Undo</button>
@@ -152,51 +127,36 @@
   canvas.height = window.innerHeight;
 
   let shapeIndex = 0;
-  const shapes = ['50%', '0%', '30% 70% 70% 30%', '25%'];
+  const shapes = ['50%', '0%', '50% 50% 0 0', '50% 25%'];
 
   function dragElement(el) {
-    el.style.position = 'absolute';
-    el.addEventListener('mousedown', dragMouseDown);
-    el.addEventListener('touchstart', dragMouseDown, { passive: false });
-
-    function dragMouseDown(e) {
-      e.preventDefault();
-      const event = e.type.includes('touch') ? e.touches[0] : e;
-      const shiftX = event.clientX - el.getBoundingClientRect().left;
-      const shiftY = event.clientY - el.getBoundingClientRect().top;
-
-      function moveAt(pageX, pageY) {
-        el.style.left = pageX - shiftX + 'px';
-        el.style.top = pageY - shiftY + 'px';
-      }
-
-      function onMouseMove(e) {
-        const event = e.type.includes('touch') ? e.touches[0] : e;
-        moveAt(event.pageX, event.pageY);
-      }
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('touchmove', onMouseMove);
-
-      document.onmouseup = () => {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('touchmove', onMouseMove);
-        document.onmouseup = null;
+    let offsetX, offsetY, isDragging = false;
+    el.onmousedown = function (e) {
+      isDragging = true;
+      offsetX = e.clientX - el.offsetLeft;
+      offsetY = e.clientY - el.offsetTop;
+      document.onmousemove = function (e) {
+        if (!isDragging) return;
+        el.style.left = (e.clientX - offsetX) + 'px';
+        el.style.top = (e.clientY - offsetY) + 'px';
       };
-      document.ontouchend = document.onmouseup;
-    }
+      document.onmouseup = function () {
+        isDragging = false;
+        document.onmousemove = null;
+      };
+    };
   }
 
   function addLayer() {
     const color = document.getElementById('layerColor').value;
     const layer = document.createElement('div');
     layer.classList.add('layer');
-    layer.style.width = `${100 + Math.random()*100}px`;
-    layer.style.height = `${30 + Math.random()*50}px`;
+    layer.style.width = ${120 + Math.random()*100}px;
+    layer.style.height = ${30 + Math.random()*50}px;
     layer.style.background = color;
     layer.style.borderRadius = shapes[shapeIndex % shapes.length];
-    layer.style.left = `${300 + Math.random() * 300}px`;
-    layer.style.top = `${200 + Math.random() * 300}px`;
+    layer.style.left = ${300 + Math.random() * 300}px;
+    layer.style.top = ${300 + Math.random() * 200}px;
     dragElement(layer);
     cake.appendChild(layer);
   }
@@ -205,8 +165,8 @@
     const decor = document.createElement('div');
     decor.className = 'decor';
     decor.innerText = emoji;
-    decor.style.left = `${300 + Math.random() * 300}px`;
-    decor.style.top = `${200 + Math.random() * 300}px`;
+    decor.style.left = ${300 + Math.random() * 300}px;
+    decor.style.top = ${300 + Math.random() * 200}px;
     dragElement(decor);
     cake.appendChild(decor);
   }
@@ -233,40 +193,28 @@
   let drawing = false;
   let paths = [];
 
-  canvas.addEventListener("mousedown", startDraw);
-  canvas.addEventListener("touchstart", startDraw);
-
-  function startDraw(e) {
+  canvas.addEventListener("mousedown", (e) => {
     if (!drawingEnabled) return;
     drawing = true;
-    const x = e.clientX || e.touches[0].clientX;
-    const y = e.clientY || e.touches[0].clientY;
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    paths.push([{x, y}]);
-    canvas.style.pointerEvents = 'auto';
-  }
+    ctx.moveTo(e.clientX, e.clientY);
+    paths.push([{x: e.clientX, y: e.clientY}]);
+  });
 
-  canvas.addEventListener("mousemove", draw);
-  canvas.addEventListener("touchmove", draw);
-
-  function draw(e) {
-    if (!drawingEnabled || !drawing) return;
-    const x = e.clientX || e.touches[0].clientX;
-    const y = e.clientY || e.touches[0].clientY;
-    ctx.strokeStyle = document.getElementById('drawColor').value;
-    ctx.lineWidth = 3;
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    paths[paths.length - 1].push({x, y});
-  }
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawingEnabled && drawing) {
+      ctx.strokeStyle = document.getElementById('drawColor').value;
+      ctx.lineWidth = 3;
+      ctx.lineTo(e.clientX, e.clientY);
+      ctx.stroke();
+      paths[paths.length - 1].push({x: e.clientX, y: e.clientY});
+    }
+  });
 
   canvas.addEventListener("mouseup", () => drawing = false);
-  canvas.addEventListener("touchend", () => drawing = false);
 
   function toggleDrawing() {
     drawingEnabled = !drawingEnabled;
-    canvas.style.pointerEvents = drawingEnabled ? 'auto' : 'none';
   }
 
   function eraseDraw() {
@@ -292,4 +240,3 @@
 
 </body>
 </html>
-
