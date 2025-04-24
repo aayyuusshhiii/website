@@ -9,40 +9,29 @@
 
     body {
       font-family: sans-serif;
-      background: linear-gradient(135deg, #e0ffe4, #ffe0e7);
+      background: radial-gradient(circle, #ffe0e7, #e0ffe4);
       overflow: hidden;
     }
 
-    #gameCanvas {
+    canvas {
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 1;
     }
 
-    #scoreBoard {
+    #scoreBoard, #highScoreBoard, #timer {
       position: fixed;
-      top: 10px;
-      left: 10px;
-      background: #fff;
+      background: #ffffffcc;
       padding: 10px 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
       font-size: 18px;
-      z-index: 2;
+      z-index: 10;
     }
 
-    #timer {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #fff;
-      padding: 10px 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      font-size: 18px;
-      z-index: 2;
-    }
+    #scoreBoard { top: 10px; left: 10px; }
+    #highScoreBoard { top: 10px; left: 200px; }
+    #timer { top: 10px; right: 10px; }
 
     #gameOver {
       display: none;
@@ -56,7 +45,7 @@
       border-radius: 20px;
       font-size: 22px;
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      z-index: 3;
+      z-index: 11;
     }
 
     button {
@@ -79,12 +68,16 @@
 
 <canvas id="gameCanvas"></canvas>
 <div id="scoreBoard">Score: <span id="score">0</span></div>
-<div id="timer">Time: <span id="time">60</span>s</div>
+<div id="highScoreBoard">High Score: <span id="highScore">0</span></div>
+<div id="timer">Time: <span id="time">180</span>s</div>
 <div id="gameOver">
   <p>🎉 Game Over! 🎉</p>
   <p>Your Score: <span id="finalScore">0</span></p>
+  <p>High Score: <span id="finalHighScore">0</span></p>
   <button onclick="location.reload()">Play Again</button>
 </div>
+
+<audio id="sliceSound" src="https://cdn.pixabay.com/audio/2022/03/01/audio_c47661fef1.mp3"></audio>
 
 <script>
   const canvas = document.getElementById("gameCanvas");
@@ -92,121 +85,114 @@
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
+  const sliceSound = document.getElementById("sliceSound");
+
+  const fruitTypes = ["🍉", "🍎", "🍊", "🥭", "🍌", "🍇", "🍓", "🍍"];
   let fruits = [];
   let score = 0;
-  let timeLeft = 60;
-  let fruitSpeedIncrement = 0.1; // Speed increase per second
-  let currentSpeed = 2; // Starting speed of fruits
+  let highScore = localStorage.getItem("highScore") || 0;
+  let timeLeft = 180;
+  let spawnRate = 1000;
+  let fallSpeed = 2;
+  let mouseDown = false;
+  let lastSpawn = 0;
 
-  const fruitTypes = ["🍍", "🍉", "🍊", "🥭", "🍌", "🍎", "🍒", "🍇"];
-  const soundEffect = new Audio('slice.mp3'); // Add your slice sound here
+  document.getElementById("highScore").innerText = highScore;
 
   function randomFruit() {
     const emoji = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
     return {
       emoji: emoji,
-      x: Math.random() * (canvas.width - 80),
-      y: canvas.height + 60,
-      speed: currentSpeed,
+      x: Math.random() * (canvas.width - 60),
+      y: -60,
+      speed: Math.random() * 2 + fallSpeed,
       radius: 40,
-      sliced: false,
-      cutAnim: false
+      sliced: false
     };
   }
 
   function drawFruit(fruit) {
-    ctx.font = "40px serif";
+    ctx.font = "48px serif";
     ctx.fillText(fruit.emoji, fruit.x, fruit.y);
-  }
-
-  function sliceFruit(fruit) {
-    if (!fruit.sliced) {
-      fruit.sliced = true;
-      fruit.cutAnim = true;
-      score++;
-      document.getElementById("score").innerText = score;
-      soundEffect.play();
-    }
   }
 
   function updateFruits() {
     fruits.forEach(fruit => {
-      fruit.y -= fruit.speed;
-      if (fruit.y < 0 && !fruit.sliced) {
-        fruit.sliced = true; // Consider it missed if it reaches top
-      }
+      fruit.y += fruit.speed;
     });
-    fruits = fruits.filter(fruit => !fruit.sliced);
+    fruits = fruits.filter(fruit => fruit.y < canvas.height && !fruit.sliced);
   }
 
-  function spawnFruit() {
-    fruits.push(randomFruit());
+  function spawnFruits(now) {
+    if (now - lastSpawn > spawnRate) {
+      const count = Math.floor(timeLeft / 30) + 1; // Increase quantity over time
+      for (let i = 0; i < count; i++) {
+        fruits.push(randomFruit());
+      }
+      lastSpawn = now;
+    }
   }
 
   function detectCut(x, y) {
     fruits.forEach(fruit => {
       const dx = fruit.x - x;
       const dy = fruit.y - y;
-      if (Math.sqrt(dx * dx + dy * dy) < fruit.radius) {
-        sliceFruit(fruit);
+      if (Math.sqrt(dx * dx + dy * dy) < fruit.radius && !fruit.sliced) {
+        fruit.sliced = true;
+        score++;
+        sliceSound.currentTime = 0;
+        sliceSound.play();
+        document.getElementById("score").innerText = score;
       }
     });
   }
 
-  canvas.addEventListener("mousemove", e => {
-    if (mouseDown) {
-      detectCut(e.clientX, e.clientY);
-    }
-  });
-
-  canvas.addEventListener("touchmove", e => {
-    e.preventDefault();
-    if (touchDown) {
-      detectCut(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  });
-
-  let mouseDown = false;
+  // Mouse events
   canvas.addEventListener("mousedown", () => mouseDown = true);
   canvas.addEventListener("mouseup", () => mouseDown = false);
+  canvas.addEventListener("mousemove", e => {
+    if (mouseDown) detectCut(e.clientX, e.clientY);
+  });
 
-  let touchDown = false;
-  canvas.addEventListener("touchstart", () => touchDown = true);
-  canvas.addEventListener("touchend", () => touchDown = false);
+  // Touch events
+  canvas.addEventListener("touchstart", e => {
+    const touch = e.touches[0];
+    detectCut(touch.clientX, touch.clientY);
+  });
+  canvas.addEventListener("touchmove", e => {
+    const touch = e.touches[0];
+    detectCut(touch.clientX, touch.clientY);
+  });
 
-  function gameLoop() {
+  function gameLoop(now) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateFruits();
-    fruits.forEach(fruit => {
-      drawFruit(fruit);
-      if (fruit.cutAnim) {
-        ctx.globalAlpha = 0.5;
-        ctx.fillText(fruit.emoji, fruit.x - 20, fruit.y - 20);
-        ctx.globalAlpha = 1;
-      }
-    });
+    spawnFruits(now);
+    fruits.forEach(drawFruit);
+    requestAnimationFrame(gameLoop);
   }
 
-  setInterval(spawnFruit, 1000); // Spawn fruit every second
-  const loop = setInterval(gameLoop, 1000 / 60);
+  requestAnimationFrame(gameLoop);
 
   const timerInterval = setInterval(() => {
     timeLeft--;
     document.getElementById("time").innerText = timeLeft;
 
-    // Increase fruit speed every second
-    if (timeLeft % 10 === 0 && timeLeft !== 0) {
-      currentSpeed += fruitSpeedIncrement;
-    }
+    // Every second, increase difficulty
+    if (spawnRate > 300) spawnRate -= 10;
+    fallSpeed += 0.02;
 
-    if (timeLeft === 0) {
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      clearInterval(loop);
       document.getElementById("gameOver").style.display = "block";
       document.getElementById("finalScore").innerText = score;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+      }
+      document.getElementById("finalHighScore").innerText = highScore;
     }
   }, 1000);
 </script>
-
 </body>
 </html>
