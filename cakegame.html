@@ -55,7 +55,7 @@
       border-top: 5px solid #ffc0cb;
       background: linear-gradient(to top, #ffeef8, #ffddee);
       overflow: hidden;
-      touch-action: none; /* Prevent default touch behaviors */
+      touch-action: none;
     }
 
     .cake-layer, .cream-layer {
@@ -67,7 +67,8 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      cursor: pointer;
+      cursor: grab;
+      touch-action: none;
     }
 
     .cream-layer {
@@ -77,13 +78,14 @@
     .decoration {
       font-size: 2rem;
       position: absolute;
-      cursor: pointer;
+      cursor: grab;
       width: 40px;
       height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
+      touch-action: none;
     }
 
     canvas.drawing-layer {
@@ -167,15 +169,6 @@
     }
 
     function saveState() {
-      history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    }
-
-    function undo() {
-      if (history.length) {
-        ctx.putImageData(history.pop(), 0, 0);
-      }
-    }
-
-   
+      history.push(ctx.getImageData(0, 0
 ::contentReference[oaicite:8]{index=8}
  
