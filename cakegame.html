@@ -65,13 +65,15 @@
     }
     canvas {
       position: absolute;
-      bottom: 0;
+      top: 0;
       left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
     }
-    #saveBtn {
+    #saveBtn, #undoBtn, #pencilBtn, #eraserBtn {
       position: fixed;
       bottom: 10px;
-      right: 10px;
       padding: 10px 20px;
       background: #ff66b2;
       color: white;
@@ -80,17 +82,14 @@
       font-size: 16px;
       cursor: pointer;
     }
-    #pencilBtn {
-      position: fixed;
+    #undoBtn {
       bottom: 60px;
-      right: 10px;
-      padding: 10px 20px;
-      background: #ff66b2;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
+    }
+    #pencilBtn {
+      bottom: 110px;
+    }
+    #eraserBtn {
+      bottom: 160px;
     }
   </style>
 </head>
@@ -114,11 +113,13 @@
   <div id="cake" class="cake">
     <!-- Layers will be added dynamically here -->
   </div>
-  <canvas id="drawCanvas" width="800" height="200"></canvas>
+  <canvas id="drawCanvas"></canvas>
 </div>
 
 <button id="saveBtn" onclick="saveImage()">📷 Save Cake</button>
+<button id="undoBtn" onclick="undoDrawing()">↩️ Undo</button>
 <button id="pencilBtn" onclick="toggleDrawingTool()">✏️ Draw</button>
+<button id="eraserBtn" onclick="toggleEraserTool()">🧽 Eraser</button>
 
 <script>
   const cake = document.getElementById('cake');
@@ -127,13 +128,30 @@
 
   let shapeIndex = 0;
   let drawing = false;
+  let erasing = false;
+  let drawingHistory = [];
   const shapes = ['50%', '0%', '50% 50% 0 0', '50% 25%'];
   let isDrawingEnabled = false;
+  let isEraserEnabled = false;
+
+  // Set canvas size
+  canvas.width = window.innerWidth - 210;  // Full screen width minus sidebar
+  canvas.height = window.innerHeight;  // Full screen height
 
   // Toggle the pencil drawing tool
   function toggleDrawingTool() {
     isDrawingEnabled = !isDrawingEnabled;
+    isEraserEnabled = false;  // Disable eraser if drawing is enabled
     document.getElementById('pencilBtn').textContent = isDrawingEnabled ? '✏️ Stop Drawing' : '✏️ Draw';
+    document.getElementById('eraserBtn').textContent = '🧽 Eraser';
+  }
+
+  // Toggle the eraser tool
+  function toggleEraserTool() {
+    isEraserEnabled = !isEraserEnabled;
+    isDrawingEnabled = false;  // Disable drawing if eraser is enabled
+    document.getElementById('eraserBtn').textContent = isEraserEnabled ? '🧽 Stop Erasing' : '🧽 Eraser';
+    document.getElementById('pencilBtn').textContent = '✏️ Draw';
   }
 
   // Add a new cake layer with random size and color
@@ -212,8 +230,11 @@
   }
 
   // Drawing tool (simple icing)
-  canvas.addEventListener("mousedown", () => {
+  canvas.addEventListener("mousedown", (e) => {
     if (isDrawingEnabled) {
+      drawing = true;
+      addDrawingHistory(e.offsetX, e.offsetY, ctx.fillStyle); // Add to history for undo
+    } else if (isEraserEnabled) {
       drawing = true;
     }
   });
@@ -222,15 +243,37 @@
 
   function draw(e) {
     if (!drawing) return;
-    ctx.fillStyle = document.getElementById('creamColor').value;
-    ctx.beginPath();
-    ctx.arc(e.offsetX, e.offsetY, 5, 0, Math.PI * 2);
-    ctx.fill();
+
+    if (isDrawingEnabled) {
+      ctx.fillStyle = document.getElementById('creamColor').value;
+      ctx.beginPath();
+      ctx.arc(e.offsetX, e.offsetY, 5, 0, Math.PI * 2);
+      ctx.fill();
+      addDrawingHistory(e.offsetX, e.offsetY, ctx.fillStyle);
+    } else if (isEraserEnabled) {
+      ctx.clearRect(e.offsetX - 10, e.offsetY - 10, 20, 20);
+    }
+  }
+
+  // Undo the last drawing action
+  function undoDrawing() {
+    if (drawingHistory.length > 0) {
+      drawingHistory.pop();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawingHistory.forEach((action) => {
+        ctx.fillStyle = action.color;
+        ctx.beginPath();
+        ctx.arc(action.x, action.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+  }
+
+  // Add to drawing history
+  function addDrawingHistory(x, y, color) {
+    drawingHistory.push({x, y, color});
   }
 </script>
-
-<!-- html2canvas CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 </body>
 </html>
