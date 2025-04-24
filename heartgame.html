@@ -91,18 +91,13 @@
     <button onclick="showDrawing()">Create Drawing</button>
   </div>
 
-  <div id="drawingCanvas">
-    <canvas id="canvas"></canvas>
-  </div>
 
   <script>
     const colors = ['red', 'pink', 'purple', 'blue', 'green', 'yellow'];
     let score = 0;
     let gameInterval, heartSpawner, isPlaying = false;
     const scoreDisplay = document.getElementById('score');
-    const drawingCanvas = document.getElementById('drawingCanvas');
-    const canvas = document.getElementById('canvas');
-    let ctx, drawing = false;
+
 
     function createHeart() {
       if (!isPlaying) return;
@@ -153,54 +148,7 @@
       clearTimeout(gameInterval);
       isPlaying = false;
     }
-
-    function showDrawing() {
-      drawingCanvas.style.display = 'block';
-      setupCanvas();
-    }
-
-    function setupCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      ctx = canvas.getContext('2d');
-      ctx.lineWidth = 5;
-      ctx.strokeStyle = 'hotpink';
-      ctx.lineCap = 'round';
-
-      canvas.onmousedown = startDraw;
-      canvas.ontouchstart = (e) => startDraw(e.touches[0]);
-
-      canvas.onmouseup = stopDraw;
-      canvas.ontouchend = stopDraw;
-
-      canvas.onmousemove = draw;
-      canvas.ontouchmove = (e) => {
-        draw(e.touches[0]);
-        e.preventDefault();
-      };
-    }
-
-    function startDraw(e) {
-      drawing = true;
-      ctx.beginPath();
-      ctx.moveTo(e.clientX, e.clientY);
-    }
-
-    function draw(e) {
-      if (!drawing) return;
-      ctx.lineTo(e.clientX, e.clientY);
-      ctx.stroke();
-    }
-
-    function stopDraw() {
-      drawing = false;
-      ctx.closePath();
-    }
-
-    window.addEventListener('resize', () => {
-      if (drawingCanvas.style.display === 'block') {
-        setupCanvas();
-      }
+    
     });
   </script>
 </body>
