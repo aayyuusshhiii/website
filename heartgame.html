@@ -129,16 +129,7 @@
       isPlaying = false;
     }
 
-    function showDrawing() {
-      drawingCanvas.innerHTML = '';
-      drawingCanvas.style.display = 'flex';
-      collectedHearts.forEach(color => {
-        const h = document.createElement('div');
-        h.textContent = '❤️';
-        h.className = 'drawing-heart';
-        h.style.color = color;
-        drawingCanvas.appendChild(h);
-      });
+    );
     }
   </script>
 </body>
