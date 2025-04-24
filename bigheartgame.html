@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growing Heart Game</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f8ff;
+    }
+    .heart {
+      font-size: 100px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="heart" onclick="growHeart()">❤️</div>
+
+  <script>
+    let size = 100; // Initial size of the heart
+
+    function growHeart() {
+      size += 10; // Increase the size by 10 each click
+      const heart = document.querySelector('.heart');
+      heart.style.fontSize = size + 'px'; // Apply the new size
+    }
+  </script>
+
+</body>
+</html>
 
