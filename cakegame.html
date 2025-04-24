@@ -42,13 +42,10 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      border-radius: 50%;
       background: pink;
       box-shadow: inset 0 0 20px #fff;
+      cursor: grab;
     }
-    .layer1 { bottom: 0; width: 200px; height: 60px; background: #ffcce6; }
-    .layer2 { bottom: 60px; width: 160px; height: 50px; background: #ffaad4; }
-    .layer3 { bottom: 110px; width: 120px; height: 40px; background: #ff88cc; }
     .decor {
       position: absolute;
       width: 30px;
@@ -83,6 +80,18 @@
       font-size: 16px;
       cursor: pointer;
     }
+    #pencilBtn {
+      position: fixed;
+      bottom: 60px;
+      right: 10px;
+      padding: 10px 20px;
+      background: #ff66b2;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -95,39 +104,53 @@
     <button onclick="addDecoration('🍓')">Add Strawberry</button>
     <button onclick="addDecoration('🌟')">Add Star</button>
     <button onclick="addCandle()">Add Candle</button>
-    <button onclick="changeShape()">Change Shape</button>
+    <button onclick="changeLayerShape()">Change Shape</button>
     <label>Cream Color: <input type="color" id="creamColor" value="#ffcce6"></label>
+    <label>Layer Color: <input type="color" id="layerColor" value="#ffcce6"></label>
   </div>
 </div>
 
 <div id="cakeArea">
   <div id="cake" class="cake">
-    <div class="layer layer1"></div>
-    <div class="layer layer2"></div>
-    <div class="layer layer3"></div>
+    <!-- Layers will be added dynamically here -->
   </div>
   <canvas id="drawCanvas" width="800" height="200"></canvas>
 </div>
 
 <button id="saveBtn" onclick="saveImage()">📷 Save Cake</button>
+<button id="pencilBtn" onclick="toggleDrawingTool()">✏️ Draw</button>
 
 <script>
   const cake = document.getElementById('cake');
-  let shapeIndex = 0;
-  const shapes = ['50%', '0%', '50% 50% 0 0', '50% 25%'];
+  const canvas = document.getElementById("drawCanvas");
+  const ctx = canvas.getContext("2d");
 
+  let shapeIndex = 0;
+  let drawing = false;
+  const shapes = ['50%', '0%', '50% 50% 0 0', '50% 25%'];
+  let isDrawingEnabled = false;
+
+  // Toggle the pencil drawing tool
+  function toggleDrawingTool() {
+    isDrawingEnabled = !isDrawingEnabled;
+    document.getElementById('pencilBtn').textContent = isDrawingEnabled ? '✏️ Stop Drawing' : '✏️ Draw';
+  }
+
+  // Add a new cake layer with random size and color
   function addLayer() {
-    const color = document.getElementById('creamColor').value;
+    const color = document.getElementById('layerColor').value;
     const layer = document.createElement('div');
     layer.classList.add('layer');
     layer.style.background = color;
-    layer.style.width = `${120 + Math.random()*80}px`;
-    layer.style.height = `${30 + Math.random()*30}px`;
+    layer.style.width = `${120 + Math.random() * 80}px`;
+    layer.style.height = `${30 + Math.random() * 30}px`;
     layer.style.bottom = `${cake.children.length * 40}px`;
     layer.style.borderRadius = shapes[shapeIndex % shapes.length];
     cake.appendChild(layer);
+    dragElement(layer);
   }
 
+  // Add a decoration like Bow, Strawberry, Star, or Candle
   function addDecoration(emoji) {
     const decor = document.createElement('div');
     decor.className = 'decor';
@@ -139,11 +162,13 @@
     dragElement(decor);
   }
 
+  // Add a candle decoration
   function addCandle() {
     addDecoration('🕯️');
   }
 
-  function changeShape() {
+  // Change the shape of all cake layers
+  function changeLayerShape() {
     shapeIndex++;
     const layers = document.querySelectorAll('.layer');
     layers.forEach(layer => {
@@ -151,6 +176,7 @@
     });
   }
 
+  // Save the current cake design as an image
   function saveImage() {
     html2canvas(document.querySelector("#cakeArea")).then(canvas => {
       const link = document.createElement('a');
@@ -160,9 +186,11 @@
     });
   }
 
+  // Drag-and-drop functionality for cake layers and decorations
   function dragElement(el) {
     let posX = 0, posY = 0;
     el.onmousedown = dragMouseDown;
+
     function dragMouseDown(e) {
       e.preventDefault();
       posX = e.clientX - el.offsetLeft;
@@ -170,11 +198,13 @@
       document.onmouseup = closeDragElement;
       document.onmousemove = elementDrag;
     }
+
     function elementDrag(e) {
       e.preventDefault();
       el.style.left = (e.clientX - posX) + "px";
       el.style.top = (e.clientY - posY) + "px";
     }
+
     function closeDragElement() {
       document.onmouseup = null;
       document.onmousemove = null;
@@ -182,11 +212,11 @@
   }
 
   // Drawing tool (simple icing)
-  const canvas = document.getElementById("drawCanvas");
-  const ctx = canvas.getContext("2d");
-  let drawing = false;
-
-  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mousedown", () => {
+    if (isDrawingEnabled) {
+      drawing = true;
+    }
+  });
   canvas.addEventListener("mouseup", () => drawing = false);
   canvas.addEventListener("mousemove", draw);
 
