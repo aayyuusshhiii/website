@@ -3,34 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Princess Cake Game</title>
+  <title>Princess Cake Designer</title>
   <style>
-    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Comic Sans MS', cursive;
       background: linear-gradient(to bottom right, #ffe0f0, #ffd1ec);
+      font-family: 'Comic Sans MS', cursive;
       color: #d63384;
-      overflow-x: hidden;
     }
+
     header {
-      background-color: #ffb6c1;
+      background-color: #ff69b4;
+      color: white;
       padding: 1rem;
-      text-align: center;
       font-size: 2rem;
       font-weight: bold;
-      color: white;
+      text-align: center;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+
     .toolbar {
+      background: #fff0f5;
+      border-bottom: 3px solid #ffb6c1;
+      padding: 1rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 1rem;
-      background: #fff0f5;
-      border-bottom: 3px solid #ffb6c1;
     }
-    .toolbar button, .toolbar select, .toolbar input[type="color"] {
+
+    .toolbar button, .toolbar input[type="color"] {
       margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
@@ -40,216 +41,133 @@
       color: white;
       cursor: pointer;
     }
-    .toolbar button:hover { background-color: #ff69b4; }
+
+    .toolbar button:hover {
+      background-color: #ff69b4;
+    }
+
     #canvasContainer {
       position: relative;
-      width: 100%;
-      height: calc(100vh - 150px);
+      height: 600px;
+      border-top: 5px solid #ffc0cb;
+      background: url('images/castle_bg.png') center/cover no-repeat;
       overflow: hidden;
-      background-image: url('https://i.imgur.com/PWZMaV6.png');
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
-    .cake-layer, .decoration, .cream-layer {
-      position: absolute;
-      cursor: move;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
+
     .cake-layer {
       width: 150px;
       height: 50px;
-      background-color: pink;
+      background-color: #ffb6c1;
       border: 2px solid white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: move;
     }
-    .decoration { width: 40px; height: 40px; }
+
     .cream-layer {
       width: 150px;
       height: 20px;
-      background-color: white;
-    }
-    canvas {
+      background-color: #fff0f5;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       position: absolute;
-      top: 0; left: 0;
-      z-index: 10;
-      pointer-events: none;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: move;
     }
-    #drawingCanvas.active { pointer-events: auto; }
-    .hidden { display: none; }
+
+    .decoration {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      cursor: move;
+      border-radius: 12px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
   </style>
 </head>
 <body>
-  <header>Princess Cake Game</header>
+
+  <header>🎀 Princess Cake Designer 🎀</header>
+
   <div class="toolbar">
     <button onclick="addCakeLayer()">Add Cake Layer</button>
-    <select id="shapeSelector">
-      <option value="rectangle">Rectangle</option>
-      <option value="circle">Circle</option>
-      <option value="oval">Oval</option>
-      <option value="star">Star</option>
-      <option value="square">Square</option>
-    </select>
-    <input type="color" id="colorPicker" value="#ffc0cb">
-    <button onclick="addCreamLayer()">Add Cream</button>
-    <button onclick="addDecoration('bow')">Add Bow</button>
-    <button onclick="addDecoration('strawberry')">Add Strawberry</button>
-    <button onclick="addDecoration('star')">Add Star</button>
-    <button onclick="addDecoration('candle')">Add Candle</button>
-    <button onclick="addDecoration('cherry')">Add Cherry</button>
-    <button onclick="addDecoration('cookie')">Add Cookie</button>
-    <button onclick="toggleDrawing()">Pencil</button>
-    <button onclick="undoDraw()">Undo</button>
-    <button onclick="eraseDraw()">Eraser</button>
-    <button onclick="saveDesign()">Save Cake</button>
-    <button onclick="toggle3D()">Toggle 3D/2D</button>
+    <button onclick="addCreamLayer()">Add Cream Layer</button>
+    <button onclick="addDecoration('bow')">🎀 Bow</button>
+    <button onclick="addDecoration('crown')">👑 Crown</button>
+    <button onclick="addDecoration('tiara')">✨ Tiara</button>
+    <button onclick="addDecoration('strawberry')">🍓 Strawberry</button>
+    <button onclick="saveAsImage()">💾 Save Cake</button>
   </div>
-  <div id="canvasContainer">
-    <canvas id="drawingCanvas" width="1200" height="800"></canvas>
-  </div>
-<script>
-  let isDrawing = false;
-  let currentPath = [];
-  let paths = [];
-  let drawMode = false;
 
-  const canvas = document.getElementById("drawingCanvas");
-  const ctx = canvas.getContext("2d");
+  <div id="canvasContainer"></div>
 
-  function addCakeLayer() {
-    const layer = document.createElement("div");
-    const color = document.getElementById("colorPicker").value;
-    const shape = document.getElementById("shapeSelector").value;
+  <script>
+    function makeDraggable(el) {
+      el.onmousedown = function(e) {
+        let shiftX = e.clientX - el.getBoundingClientRect().left;
+        let shiftY = e.clientY - el.getBoundingClientRect().top;
 
-    layer.className = "cake-layer";
-    layer.style.backgroundColor = color;
-    layer.style.top = "300px";
-    layer.style.left = "calc(50% - 75px)";
-    setShape(layer, shape);
-    makeDraggable(layer);
-    document.getElementById("canvasContainer").appendChild(layer);
-  }
+        function moveAt(pageX, pageY) {
+          el.style.left = pageX - shiftX + 'px';
+          el.style.top = pageY - shiftY + 'px';
+        }
 
-  function addCreamLayer() {
-    const cream = document.createElement("div");
-    const color = document.getElementById("colorPicker").value;
-    cream.className = "cream-layer";
-    cream.style.backgroundColor = color;
-    cream.style.top = "350px";
-    cream.style.left = "calc(50% - 75px)";
-    makeDraggable(cream);
-    document.getElementById("canvasContainer").appendChild(cream);
-  }
+        function onMouseMove(e) {
+          moveAt(e.pageX, e.pageY);
+        }
 
-  function addDecoration(type) {
-    const decor = document.createElement("div");
-    decor.className = "decoration";
-    decor.style.backgroundImage = `url('https://example.com/decorations/${type}.png')`;  // You can replace with actual URLs for your bow, strawberry, etc.
-    decor.style.backgroundSize = "cover";
-    decor.style.top = "100px";
-    decor.style.left = "calc(50% - 20px)";
-    makeDraggable(decor);
-    document.getElementById("canvasContainer").appendChild(decor);
-  }
-
-  function toggleDrawing() {
-    drawMode = !drawMode;
-    if (drawMode) {
-      canvas.classList.add('active');
-    } else {
-      canvas.classList.remove('active');
+        document.addEventListener('mousemove', onMouseMove);
+        el.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          el.onmouseup = null;
+        };
+      };
+      el.ondragstart = () => false;
     }
-  }
 
-  function undoDraw() {
-    paths.pop();
-    redrawPaths();
-  }
+    function addCakeLayer() {
+      const layer = document.createElement("div");
+      layer.className = "cake-layer";
+      layer.style.top = "100px";
+      makeDraggable(layer);
+      document.getElementById("canvasContainer").appendChild(layer);
+    }
 
-  function eraseDraw() {
-    currentPath = [];
-    redrawPaths();
-  }
+    function addCreamLayer() {
+      const layer = document.createElement("div");
+      layer.className = "cream-layer";
+      layer.style.top = "160px";
+      makeDraggable(layer);
+      document.getElementById("canvasContainer").appendChild(layer);
+    }
 
-  function redrawPaths() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    paths.forEach(path => {
-      ctx.beginPath();
-      path.forEach(point => {
-        ctx.lineTo(point.x, point.y);
+    function addDecoration(type) {
+      const decor = document.createElement("div");
+      decor.className = "decoration";
+      decor.style.top = "200px";
+      decor.style.left = "calc(50% - 20px)";
+      decor.style.backgroundImage = `url('images/${type}.png')`;
+      makeDraggable(decor);
+      document.getElementById("canvasContainer").appendChild(decor);
+    }
+
+    function saveAsImage() {
+      html2canvas(document.getElementById("canvasContainer")).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "princess_cake.png";
+        link.href = canvas.toDataURL();
+        link.click();
       });
-      ctx.stroke();
-    });
-  }
-
-  canvas.addEventListener("mousedown", function (e) {
-    if (!drawMode) return;
-    isDrawing = true;
-    currentPath = [{ x: e.offsetX, y: e.offsetY }];
-  });
-
-  canvas.addEventListener("mousemove", function (e) {
-    if (!isDrawing || !drawMode) return;
-    currentPath.push({ x: e.offsetX, y: e.offsetY });
-    redrawPaths();
-  });
-
-  canvas.addEventListener("mouseup", function () {
-    if (!isDrawing) return;
-    isDrawing = false;
-    paths.push(currentPath);
-    currentPath = [];
-  });
-
-  function saveDesign() {
-    const dataUrl = canvas.toDataURL();
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = "princess-cake-design.png";
-    link.click();
-  }
-
-  function setShape(element, shape) {
-    if (shape === 'circle') {
-      element.style.borderRadius = "50%";
-      element.style.width = "150px";
-      element.style.height = "150px";
-    } else if (shape === 'oval') {
-      element.style.borderRadius = "50%";
-      element.style.width = "200px";
-      element.style.height = "100px";
-    } else if (shape === 'star') {
-      element.style.borderRadius = "0";
-      element.style.clipPath = "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)";
-      element.style.width = "150px";
-      element.style.height = "150px";
-    } else if (shape === 'square') {
-      element.style.borderRadius = "0";
-      element.style.width = "150px";
-      element.style.height = "150px";
-    } else {
-      element.style.borderRadius = "0";
-      element.style.width = "150px";
-      element.style.height = "50px";
     }
-  }
+  </script>
 
-  function makeDraggable(element) {
-    let offsetX, offsetY;
-    element.onmousedown = function (e) {
-      offsetX = e.clientX - element.offsetLeft;
-      offsetY = e.clientY - element.offsetTop;
-      document.onmousemove = function (e) {
-        element.style.left = e.clientX - offsetX + "px";
-        element.style.top = e.clientY - offsetY + "px";
-      };
-      document.onmouseup = function () {
-        document.onmousemove = null;
-        document.onmouseup = null;
-      };
-    };
-  }
-</script>
+  <!-- Load html2canvas library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
