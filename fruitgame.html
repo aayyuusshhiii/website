@@ -1,1 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fruit Slicer Game</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #e0ffe4, #ffe0e7);
+      overflow: hidden;
+    }
+
+    #gameCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    #scoreBoard {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    #timer {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    #gameOver {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px 50px;
+      text-align: center;
+      border-radius: 20px;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      z-index: 3;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+<div id="scoreBoard">Score: <span id="score">0</span></div>
+<div id="timer">Time: <span id="time">60</span>s</div>
+<div id="gameOver">
+  <p>🎉 Game Over! 🎉</p>
+  <p>Your Score: <span id="finalScore">0</span></p>
+  <button onclick="location.reload()">Play Again</button>
+</div>
+
+<script>
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let fruits = [];
+  let score = 0;
+  let timeLeft = 60;
+
+  const fruitTypes = ["🍍", "🍉", "🍊", "🥭", "🍌", "🍎", "🍒", "🍇"];
+
+  function randomFruit() {
+    const emoji = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
+    return {
+      emoji: emoji,
+      x: Math.random() * (canvas.width - 40),
+      y: -60,
+      speed: Math.random() * 2 + 2,
+      radius: 30,
+      sliced: false
+    };
+  }
+
+  function drawFruit(fruit) {
+    ctx.font = "40px serif";
+    ctx.fillText(fruit.emoji, fruit.x, fruit.y);
+  }
+
+  function updateFruits() {
+    fruits.forEach(fruit => {
+      fruit.y += fruit.speed;
+    });
+    fruits = fruits.filter(fruit => fruit.y < canvas.height && !fruit.sliced);
+  }
+
+  function spawnFruit() {
+    fruits.push(randomFruit());
+  }
+
+  function detectCut(x, y) {
+    fruits.forEach(fruit => {
+      const dx = fruit.x - x;
+      const dy = fruit.y - y;
+      if (Math.sqrt(dx * dx + dy * dy) < fruit.radius && !fruit.sliced) {
+        fruit.sliced = true;
+        score++;
+        document.getElementById("score").innerText = score;
+      }
+    });
+  }
+
+  canvas.addEventListener("mousemove", e => {
+    if (mouseDown) {
+      detectCut(e.clientX, e.clientY);
+    }
+  });
+
+  let mouseDown = false;
+  canvas.addEventListener("mousedown", () => mouseDown = true);
+  canvas.addEventListener("mouseup", () => mouseDown = false);
+
+  function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    updateFruits();
+    fruits.forEach(drawFruit);
+  }
+
+  setInterval(spawnFruit, 500);
+  const loop = setInterval(gameLoop, 1000 / 60);
+
+  const timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById("time").innerText = timeLeft;
+    if (timeLeft === 0) {
+      clearInterval(timerInterval);
+      clearInterval(loop);
+      document.getElementById("gameOver").style.display = "block";
+      document.getElementById("finalScore").innerText = score;
+    }
+  }, 1000);
+</script>
+</body>
+</html>
 
