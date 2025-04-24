@@ -2,179 +2,159 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>❤️ Heart Catch & Create</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>❤️ Heart Collector Game</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #fff0f5, #e0d7ff);
+      background: linear-gradient(135deg, #ffe4ec, #e0d7ff);
       overflow: hidden;
-      height: 100vh;
     }
-    h1, h2 {
+
+    #ui {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
       text-align: center;
-      margin-top: 10px;
-      color: #d36c8c;
+      z-index: 10;
     }
-    #scoreboard, #timer {
-      text-align: center;
-      font-size: 20px;
-      margin: 10px;
+
+    #scoreboard {
+      font-size: 22px;
       color: #333;
+      margin-bottom: 10px;
     }
-    #game-area {
-      position: relative;
-      height: 70vh;
-      overflow: hidden;
-      background: #fff;
-      border: 2px solid #d36c8c;
-      margin: 10px auto;
-      width: 90%;
-      border-radius: 15px;
+
+    button {
+      padding: 10px 20px;
+      background-color: #f77ca2;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
     }
+
+    button:hover {
+      background-color: #e2638d;
+    }
+
     .heart {
       position: absolute;
-      font-size: 30px;
+      font-size: 40px;
       cursor: pointer;
       animation: fall 5s linear infinite;
       user-select: none;
     }
+
     @keyframes fall {
-      0% { top: -40px; opacity: 1; }
-      100% { top: 100%; opacity: 0; }
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
     }
-    #start-btn {
-      display: block;
-      margin: 10px auto;
-      padding: 10px 25px;
-      background: #f77ca2;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-    #canvas-container {
-      text-align: center;
-      margin-top: 20px;
+
+    #drawingCanvas {
+      position: fixed;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
       display: none;
+      flex-wrap: wrap;
+      max-width: 90vw;
+      justify-content: center;
     }
-    canvas {
-      border: 2px solid #d36c8c;
-      background: #fffafc;
-      cursor: pointer;
-    }
-    #save-btn {
-      margin-top: 10px;
-      background: #ec7ba8;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      cursor: pointer;
+
+    .drawing-heart {
+      font-size: 30px;
+      margin: 4px;
     }
   </style>
 </head>
 <body>
 
-  <h1>❤️ Catch the Hearts!</h1>
-  <div id="scoreboard">Score: <span id="score">0</span></div>
-  <div id="timer">Time left: <span id="time">30</span>s</div>
-  <button id="start-btn">Start Game</button>
-
-  <div id="game-area"></div>
-
-  <div id="canvas-container">
-    <h2>Create with Your Hearts!</h2>
-    <p>Click to place your collected hearts:</p>
-    <canvas id="draw-canvas" width="400" height="400"></canvas>
-    <br>
-    <button id="save-btn">Save Artwork</button>
+  <div id="ui">
+    <div id="scoreboard">Score: <span id="score">0</span></div>
+    <button onclick="startGame(30)">Play 30s</button>
+    <button onclick="startGame(60)">Play 60s</button>
+    <button onclick="showDrawing()">Create Drawing</button>
   </div>
 
+  <div id="drawingCanvas"></div>
+
   <script>
-    const colors = ['#ff5e78', '#ff99cc', '#c56cf0', '#ffb347', '#00d2ff'];
+    const colors = ['red', 'pink', 'purple', 'blue', 'green', 'yellow'];
     let score = 0;
-    let timeLeft = 30;
-    let interval;
-    let heartInterval;
-    const scoreEl = document.getElementById("score");
-    const timerEl = document.getElementById("time");
-    const gameArea = document.getElementById("game-area");
-    const canvas = document.getElementById("draw-canvas");
-    const ctx = canvas.getContext("2d");
-    const maxHearts = { count: 0 };
-    let usedHearts = 0;
+    let gameInterval, heartSpawner, isPlaying = false;
+    const scoreDisplay = document.getElementById('score');
+    const drawingCanvas = document.getElementById('drawingCanvas');
+    let collectedHearts = [];
 
     function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
+      const heart = document.createElement('div');
+      heart.textContent = '❤️';
+      heart.classList.add('heart');
+
       const color = colors[Math.floor(Math.random() * colors.length)];
       heart.style.color = color;
-      heart.innerText = "❤️";
-      heart.style.left = Math.random() * (gameArea.offsetWidth - 30) + "px";
 
-      heart.addEventListener("click", () => {
+      heart.style.left = Math.random() * 95 + 'vw';
+      heart.style.top = '-40px';
+
+      heart.addEventListener('click', () => {
+        if (!isPlaying) return;
         score++;
-        maxHearts.count++;
-        scoreEl.textContent = score;
+        scoreDisplay.textContent = score;
+        collectedHearts.push(color);
         heart.remove();
       });
 
-      gameArea.appendChild(heart);
+      document.body.appendChild(heart);
+
       setTimeout(() => heart.remove(), 6000);
     }
 
-    function startGame() {
+    function startGame(duration) {
+      stopGame(); // In case restarting
       score = 0;
-      timeLeft = 30;
-      scoreEl.textContent = 0;
-      timerEl.textContent = timeLeft;
-      maxHearts.count = 0;
-      usedHearts = 0;
-      document.getElementById("canvas-container").style.display = "none";
-      gameArea.innerHTML = "";
+      collectedHearts = [];
+      isPlaying = true;
+      scoreDisplay.textContent = 0;
+      drawingCanvas.style.display = 'none';
 
-      clearInterval(interval);
-      clearInterval(heartInterval);
+      heartSpawner = setInterval(createHeart, 400);
 
-      interval = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-        if (timeLeft <= 0) endGame();
-      }, 1000);
-
-      heartInterval = setInterval(createHeart, 500);
+      gameInterval = setTimeout(() => {
+        stopGame();
+        alert(`Game Over! You caught ${score} hearts!`);
+      }, duration * 1000);
     }
 
-    function endGame() {
-      clearInterval(interval);
-      clearInterval(heartInterval);
-      gameArea.innerHTML = "";
-      document.getElementById("canvas-container").style.display = "block";
+    function stopGame() {
+      clearInterval(heartSpawner);
+      clearTimeout(gameInterval);
+      isPlaying = false;
     }
 
-    document.getElementById("start-btn").addEventListener("click", startGame);
-
-    canvas.addEventListener("click", (e) => {
-      if (usedHearts >= maxHearts.count) return;
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const color = colors[Math.floor(Math.random() * colors.length)];
-
-      ctx.fillStyle = color;
-      ctx.font = "20px Arial";
-      ctx.fillText("❤️", x - 10, y + 10);
-      usedHearts++;
-    });
-
-    document.getElementById("save-btn").addEventListener("click", () => {
-      const link = document.createElement("a");
-      link.download = "heart-art.png";
-      link.href = canvas.toDataURL();
-      link.click();
-    });
+    function showDrawing() {
+      drawingCanvas.innerHTML = '';
+      drawingCanvas.style.display = 'flex';
+      collectedHearts.forEach(color => {
+        const h = document.createElement('div');
+        h.textContent = '❤️';
+        h.className = 'drawing-heart';
+        h.style.color = color;
+        drawingCanvas.appendChild(h);
+      });
+    }
   </script>
 </body>
 </html>
