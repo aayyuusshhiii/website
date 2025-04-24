@@ -55,6 +55,7 @@
       border-top: 5px solid #ffc0cb;
       background: linear-gradient(to top, #ffeef8, #ffddee);
       overflow: hidden;
+      touch-action: none; /* Prevent default touch behaviors */
     }
 
     .cake-layer, .cream-layer {
@@ -66,7 +67,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      cursor: move;
+      cursor: pointer;
     }
 
     .cream-layer {
@@ -76,7 +77,7 @@
     .decoration {
       font-size: 2rem;
       position: absolute;
-      cursor: move;
+      cursor: pointer;
       width: 40px;
       height: 40px;
       display: flex;
@@ -175,106 +176,6 @@
       }
     }
 
-    canvas.addEventListener('mousedown', (e) => {
-      if (!tool) return;
-      isDrawing = true;
-      [lastX, lastY] = [e.offsetX, e.offsetY];
-      saveState();
-    });
-
-    canvas.addEventListener('mouseup', () => {
-      isDrawing = false;
-    });
-
-    canvas.addEventListener('mousemove', (e) => {
-      if (!isDrawing || !tool) return;
-      const color = document.getElementById('drawColor').value;
-      const size = parseInt(document.getElementById('brushSize').value);
-      ctx.lineWidth = size;
-      ctx.lineCap = "round";
-
-      if (tool === 'pencil') {
-        ctx.strokeStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-      } else if (tool === 'eraser') {
-        ctx.clearRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
-      } else if (tool === 'spray') {
-        for (let i = 0; i < 10 * size; i++) {
-          const offsetX = (Math.random() - 0.5) * size * 2;
-          const offsetY = (Math.random() - 0.5) * size * 2;
-          ctx.fillStyle = color;
-          ctx.fillRect(e.offsetX + offsetX, e.offsetY + offsetY, 1, 1);
-        }
-      }
-      [lastX, lastY] = [e.offsetX, e.offsetY];
-    });
-
-    function makeDraggable(el) {
-      el.style.position = 'absolute';
-      el.onmousedown = function(e) {
-        e.preventDefault();
-        let shiftX = e.clientX - el.getBoundingClientRect().left;
-        let shiftY = e.clientY - el.getBoundingClientRect().top;
-
-        function moveAt(pageX, pageY) {
-          el.style.left = pageX - shiftX + 'px';
-          el.style.top = pageY - shiftY + 'px';
-        }
-
-        moveAt(e.pageX, e.pageY);
-
-        function onMouseMove(e) {
-          moveAt(e.pageX, e.pageY);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-        el.onmouseup = function() {
-          document.removeEventListener('mousemove', onMouseMove);
-          el.onmouseup = null;
-        };
-      };
-      el.ondragstart = () => false;
-    }
-
-    function addCakeLayer() {
-      const layer = document.createElement("div");
-      layer.className = "cake-layer";
-      layer.style.backgroundColor = document.getElementById("cakeColor").value;
-      layer.style.top = "100px";
-      makeDraggable(layer);
-      container.appendChild(layer);
-    }
-
-    function addCreamLayer() {
-      const layer = document.createElement("div");
-      layer.className = "cream-layer";
-      layer.style.backgroundColor = document.getElementById("creamColor").value;
-      layer.style.top = "150px";
-      makeDraggable(layer);
-      container.appendChild(layer);
-    }
-
-    function addDecoration(emoji) {
-      const decor = document.createElement("div");
-      decor.className = "decoration";
-      decor.innerText = emoji;
-      decor.style.top = "200px";
-      decor.style.left = "calc(50% - 20px)";
-      makeDraggable(decor);
-      container.appendChild(decor);
-    }
-
-    function saveAsImage() {
-      html2canvas(container).then(canvas => {
-        const link = document.createElement("a");
-        link.download = "princess_cake.png";
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    }
-  </script>
-</body>
-</html>
+   
+::contentReference[oaicite:8]{index=8}
+ 
