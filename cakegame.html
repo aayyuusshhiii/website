@@ -133,7 +133,9 @@
     <canvas id="drawingCanvas" class="drawing-layer"></canvas>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Include DragDropTouch polyfill for touch support -->
+  <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.0.0/DragDropTouch.js"></script>
+
   <script>
     const canvas = document.getElementById('drawingCanvas');
     const container = document.getElementById('canvasContainer');
@@ -163,12 +165,6 @@
       } else {
         tool = t;
         clearActiveButtons();
-        toolButtons[t].classList.add("active");
-        canvas.style.pointerEvents = "auto";
-      }
-    }
-
-    function saveState() {
-      history.push(ctx.getImageData(0, 0
-::contentReference[oaicite:8]{index=8}
+        toolButtons[t
+::contentReference[oaicite:13]{index=13}
  
