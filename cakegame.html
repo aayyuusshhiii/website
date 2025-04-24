@@ -3,240 +3,203 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Princess Cake Designer</title>
+  <title>Princess Cake Game</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(to bottom right, #ffe0f0, #ffeefc);
-      overflow: hidden;
-    }
-
-    #sidebar {
-      width: 220px;
-      background: #ffcde0;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-      top: 0;
-      padding: 10px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      overflow-y: auto;
-      z-index: 2;
-    }
-
-    #sidebar h3 {
-      text-align: center;
+      background: linear-gradient(to bottom right, #ffe0f0, #ffd1ec);
       color: #d63384;
+      overflow-x: hidden;
     }
-
-    #tools button, input[type=color] {
-      width: 100%;
-      margin-bottom: 8px;
-      font-size: 14px;
-      border: none;
-      padding: 8px;
-      background: #ff88cc;
+    header {
+      background-color: #ffc0cb;
+      padding: 1rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
       color: white;
-      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1rem;
+      background: #fff0f5;
+      border-bottom: 3px solid #ffb6c1;
+    }
+    .toolbar button, .toolbar select, .toolbar input[type="color"] {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffb6c1;
+      color: white;
       cursor: pointer;
     }
-
-    #cakeArea {
-      margin-left: 230px;
-      width: calc(100% - 230px);
-      height: 100vh;
+    .toolbar button:hover { background-color: #ff69b4; }
+    #canvasContainer {
       position: relative;
-      z-index: 1;
+      width: 100%;
+      height: calc(100vh - 150px);
+      overflow: hidden;
+      background-image: url('https://i.imgur.com/PWZMaV6.png');
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
-    .cake {
+    .cake-layer, .decoration, .cream-layer {
       position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) rotateX(20deg) rotateY(15deg);
-      transform-style: preserve-3d;
+      cursor: move;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-
-    .layer {
+    .cake-layer {
+      width: 150px;
+      height: 50px;
+      background-color: pink;
+      border: 2px solid white;
+    }
+    .decoration { width: 40px; height: 40px; }
+    .cream-layer {
+      width: 150px;
+      height: 20px;
+      background-color: white;
+    }
+    canvas {
       position: absolute;
-      border-radius: 50%;
-      background: pink;
-      box-shadow: inset 0 0 10px #fff;
-      cursor: grab;
+      top: 0; left: 0;
+      z-index: 10;
+      pointer-events: none;
     }
-
-    .decor {
-      position: absolute;
-      font-size: 24px;
-      cursor: grab;
-    }
-
-    #drawCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
-    }
-
-    #saveBtn {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      padding: 10px 20px;
-      background: #ff66b2;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      z-index: 2;
-    }
+    #drawingCanvas.active { pointer-events: auto; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-
-<div id="sidebar">
-  <h3>🎀 Cake Tools</h3>
-  <button onclick="addLayer()">Add Cake Layer</button>
-  <button onclick="addDecoration('🎀')">Add Bow</button>
-  <button onclick="addDecoration('🍓')">Add Strawberry</button>
-  <button onclick="addDecoration('🌟')">Add Star</button>
-  <button onclick="addDecoration('🕯️')">Add Candle</button>
-  <button onclick="changeShape()">Change Shape</button>
-  <input type="color" id="layerColor" value="#ffcce6" />
-  <input type="color" id="drawColor" value="#ff66b2" />
-  <button onclick="toggleDrawing()">✏️ Pencil</button>
-  <button onclick="undoDraw()">↩️ Undo</button>
-  <button onclick="eraseDraw()">🧽 Eraser</button>
-</div>
-
-<div id="cakeArea">
-  <div id="cake" class="cake"></div>
-  <canvas id="drawCanvas"></canvas>
-</div>
-
-<button id="saveBtn" onclick="saveImage()">📷 Save Cake</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <header>Princess Cake Game</header>
+  <div class="toolbar">
+    <button onclick="addCakeLayer()">Add Cake Layer</button>
+    <select id="shapeSelector">
+      <option value="rectangle">Rectangle</option>
+      <option value="circle">Circle</option>
+      <option value="oval">Oval</option>
+      <option value="star">Star</option>
+      <option value="square">Square</option>
+    </select>
+    <input type="color" id="colorPicker" value="#ffc0cb">
+    <button onclick="addCreamLayer()">Add Cream</button>
+    <button onclick="addDecoration('bow')">Add Bow</button>
+    <button onclick="addDecoration('strawberry')">Add Strawberry</button>
+    <button onclick="addDecoration('star')">Add Star</button>
+    <button onclick="addDecoration('candle')">Add Candle</button>
+    <button onclick="addDecoration('cherry')">Add Cherry</button>
+    <button onclick="addDecoration('cookie')">Add Cookie</button>
+    <button onclick="toggleDrawing()">Pencil</button>
+    <button onclick="undoDraw()">Undo</button>
+    <button onclick="eraseDraw()">Eraser</button>
+    <button onclick="saveDesign()">Save Cake</button>
+    <button onclick="toggle3D()">Toggle 3D/2D</button>
+  </div>
+  <div id="canvasContainer">
+    <canvas id="drawingCanvas" width="1200" height="800"></canvas>
+  </div>
 <script>
-  const cake = document.getElementById('cake');
-  const canvas = document.getElementById("drawCanvas");
-  const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let shapeIndex = 0;
-  const shapes = ['50%', '0%', '50% 50% 0 0', '50% 25%'];
-
-  function dragElement(el) {
-    let offsetX, offsetY, isDragging = false;
-    el.onmousedown = function (e) {
-      isDragging = true;
-      offsetX = e.clientX - el.offsetLeft;
-      offsetY = e.clientY - el.offsetTop;
-      document.onmousemove = function (e) {
-        if (!isDragging) return;
-        el.style.left = (e.clientX - offsetX) + 'px';
-        el.style.top = (e.clientY - offsetY) + 'px';
-      };
-      document.onmouseup = function () {
-        isDragging = false;
-        document.onmousemove = null;
-      };
-    };
-  }
-
-  function addLayer() {
-    const color = document.getElementById('layerColor').value;
-    const layer = document.createElement('div');
-    layer.classList.add('layer');
-    layer.style.width = `${120 + Math.random()*100}px`;
-    layer.style.height = `${30 + Math.random()*50}px`;
-    layer.style.background = color;
-    layer.style.borderRadius = shapes[shapeIndex % shapes.length];
-    layer.style.left = `${300 + Math.random() * 300}px`;
-    layer.style.top = `${300 + Math.random() * 200}px`;
-    dragElement(layer);
-    cake.appendChild(layer);
-  }
-
-  function addDecoration(emoji) {
-    const decor = document.createElement('div');
-    decor.className = 'decor';
-    decor.innerText = emoji;
-    decor.style.left = `${300 + Math.random() * 300}px`;
-    decor.style.top = `${300 + Math.random() * 200}px`;
-    dragElement(decor);
-    cake.appendChild(decor);
-  }
-
-  function changeShape() {
-    shapeIndex++;
-    const layers = document.querySelectorAll('.layer');
-    layers.forEach(layer => {
-      layer.style.borderRadius = shapes[shapeIndex % shapes.length];
-    });
-  }
-
-  function saveImage() {
-    html2canvas(document.body).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'my_princess_cake.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  }
-
-  // Drawing
-  let drawingEnabled = false;
-  let drawing = false;
+  let isDrawing = false;
+  let currentPath = [];
   let paths = [];
+  let drawMode = false;
 
-  canvas.addEventListener("mousedown", (e) => {
-    if (!drawingEnabled) return;
-    drawing = true;
-    ctx.beginPath();
-    ctx.moveTo(e.clientX, e.clientY);
-    paths.push([{x: e.clientX, y: e.clientY}]);
-  });
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
 
-  canvas.addEventListener("mousemove", (e) => {
-    if (drawingEnabled && drawing) {
-      ctx.strokeStyle = document.getElementById('drawColor').value;
-      ctx.lineWidth = 3;
-      ctx.lineTo(e.clientX, e.clientY);
-      ctx.stroke();
-      paths[paths.length - 1].push({x: e.clientX, y: e.clientY});
-    }
-  });
+  function addCakeLayer() {
+    const layer = document.createElement("div");
+    const color = document.getElementById("colorPicker").value;
+    const shape = document.getElementById("shapeSelector").value;
 
-  canvas.addEventListener("mouseup", () => drawing = false);
-
-  function toggleDrawing() {
-    drawingEnabled = !drawingEnabled;
+    layer.className = "cake-layer";
+    layer.style.backgroundColor = color;
+    layer.style.top = "300px";
+    layer.style.left = "calc(50% - 75px)";
+    setShape(layer, shape);
+    makeDraggable(layer);
+    document.getElementById("canvasContainer").appendChild(layer);
   }
 
-  function eraseDraw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    paths = [];
+  function addCreamLayer() {
+    const cream = document.createElement("div");
+    const color = document.getElementById("colorPicker").value;
+    cream.className = "cream-layer";
+    cream.style.backgroundColor = color;
+    cream.style.top = "350px";
+    cream.style.left = "calc(50% - 75px)";
+    makeDraggable(cream);
+    document.getElementById("canvasContainer").appendChild(cream);
   }
 
-  function undoDraw() {
-    paths.pop();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let path of paths) {
-      ctx.beginPath();
-      for (let i = 0; i < path.length; i++) {
-        if (i === 0) ctx.moveTo(path[i].x, path[i].y);
-        else ctx.lineTo(path[i].x, path[i].y);
-      }
-      ctx.strokeStyle = document.getElementById('drawColor').value;
-      ctx.lineWidth = 3;
-      ctx.stroke();
-    }
-  }
-</script>
+  function addDecoration(type) {
+    const decor = document.createElement("div");
+    decor.className = "decoration";
+    decor
+    
+<!-- Include Three.js library -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 
-</body>
-</html>
+<script>
+  let is3DView = false;
+  let scene, camera, renderer, cakeGroup;
+
+  function toggle3D() {
+    is3DView = !is3DView;
+    const container = document.getElementById("canvasContainer");
+
+    if (is3DView) {
+      // Hide 2D elements
+      Array.from(container.children).forEach(child => {
+        if (child !== canvas) child.style.display = "none";
+      });
+      canvas.style.display = "none";
+
+      // Initialize Three.js scene
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.z = 500;
+
+      renderer = new THREE.WebGLRenderer({ alpha: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+
+      // Create cake group
+      cakeGroup = new THREE.Group();
+
+      // Convert 2D cake layers to 3D boxes
+      document.querySelectorAll(".cake-layer").forEach(layer => {
+        const color = layer.style.backgroundColor || "#ffc0cb";
+        const geometry = new THREE.BoxGeometry(150, 50, 50);
+        const material = new THREE.MeshPhongMaterial({ color });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(
+          parseInt(layer.style.left) - container.clientWidth / 2 + 75,
+          -parseInt(layer.style.top) + container.clientHeight / 2 - 25,
+          0
+        );
+        cakeGroup.add(mesh);
+      });
+
+      // Add light
+      const light = new THREE.PointLight(0xffffff, 1, 1000);
+      light.position.set(0, 0, 500);
+      scene.add(light);
+
+      scene.add(cakeGroup);
+
+      // Start animation loop
+      animate();
+    } else {
+      // Remove 3D renderer
+      if (
