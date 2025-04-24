@@ -203,3 +203,128 @@
     } else {
       // Remove 3D renderer
       if (
+      // Remove 3D renderer
+      if (renderer) {
+        renderer.dispose();
+        container.removeChild(renderer.domElement);
+      }
+
+      // Show 2D elements again
+      Array.from(container.children).forEach(child => {
+        if (child !== canvas) child.style.display = "block";
+      });
+      canvas.style.display = "block";
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Rotate the cake in 3D space to make it look dynamic
+    cakeGroup.rotation.x += 0.01;
+    cakeGroup.rotation.y += 0.01;
+
+    // Render the scene from the perspective of the camera
+    renderer.render(scene, camera);
+  }
+
+  function setShape(element, shape) {
+    if (shape === 'circle') {
+      element.style.borderRadius = "50%";
+      element.style.width = "150px";
+      element.style.height = "150px";
+    } else if (shape === 'oval') {
+      element.style.borderRadius = "50%";
+      element.style.width = "200px";
+      element.style.height = "100px";
+    } else if (shape === 'star') {
+      element.style.borderRadius = "0";
+      element.style.clipPath = "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)";
+      element.style.width = "150px";
+      element.style.height = "150px";
+    } else if (shape === 'square') {
+      element.style.borderRadius = "0";
+      element.style.width = "150px";
+      element.style.height = "150px";
+    } else {
+      element.style.borderRadius = "0";
+      element.style.width = "150px";
+      element.style.height = "50px";
+    }
+  }
+
+  function makeDraggable(element) {
+    let offsetX, offsetY;
+    element.onmousedown = function (e) {
+      offsetX = e.clientX - element.offsetLeft;
+      offsetY = e.clientY - element.offsetTop;
+      document.onmousemove = function (e) {
+        element.style.left = e.clientX - offsetX + "px";
+        element.style.top = e.clientY - offsetY + "px";
+      };
+      document.onmouseup = function () {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
+  }
+
+  function toggleDrawing() {
+    drawMode = !drawMode;
+    if (drawMode) {
+      canvas.classList.add('active');
+    } else {
+      canvas.classList.remove('active');
+    }
+  }
+
+  function undoDraw() {
+    paths.pop();
+    redrawPaths();
+  }
+
+  function eraseDraw() {
+    currentPath = [];
+    redrawPaths();
+  }
+
+  function redrawPaths() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    paths.forEach(path => {
+      ctx.beginPath();
+      path.forEach(point => {
+        ctx.lineTo(point.x, point.y);
+      });
+      ctx.stroke();
+    });
+  }
+
+  canvas.addEventListener("mousedown", function (e) {
+    if (!drawMode) return;
+    isDrawing = true;
+    currentPath = [{ x: e.offsetX, y: e.offsetY }];
+  });
+
+  canvas.addEventListener("mousemove", function (e) {
+    if (!isDrawing || !drawMode) return;
+    currentPath.push({ x: e.offsetX, y: e.offsetY });
+    redrawPaths();
+  });
+
+  canvas.addEventListener("mouseup", function () {
+    if (!isDrawing) return;
+    isDrawing = false;
+    paths.push(currentPath);
+    currentPath = [];
+  });
+
+  function saveDesign() {
+    const dataUrl = canvas.toDataURL();
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = "princess-cake-design.png";
+    link.click();
+  }
+</script>
+</body>
+</html>
