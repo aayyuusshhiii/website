@@ -41,6 +41,10 @@
       cursor: pointer;
     }
 
+    .toolbar button.active {
+      background-color: #d63384;
+    }
+
     .toolbar button:hover {
       background-color: #ff69b4;
     }
@@ -109,9 +113,9 @@
     <button onclick="addDecoration('🍫')">🍫 Chocolate</button>
     <button onclick="addDecoration('🕯️')">🕯️ Candle</button>
 
-    <button onclick="setTool('pencil')">✏️ Pencil</button>
-    <button onclick="setTool('eraser')">🧽 Eraser</button>
-    <button onclick="setTool('spray')">💨 Spray</button>
+    <button id="pencilBtn" onclick="toggleTool('pencil')">✏️ Pencil</button>
+    <button id="eraserBtn" onclick="toggleTool('eraser')">🧽 Eraser</button>
+    <button id="sprayBtn" onclick="toggleTool('spray')">💨 Spray</button>
     <input type="color" id="drawColor" value="#d63384" />
     <select id="brushSize">
       <option value="2">Thin</option>
@@ -133,25 +137,46 @@
     canvas.width = container.offsetWidth;
     canvas.height = container.offsetHeight;
     const ctx = canvas.getContext('2d');
-    let isDrawing = false, lastX = 0, lastY = 0, tool = 'pencil';
-    const drawingHistory = [];
+    let isDrawing = false, lastX = 0, lastY = 0, tool = null;
+    const history = [];
 
-    function saveState() {
-      drawingHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    }
+    const toolButtons = {
+      pencil: document.getElementById("pencilBtn"),
+      eraser: document.getElementById("eraserBtn"),
+      spray: document.getElementById("sprayBtn")
+    };
 
-    function undo() {
-      if (drawingHistory.length) {
-        ctx.putImageData(drawingHistory.pop(), 0, 0);
+    function clearActiveButtons() {
+      for (const btn of Object.values(toolButtons)) {
+        btn.classList.remove("active");
       }
     }
 
-    function setTool(t) {
-      tool = t;
-      canvas.style.pointerEvents = 'auto';
+    function toggleTool(t) {
+      if (tool === t) {
+        tool = null;
+        clearActiveButtons();
+        canvas.style.pointerEvents = "none";
+      } else {
+        tool = t;
+        clearActiveButtons();
+        toolButtons[t].classList.add("active");
+        canvas.style.pointerEvents = "auto";
+      }
+    }
+
+    function saveState() {
+      history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    }
+
+    function undo() {
+      if (history.length) {
+        ctx.putImageData(history.pop(), 0, 0);
+      }
     }
 
     canvas.addEventListener('mousedown', (e) => {
+      if (!tool) return;
       isDrawing = true;
       [lastX, lastY] = [e.offsetX, e.offsetY];
       saveState();
@@ -162,9 +187,9 @@
     });
 
     canvas.addEventListener('mousemove', (e) => {
-      if (!isDrawing) return;
+      if (!isDrawing || !tool) return;
       const color = document.getElementById('drawColor').value;
-      const size = document.getElementById('brushSize').value;
+      const size = parseInt(document.getElementById('brushSize').value);
       ctx.lineWidth = size;
       ctx.lineCap = "round";
 
@@ -188,24 +213,27 @@
     });
 
     function makeDraggable(el) {
+      el.style.position = 'absolute';
       el.onmousedown = function(e) {
+        e.preventDefault();
         let shiftX = e.clientX - el.getBoundingClientRect().left;
         let shiftY = e.clientY - el.getBoundingClientRect().top;
-        el.style.zIndex = 999;
 
         function moveAt(pageX, pageY) {
           el.style.left = pageX - shiftX + 'px';
           el.style.top = pageY - shiftY + 'px';
         }
 
+        moveAt(e.pageX, e.pageY);
+
         function onMouseMove(e) {
           moveAt(e.pageX, e.pageY);
         }
 
         document.addEventListener('mousemove', onMouseMove);
-        document.onmouseup = function() {
+        el.onmouseup = function() {
           document.removeEventListener('mousemove', onMouseMove);
-          document.onmouseup = null;
+          el.onmouseup = null;
         };
       };
       el.ondragstart = () => false;
