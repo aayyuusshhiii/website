@@ -143,8 +143,17 @@
         sliceSound.currentTime = 0;
         sliceSound.play();
         document.getElementById("score").innerText = score;
+
+        // Fruit slice animation: Split fruit into two halves
+        splitFruit(fruit);
       }
     });
+  }
+
+  function splitFruit(fruit) {
+    const leftFruit = { ...fruit, x: fruit.x - 20, y: fruit.y, sliced: true };
+    const rightFruit = { ...fruit, x: fruit.x + 20, y: fruit.y, sliced: true };
+    fruits.push(leftFruit, rightFruit);
   }
 
   // Mouse events
@@ -179,8 +188,8 @@
     document.getElementById("time").innerText = timeLeft;
 
     // Every second, increase difficulty
-    if (spawnRate > 300) spawnRate -= 10;
-    fallSpeed += 0.02;
+    if (spawnRate > 200) spawnRate -= 5; // Faster spawn rate
+    fallSpeed += 0.05; // Increase fall speed quickly
 
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
