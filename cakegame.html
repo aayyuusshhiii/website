@@ -5,152 +5,273 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Princess Cake Designer</title>
   <style>
-    /* [Styling content was already included, skipped here for brevity] */
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom right, #ffe0f0, #ffd1ec);
+      font-family: 'Comic Sans MS', cursive;
+      color: #d63384;
+    }
+
+    header {
+      background-color: #ff69b4;
+      color: white;
+      padding: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .toolbar {
+      background: #fff0f5;
+      border-bottom: 3px solid #ffb6c1;
+      padding: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .toolbar button, .toolbar input[type="color"], .toolbar select {
+      padding: 0.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffb6c1;
+      color: white;
+      cursor: pointer;
+    }
+
+    .toolbar button.active {
+      background-color: #d63384;
+    }
+
+    .toolbar button:hover {
+      background-color: #ff69b4;
+    }
+
+    #canvasContainer {
+      position: relative;
+      height: 600px;
+      border-top: 5px solid #ffc0cb;
+      background: linear-gradient(to top, #ffeef8, #ffddee);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .cake-layer, .cream-layer {
+      width: 150px;
+      height: 50px;
+      border: 2px solid white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .cream-layer {
+      height: 20px;
+    }
+
+    .decoration {
+      font-size: 2rem;
+      position: absolute;
+      cursor: grab;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: none;
+    }
+
+    canvas.drawing-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- [Toolbar and canvas content included earlier, skipped here for brevity] -->
+  <header>🎀 Princess Cake Designer 🎀</header>
 
-  <!-- Include DragDropTouch polyfill for touch support -->
+  <div class="toolbar">
+    <button onclick="addCakeLayer()">Add Cake Layer</button>
+    <input type="color" id="cakeColor" value="#ffb6c1" />
+
+    <button onclick="addCreamLayer()">Add Cream Layer</button>
+    <input type="color" id="creamColor" value="#fff0f5" />
+
+    <button onclick="addDecoration('🎀')">🎀 Bow</button>
+    <button onclick="addDecoration('👑')">👑 Crown</button>
+    <button onclick="addDecoration('✨')">✨ Tiara</button>
+    <button onclick="addDecoration('🍓')">🍓 Strawberry</button>
+    <button onclick="addDecoration('❤️')">❤️ Heart</button>
+    <button onclick="addDecoration('🍫')">🍫 Chocolate</button>
+    <button onclick="addDecoration('🕯️')">🕯️ Candle</button>
+
+    <button id="pencilBtn" onclick="toggleTool('pencil')">✏️ Pencil</button>
+    <button id="eraserBtn" onclick="toggleTool('eraser')">🧽 Eraser</button>
+    <button id="sprayBtn" onclick="toggleTool('spray')">💨 Spray</button>
+    <input type="color" id="drawColor" value="#d63384" />
+    <select id="brushSize">
+      <option value="2">Thin</option>
+      <option value="5">Medium</option>
+      <option value="10">Thick</option>
+    </select>
+    <button onclick="undo()">↩️ Undo</button>
+    <button onclick="saveAsImage()">💾 Save Cake</button>
+  </div>
+
+  <div id="canvasContainer">
+    <canvas id="drawingCanvas" class="drawing-layer"></canvas>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.0.0/DragDropTouch.js"></script>
 
   <script>
-    const canvas = document.getElementById('drawingCanvas');
-    const container = document.getElementById('canvasContainer');
-    canvas.width = container.offsetWidth;
-    canvas.height = container.offsetHeight;
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false, lastX = 0, lastY = 0, tool = null;
-    const history = [];
+    window.onload = () => {
+      const canvas = document.getElementById('drawingCanvas');
+      const container = document.getElementById('canvasContainer');
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+      const ctx = canvas.getContext('2d');
+      let isDrawing = false, lastX = 0, lastY = 0, tool = null;
 
-    const toolButtons = {
-      pencil: document.getElementById("pencilBtn"),
-      eraser: document.getElementById("eraserBtn"),
-      spray: document.getElementById("sprayBtn")
-    };
+      const toolButtons = {
+        pencil: document.getElementById("pencilBtn"),
+        eraser: document.getElementById("eraserBtn"),
+        spray: document.getElementById("sprayBtn")
+      };
 
-    function clearActiveButtons() {
-      for (const btn of Object.values(toolButtons)) {
-        btn.classList.remove("active");
-      }
-    }
-
-    function toggleTool(t) {
-      if (tool === t) {
-        tool = null;
-        clearActiveButtons();
-        canvas.style.pointerEvents = "none";
-      } else {
-        tool = t;
-        clearActiveButtons();
-        toolButtons[t].classList.add("active");
-        canvas.style.pointerEvents = "auto";
-      }
-    }
-
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', () => isDrawing = false);
-    canvas.addEventListener('mouseout', () => isDrawing = false);
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', () => isDrawing = false);
-
-    function getXY(e) {
-      if (e.touches) {
-        return [e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop];
-      } else {
-        return [e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop];
-      }
-    }
-
-    function startDrawing(e) {
-      isDrawing = true;
-      [lastX, lastY] = getXY(e);
-    }
-
-    function draw(e) {
-      if (!isDrawing || !tool) return;
-      e.preventDefault();
-      const [x, y] = getXY(e);
-      const size = parseInt(document.getElementById("brushSize").value);
-      const color = document.getElementById("drawColor").value;
-      if (tool === "pencil") {
-        ctx.strokeStyle = color;
-        ctx.lineWidth = size;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-      } else if (tool === "eraser") {
-        ctx.clearRect(x - size / 2, y - size / 2, size, size);
-      } else if (tool === "spray") {
-        for (let i = 0; i < 10; i++) {
-          const offsetX = Math.random() * size - size / 2;
-          const offsetY = Math.random() * size - size / 2;
-          ctx.fillStyle = color;
-          ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
+      function clearActiveButtons() {
+        for (const btn of Object.values(toolButtons)) {
+          btn.classList.remove("active");
         }
       }
-      lastX = x;
-      lastY = y;
-    }
 
-    function undo() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+      function toggleTool(t) {
+        if (tool === t) {
+          tool = null;
+          clearActiveButtons();
+          canvas.style.pointerEvents = "none";
+        } else {
+          tool = t;
+          clearActiveButtons();
+          toolButtons[t].classList.add("active");
+          canvas.style.pointerEvents = "auto";
+        }
+      }
 
-    function saveAsImage() {
-      const link = document.createElement('a');
-      link.download = 'princess_cake.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    }
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', () => isDrawing = false);
+      canvas.addEventListener('mouseout', () => isDrawing = false);
+      canvas.addEventListener('touchstart', startDrawing);
+      canvas.addEventListener('touchmove', draw);
+      canvas.addEventListener('touchend', () => isDrawing = false);
 
-    function addCakeLayer() {
-      const layer = document.createElement('div');
-      layer.className = 'cake-layer';
-      layer.style.top = '100px';
-      layer.style.background = document.getElementById('cakeColor').value;
-      makeDraggable(layer);
-      container.appendChild(layer);
-    }
+      function getXY(e) {
+        if (e.touches) {
+          return [e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop];
+        } else {
+          return [e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop];
+        }
+      }
 
-    function addCreamLayer() {
-      const layer = document.createElement('div');
-      layer.className = 'cream-layer';
-      layer.style.top = '160px';
-      layer.style.background = document.getElementById('creamColor').value;
-      makeDraggable(layer);
-      container.appendChild(layer);
-    }
+      function startDrawing(e) {
+        isDrawing = true;
+        [lastX, lastY] = getXY(e);
+      }
 
-    function addDecoration(symbol) {
-      const deco = document.createElement('div');
-      deco.className = 'decoration';
-      deco.textContent = symbol;
-      deco.style.top = '50px';
-      deco.style.left = '50%';
-      makeDraggable(deco);
-      container.appendChild(deco);
-    }
+      function draw(e) {
+        if (!isDrawing || !tool) return;
+        e.preventDefault();
+        const [x, y] = getXY(e);
+        const size = parseInt(document.getElementById("brushSize").value);
+        const color = document.getElementById("drawColor").value;
+        if (tool === "pencil") {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = size;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        } else if (tool === "eraser") {
+          ctx.clearRect(x - size / 2, y - size / 2, size, size);
+        } else if (tool === "spray") {
+          for (let i = 0; i < 10; i++) {
+            const offsetX = Math.random() * size - size / 2;
+            const offsetY = Math.random() * size - size / 2;
+            ctx.fillStyle = color;
+            ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
+          }
+        }
+        lastX = x;
+        lastY = y;
+      }
 
-    function makeDraggable(el) {
-      el.setAttribute("draggable", true);
-      el.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", null);
-        el.dragOffsetX = e.offsetX;
-        el.dragOffsetY = e.offsetY;
-      });
+      window.undo = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
 
-      el.addEventListener("dragend", e => {
-        const containerRect = container.getBoundingClientRect();
-        el.style.left = (e.clientX - containerRect.left - el.dragOffsetX) + 'px';
-        el.style.top = (e.clientY - containerRect.top - el.dragOffsetY) + 'px';
-      });
-    }
+      window.saveAsImage = function() {
+        const link = document.createElement('a');
+        link.download = 'princess_cake.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      }
+
+      window.addCakeLayer = function() {
+        const layer = document.createElement('div');
+        layer.className = 'cake-layer';
+        layer.style.top = '100px';
+        layer.style.background = document.getElementById('cakeColor').value;
+        makeDraggable(layer);
+        container.appendChild(layer);
+      }
+
+      window.addCreamLayer = function() {
+        const layer = document.createElement('div');
+        layer.className = 'cream-layer';
+        layer.style.top = '160px';
+        layer.style.background = document.getElementById('creamColor').value;
+        makeDraggable(layer);
+        container.appendChild(layer);
+      }
+
+      window.addDecoration = function(symbol) {
+        const deco = document.createElement('div');
+        deco.className = 'decoration';
+        deco.textContent = symbol;
+        deco.style.top = '50px';
+        deco.style.left = '50%';
+        makeDraggable(deco);
+        container.appendChild(deco);
+      }
+
+      function makeDraggable(el) {
+        el.setAttribute("draggable", true);
+        el.addEventListener("dragstart", e => {
+          e.dataTransfer.setData("text/plain", null);
+          el.dragOffsetX = e.offsetX;
+          el.dragOffsetY = e.offsetY;
+        });
+
+        el.addEventListener("dragend", e => {
+          const containerRect = container.getBoundingClientRect();
+          el.style.left = (e.clientX - containerRect.left - el.dragOffsetX) + 'px';
+          el.style.top = (e.clientY - containerRect.top - el.dragOffsetY) + 'px';
+        });
+      }
+    };
   </script>
 
 </body>
