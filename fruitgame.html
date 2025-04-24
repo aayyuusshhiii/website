@@ -97,16 +97,18 @@
   let timeLeft = 60;
 
   const fruitTypes = ["🍍", "🍉", "🍊", "🥭", "🍌", "🍎", "🍒", "🍇"];
+  const soundEffect = new Audio('slice.mp3'); // Add your slice sound here
 
   function randomFruit() {
     const emoji = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
     return {
       emoji: emoji,
-      x: Math.random() * (canvas.width - 40),
-      y: -60,
+      x: Math.random() * (canvas.width - 80),
+      y: canvas.height + 60,
       speed: Math.random() * 2 + 2,
-      radius: 30,
-      sliced: false
+      radius: 40,
+      sliced: false,
+      cutAnim: false
     };
   }
 
@@ -115,11 +117,24 @@
     ctx.fillText(fruit.emoji, fruit.x, fruit.y);
   }
 
+  function sliceFruit(fruit) {
+    if (!fruit.sliced) {
+      fruit.sliced = true;
+      fruit.cutAnim = true;
+      score++;
+      document.getElementById("score").innerText = score;
+      soundEffect.play();
+    }
+  }
+
   function updateFruits() {
     fruits.forEach(fruit => {
-      fruit.y += fruit.speed;
+      fruit.y -= fruit.speed;
+      if (fruit.y < 0 && !fruit.sliced) {
+        fruit.sliced = true; // Consider it missed if it reaches top
+      }
     });
-    fruits = fruits.filter(fruit => fruit.y < canvas.height && !fruit.sliced);
+    fruits = fruits.filter(fruit => !fruit.sliced);
   }
 
   function spawnFruit() {
@@ -130,10 +145,8 @@
     fruits.forEach(fruit => {
       const dx = fruit.x - x;
       const dy = fruit.y - y;
-      if (Math.sqrt(dx * dx + dy * dy) < fruit.radius && !fruit.sliced) {
-        fruit.sliced = true;
-        score++;
-        document.getElementById("score").innerText = score;
+      if (Math.sqrt(dx * dx + dy * dy) < fruit.radius) {
+        sliceFruit(fruit);
       }
     });
   }
@@ -144,17 +157,35 @@
     }
   });
 
+  canvas.addEventListener("touchmove", e => {
+    e.preventDefault();
+    if (touchDown) {
+      detectCut(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  });
+
   let mouseDown = false;
   canvas.addEventListener("mousedown", () => mouseDown = true);
   canvas.addEventListener("mouseup", () => mouseDown = false);
 
+  let touchDown = false;
+  canvas.addEventListener("touchstart", () => touchDown = true);
+  canvas.addEventListener("touchend", () => touchDown = false);
+
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateFruits();
-    fruits.forEach(drawFruit);
+    fruits.forEach(fruit => {
+      drawFruit(fruit);
+      if (fruit.cutAnim) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillText(fruit.emoji, fruit.x - 20, fruit.y - 20);
+        ctx.globalAlpha = 1;
+      }
+    });
   }
 
-  setInterval(spawnFruit, 500);
+  setInterval(spawnFruit, 1000);
   const loop = setInterval(gameLoop, 1000 / 60);
 
   const timerInterval = setInterval(() => {
@@ -168,6 +199,6 @@
     }
   }, 1000);
 </script>
+
 </body>
 </html>
-
