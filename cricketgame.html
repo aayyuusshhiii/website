@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real Cricket Game</title>
+  <title>3D Cricket Game</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #1d1d1d;
+      background-color: #4CAF50;
       color: white;
       font-family: Arial, sans-serif;
     }
@@ -17,28 +17,27 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background-color: #4CAF50;
-      overflow: hidden;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/9f/Cricket_pitch.jpg');
+      background-size: cover;
+      background-position: center;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: flex-end;
     }
 
     #bat {
       width: 100px;
       height: 20px;
-      background-color: #fff;
-      border-radius: 5px;
+      font-size: 30px;
+      color: #fff;
       position: absolute;
       bottom: 50px;
       cursor: pointer;
+      text-align: center;
     }
 
     #ball {
-      width: 15px;
-      height: 15px;
-      background-color: #fff;
-      border-radius: 50%;
+      font-size: 30px;
       position: absolute;
       top: 0;
       left: 50%;
@@ -79,8 +78,8 @@
 <body>
   <div id="gameArea">
     <div id="scoreBoard">Score: 0</div>
-    <div id="bat"></div>
-    <div id="ball"></div>
+    <div id="bat">🏏</div> <!-- Emoji for the bat -->
+    <div id="ball">⚽</div> <!-- Emoji for the ball -->
     <div id="gameOver">
       Game Over! <br> Final Score: <span id="finalScore"></span><br>
       <span id="playAgain">Click to Play Again</span>
@@ -98,7 +97,7 @@
     let score = 0;
     let ballSpeedY = 5;
     let ballSpeedX = 0;
-    let ballPosX = window.innerWidth / 2 - 7.5;
+    let ballPosX = window.innerWidth / 2 - 15;
     let ballPosY = 0;
     let batPosX = window.innerWidth / 2 - 50;
     let gameRunning = true;
@@ -108,7 +107,7 @@
     ball.style.left = `${ballPosX}px`;
     ball.style.top = `${ballPosY}px`;
 
-    // Move bat using the mouse or touch
+    // Move bat with mouse or touch
     document.addEventListener("mousemove", (e) => {
       if (!gameRunning) return;
 
@@ -120,22 +119,31 @@
       bat.style.left = `${batPosX}px`;
     });
 
-    // Ball movement
+    // Ball movement with physics
     function moveBall() {
       if (!gameRunning) return;
 
       ballPosX += ballSpeedX;
       ballPosY += ballSpeedY;
 
-      // Ball bouncing off edges
+      // Ball bouncing off sides
       if (ballPosX <= 0 || ballPosX >= window.innerWidth - 15) {
-        ballSpeedX = -ballSpeedX;  // Reverse direction
-      }
-      if (ballPosY <= 0) {
-        ballSpeedY = -ballSpeedY;  // Bounce back
+        ballSpeedX = -ballSpeedX;
       }
 
-      // Ball hitting the bat (player)
+      // Ball missed the bat
+      if (ballPosY >= window.innerHeight - 40) {
+        if (ballPosX >= batPosX && ballPosX <= batPosX + 100) {
+          score++;
+          scoreBoard.textContent = `Score: ${score}`;
+          ballSpeedY = -ballSpeedY * 0.9;  // Ball bounce
+          ballSpeedX = (Math.random() - 0.5) * 4;  // Random horizontal speed
+        } else {
+          endGame();  // Game Over when the player misses
+        }
+      }
+
+      // Ball hitting the bat
       const batRect = bat.getBoundingClientRect();
       const ballRect = ball.getBoundingClientRect();
 
@@ -147,31 +155,24 @@
       ) {
         score++;
         scoreBoard.textContent = `Score: ${score}`;
-        ballSpeedY += 0.1; // Increase ball speed gradually
-        ballSpeedX = (Math.random() - 0.5) * 4; // Add random horizontal speed
-
-        ballSpeedY = Math.min(ballSpeedY, 15); // Cap maximum ball speed
+        ballSpeedY = -ballSpeedY;  // Reverse ball direction
+        ballSpeedX = (Math.random() - 0.5) * 4;  // Add some random horizontal speed
         resetBall();
-      }
-
-      // Ball missed
-      if (ballPosY >= window.innerHeight - 15) {
-        endGame();
       }
 
       ball.style.left = `${ballPosX}px`;
       ball.style.top = `${ballPosY}px`;
     }
 
-    // Reset ball after each hit or miss
+    // Reset ball after hitting or missing
     function resetBall() {
-      ballPosX = window.innerWidth / 2 - 7.5;
+      ballPosX = window.innerWidth / 2 - 15;
       ballPosY = 0;
-      ballSpeedX = 0;
-      ballSpeedY = 5;
+      ballSpeedX = (Math.random() - 0.5) * 4;
+      ballSpeedY = Math.random() * 4 + 4;  // Random initial speed
     }
 
-    // End game function
+    // End the game
     function endGame() {
       gameRunning = false;
       finalScore.textContent = score;
