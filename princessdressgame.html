@@ -5,8 +5,8 @@
   <style>
     body {
       background: #ffe6f2;
-      text-align: center;
       font-family: 'Comic Sans MS', cursive;
+      text-align: center;
     }
     h1 {
       color: #ff66b2;
@@ -16,8 +16,8 @@
       width: 100%;
       max-width: 400px;
       margin: auto;
-      border: 3px dashed #ff99cc;
-      background: #fff;
+      background: white;
+      border: 4px dashed #ff99cc;
       height: 600px;
       overflow: hidden;
     }
@@ -28,8 +28,8 @@
       user-select: none;
     }
     .barbie {
-      left: 150px;
-      top: 250px;
+      left: 140px;
+      top: 230px;
       width: 120px;
       z-index: 1;
     }
@@ -38,9 +38,9 @@
     }
     .buttons button {
       margin: 5px;
-      padding: 8px 14px;
-      background: #ffccff;
+      padding: 10px 15px;
       border: none;
+      background: #ffccff;
       border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
@@ -51,17 +51,16 @@
 
   <h1>Barbie Dress-Up Game</h1>
   <div id="game-area">
-    <img src="https://i.imgur.com/3Z9rZwO.png" class="barbie" id="barbie">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Barbie_logo.svg/512px-Barbie_logo.svg.png" class="barbie" id="barbie">
   </div>
 
   <div class="buttons">
-    <button onclick="addItem('https://i.imgur.com/UxpAYGq.png')">Dress 1</button>
-    <button onclick="addItem('https://i.imgur.com/xr2UzfU.png')">Dress 2</button>
-    <button onclick="addItem('https://i.imgur.com/ZZx35Te.png')">Crown</button>
-    <button onclick="addItem('https://i.imgur.com/OVBDNyo.png')">Handbag</button>
-    <button onclick="addItem('https://i.imgur.com/p4hSnGK.png')">Sunglasses</button>
-    <button onclick="changeBgColor()">Change Background</button>
-    <button onclick="reset()">Reset</button>
+    <button onclick="addItem('https://emoji.slack-edge.com/T024FJB9S/dress/28c2d7a39b4199d4.png')">💃 Dress</button>
+    <button onclick="addItem('https://emoji.slack-edge.com/T024FJB9S/crown/5ae6e7e7bde1885e.png')">👑 Crown</button>
+    <button onclick="addItem('https://emoji.slack-edge.com/T024FJB9S/bag/1dfc3f8d7159df0b.png')">👜 Handbag</button>
+    <button onclick="addItem('https://emoji.slack-edge.com/T024FJB9S/glasses/7c30d89f3e7ec589.png')">🕶️ Glasses</button>
+    <button onclick="changeBgColor()">🎨 Change Background</button>
+    <button onclick="reset()">🔄 Reset</button>
   </div>
 
   <script>
@@ -95,7 +94,6 @@
       }
 
       document.addEventListener('mousemove', onMouseMove);
-
       document.addEventListener('mouseup', function mouseUpHandler() {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', mouseUpHandler);
@@ -118,7 +116,6 @@
       }
 
       document.addEventListener('touchmove', onTouchMove);
-
       document.addEventListener('touchend', function touchEndHandler() {
         document.removeEventListener('touchmove', onTouchMove);
         document.removeEventListener('touchend', touchEndHandler);
@@ -135,5 +132,6 @@
       document.body.style.background = '#ffe6f2';
     }
   </script>
+
 </body>
 </html>
