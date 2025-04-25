@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Emoji Thief</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #f0f8ff;
+      font-family: 'Comic Sans MS', cursive;
+      user-select: none;
+    }
+
+    #gameArea {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .emoji:hover {
+      transform: scale(1.3);
+    }
+
+    #bucket {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+    }
+
+    #scoreBoard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 1.5rem;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    #gameOver {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      display: none;
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="scoreBoard">Score: 0</div>
+    <div id="bucket">🪣</div>
+    <div id="gameOver"></div>
+  </div>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const bucket = document.getElementById("bucket");
+    const scoreBoard = document.getElementById("scoreBoard");
+    const gameOverText = document.getElementById("gameOver");
+
+    let score = 0;
+    let gameRunning = true;
+
+    function createEmoji() {
+      if (!gameRunning) return;
+
+      const emojiTypes = [
+        { char: "💰", good: true },
+        { char: "💎", good: true },
+        { char: "🎁", good: true },
+        { char: "💣", good: false },
+        { char: "💩", good: false },
+        { char: "🧨", good: false }
+      ];
+
+      const emojiData = emojiTypes[Math.floor(Math.random() * emojiTypes.length)];
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.textContent = emojiData.char;
+      emoji.dataset.good = emojiData.good;
+
+      // Random horizontal start position
+      const startX = Math.random() * (window.innerWidth - 40);
+      emoji.style.left = `${startX}px`;
+      emoji.style.top = `-50px`;
+
+      gameArea.appendChild(emoji);
+
+      // Falling animation
+      let posY = -50;
+      const fallSpeed = 2 + Math.random() * 3;
+      const fall = setInterval(() => {
+        if (!gameRunning) {
+          clearInterval(fall);
+          emoji.remove();
+          return;
+        }
+
+        posY += fallSpeed;
+        emoji.style.top = `${posY}px`;
+
+        const bucketRect = bucket.getBoundingClientRect();
+        const emojiRect = emoji.getBoundingClientRect();
+
+        // Collision check
+        if (
+          posY > window.innerHeight - 100 &&
+          emojiRect.left < bucketRect.right &&
+          emojiRect.right > bucketRect.left
+        ) {
+          clearInterval(fall);
+          emoji.remove();
+
+          if (emoji.dataset.good === "true") {
+            score += 10;
+          } else {
+            score -= 20;
+            if (score < 0) score = 0;
+          }
+
+          scoreBoard.textContent = `Score: ${score}`;
+        }
+
+        // If emoji falls out of screen
+        if (posY > window.innerHeight) {
+          clearInterval(fall);
+          emoji.remove();
+        }
+      }, 20);
+    }
+
+    // Spawn emojis regularly
+    const emojiInterval = setInterval(() => {
+      if (gameRunning) createEmoji();
+    }, 600);
+
+    // Move bucket with mouse or touch
+    document.addEventListener("mousemove", (e) => {
+      bucket.style.left = `${e.clientX}px`;
+    });
+
+    document.addEventListener("touchmove", (e) => {
+      bucket.style.left = `${e.touches[0].clientX}px`;
+    });
+
+    // End game after 30 seconds
+    setTimeout(() => {
+      gameRunning = false;
+      clearInterval(emojiInterval);
+      gameOverText.textContent = `Game Over! Final Score: ${score}`;
+      gameOverText.style.display = "block";
+    }, 30000);
+  </script>
+</body>
+</html>
