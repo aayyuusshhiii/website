@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Paint Splash Game with Physics</title>
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    canvas { display: block; }
+    #palette { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10; }
+    .color-box { width: 40px; height: 40px; display: inline-block; margin: 5px; cursor: pointer; border-radius: 10px; }
+    .color-box:hover { opacity: 0.8; }
+    #scoreboard { position: absolute; top: 10px; left: 10px; font-size: 20px; color: white; z-index: 10; }
+  </style>
+</head>
+<body>
+
+  <div id="palette">
+    <div class="color-box" style="background-color: red;" onclick="changeColor('red')"></div>
+    <div class="color-box" style="background-color: green;" onclick="changeColor('green')"></div>
+    <div class="color-box" style="background-color: blue;" onclick="changeColor('blue')"></div>
+    <div class="color-box" style="background-color: yellow;" onclick="changeColor('yellow')"></div>
+    <div class="color-box" style="background-color: purple;" onclick="changeColor('purple')"></div>
+    <div class="color-box" style="background-color: pink;" onclick="changeColor('pink')"></div>
+  </div>
+
+  <div id="scoreboard">Score: <span id="score">0</span></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.19.0/dist/cannon-es.js"></script>
+  <script>
+    let scene, camera, renderer;
+    let world, paintObjects = [];
+    let currentColor = 'red';
+    let score = 0;
+    const scoreDisplay = document.getElementById('score');
+    
+    // Physics parameters
+    const gravity = new THREE.Vector3(0, -9.8, 0); // Gravity force
+
+    function init() {
+      // Initialize 3D scene
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      let light = new THREE.PointLight(0xffffff, 1, 100);
+      light.position.set(0, 50, 50);
+      scene.add(light);
+
+      // Initialize Cannon.js world (physics)
+      world = new CANNON.World();
+      world.gravity.set(0, -9.8, 0); // Apply gravity
+      world.broadphase = new CANNON.SAPBroadphase(world);
+      world.solver.iterations = 10;
+      world.defaultContactMaterial.friction = 0.4;
+      world.defaultContactMaterial.restitution = 0.7; // Bounciness
+
+      // Create ground plane
+      const groundShape = new CANNON.Plane();
+      const groundMaterial = new CANNON.Material();
+      const groundBody = new CANNON.Body({
+        mass: 0, // Static body
+        position: new CANNON.Vec3(0, -2, 0)
+      });
+      groundBody.addShape(groundShape);
+      world.addBody(groundBody);
+
+      camera.position.z = 5;
+      animate();
+    }
+
+    function changeColor(color) {
+      currentColor = color;
+    }
+
+    function createPaintSplash(x, y) {
+      // Create 3D paint splash sphere using Three.js
+      const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+      const material = new THREE.MeshStandardMaterial({ color: currentColor, metalness: 0.2, roughness: 0.8, emissive: currentColor });
+      const paintSplash = new THREE.Mesh(geometry, material);
+      paintSplash.position.set(x, y, 0);
+      scene.add(paintSplash);
+
+      // Create Cannon.js body for physics simulation
+      const paintSplashShape = new CANNON.Sphere(0.1);
+      const paintSplashBody = new CANNON.Body({
+        mass: 1, // Mass of the paint splash
+        position: new CANNON.Vec3(x, y, 0)
+      });
+      paintSplashBody.addShape(paintSplashShape);
+      world.addBody(paintSplashBody);
+
+      // Random velocity for the splash
+      const velocity = new CANNON.Vec3((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, 0);
+      paintSplashBody.velocity.set(velocity.x, velocity.y, 0);
+
+      // Add to paint objects list for removal later
+      paintObjects.push({ mesh: paintSplash, body: paintSplashBody });
+
+      // Play splash sound
+      playSplashSound();
+
+      // Update score
+      score++;
+      scoreDisplay.textContent = `Score: ${score}`;
+    }
+
+    function onMouseMove(event) {
+      const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      createPaintSplash(mouseX, mouseY);
+    }
+
+    function onTouchMove(event) {
+      event.preventDefault();
+      const touch = event.touches[0];
+      const mouseX = (touch.clientX / window.innerWidth) * 2 - 1;
+      const mouseY = -(touch.clientY / window.innerHeight) * 2 + 1;
+      createPaintSplash(mouseX, mouseY);
+    }
+
+    function playSplashSound() {
+      const audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+      audio.play();
+    }
+
+    function updatePaintObjects() {
+      // Update Cannon.js physics world
+      world.step(1 / 60); // Physics simulation step
+
+      paintObjects.forEach((splash, index) => {
+        // Sync 3D object position with physics body
+        splash.mesh.position.copy(splash.body.position);
+
+        // Remove splash if it falls out of bounds
+        if (splash.mesh.position.y < -5) {
+          scene.remove(splash.mesh);
+          world.removeBody(splash.body);
+          paintObjects.splice(index, 1);
+        }
+      });
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      updatePaintObjects();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('touchmove', onTouchMove);
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    init();
+  </script>
+
+</body>
+</html>
