@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  script async src="https://www.googletagmanager.com/gtag/js?id=G-QFW5RVDYQT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-QFW5RVDYQT');
-</script>
-
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Princess Barbie Makeover</title>
   <style>
     body {
       font-family: 'Comic Sans MS', cursive;
-      background: #f0e6ff;
+      background: #ffe6f0;
       margin: 0;
       overflow-x: hidden;
     }
@@ -32,8 +24,10 @@
       width: 300px;
       height: 500px;
       background: url('https://i.ibb.co/QFBNvd7/bg1.jpg') no-repeat center/cover;
-      border: 4px solid #ffccff;
+      border: 5px solid #ff99cc;
       border-radius: 20px;
+      overflow: hidden;
+      touch-action: none;
     }
 
     #barbie-img {
@@ -46,8 +40,8 @@
     .item {
       position: absolute;
       z-index: 2;
-      width: 100px;
-      height: auto;
+      max-width: 100%;
+      touch-action: none;
     }
 
     #controls {
@@ -64,17 +58,13 @@
       border-radius: 12px;
     }
 
-    .color-picker {
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
+    .control-section h4 {
+      margin: 0 0 5px 0;
     }
 
     button {
       margin: 3px;
-      padding: 8px;
+      padding: 6px 10px;
       border: none;
       background: #ffc0cb;
       border-radius: 6px;
@@ -85,145 +75,171 @@
       background: #ff88aa;
     }
 
+    input[type="color"] {
+      margin: 3px;
+    }
+
     canvas {
       display: none;
     }
   </style>
 </head>
 <body>
+  <div id="game-container">
+    <div id="barbie-area">
+      <img id="barbie-img" src="https://i.ibb.co/VxHbGbG/barbie-base.png" alt="Barbie">
+    </div>
 
-<div id="game-container">
-  <div id="barbie-area">
-    <img id="barbie-img" src="https://i.ibb.co/VxHbGbG/barbie-base.png" alt="Barbie">
+    <div id="controls">
+      <div class="control-section">
+        <h4>Dresses</h4>
+        <button onclick="addItem('https://i.ibb.co/yydYMGp/dress1.png')">One-piece</button>
+        <button onclick="addItem('https://i.ibb.co/N3rLXL1/dress2.png')">Two-piece</button>
+      </div>
+
+      <div class="control-section">
+        <h4>Hair</h4>
+        <button onclick="addItem('https://i.ibb.co/f2F5F6k/hair1.png')">Style 1</button>
+        <button onclick="addItem('https://i.ibb.co/Br5Twv7/hair2.png')">Style 2</button>
+      </div>
+
+      <div class="control-section">
+        <h4>Accessories</h4>
+        <button onclick="addItem('https://i.ibb.co/3dHdX2V/hat.png')">Hat</button>
+        <button onclick="addItem('https://i.ibb.co/WxvvBqF/glasses.png')">Sunglasses</button>
+        <button onclick="addItem('https://i.ibb.co/86z5vsX/bag.png')">Handbag</button>
+      </div>
+
+      <div class="control-section">
+        <h4>Makeup</h4>
+        <label>Eyeshadow</label><input type="color" onchange="addMakeup('eyeshadow', this.value)"><br>
+        <label>Lipstick</label><input type="color" onchange="addMakeup('lipstick', this.value)"><br>
+        <label>Blush</label><input type="color" onchange="addMakeup('blush', this.value)">
+      </div>
+
+      <div class="control-section">
+        <h4>Background</h4>
+        <button onclick="changeBackground('https://i.ibb.co/QFBNvd7/bg1.jpg')">Garden</button>
+        <button onclick="changeBackground('https://i.ibb.co/FsxX3pN/bg2.jpg')">Palace</button>
+      </div>
+
+      <div class="control-section">
+        <h4>Actions</h4>
+        <button onclick="undo()">Undo</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="saveImage()">Save</button>
+      </div>
+    </div>
   </div>
 
-  <div id="controls">
-    <div class="control-section">
-      <h4>Dresses</h4>
-      <button onclick="changeDress('https://i.ibb.co/yydYMGp/dress1.png')">One-piece</button>
-      <button onclick="changeDress('https://i.ibb.co/N3rLXL1/dress2.png')">Two-piece</button>
-    </div>
+  <canvas id="canvas" width="300" height="500"></canvas>
 
-    <div class="control-section">
-      <h4>Hair</h4>
-      <button onclick="changeHair('https://i.ibb.co/f2F5F6k/hair1.png')">Style 1</button>
-      <button onclick="changeHair('https://i.ibb.co/Br5Twv7/hair2.png')">Style 2</button>
-      <input type="color" onchange="changeHairColor(this.value)">
-    </div>
+  <script>
+    const barbieArea = document.getElementById('barbie-area');
+    const historyStack = [];
 
-    <div class="control-section">
-      <h4>Makeup</h4>
-      <label>Eyeshadow</label><input type="color" onchange="applyMakeup('eyeshadow', this.value)"><br>
-      <label>Lipstick</label><input type="color" onchange="applyMakeup('lipstick', this.value)"><br>
-      <label>Blush</label><input type="color" onchange="applyMakeup('blush', this.value)">
-    </div>
+    function addItem(src) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'item';
+      img.style.left = '100px';
+      img.style.top = '100px';
+      enableDrag(img);
+      barbieArea.appendChild(img);
+      historyStack.push(img);
+    }
 
-    <div class="control-section">
-      <h4>Accessories</h4>
-      <button onclick="addAccessory('hat', 'https://i.ibb.co/3dHdX2V/hat.png')">Hat</button>
-      <button onclick="addAccessory('glasses', 'https://i.ibb.co/WxvvBqF/glasses.png')">Sunglasses</button>
-      <button onclick="addAccessory('bag', 'https://i.ibb.co/86z5vsX/bag.png')">Handbag</button>
-    </div>
+    function addMakeup(type, color) {
+      const circle = document.createElement('div');
+      circle.className = 'item';
+      circle.style.width = '60px';
+      circle.style.height = '60px';
+      circle.style.background = color;
+      circle.style.borderRadius = '50%';
+      circle.style.opacity = '0.4';
+      circle.style.left = '120px';
+      circle.style.top = type === 'blush' ? '180px' : type === 'eyeshadow' ? '100px' : '200px';
+      enableDrag(circle);
+      barbieArea.appendChild(circle);
+      historyStack.push(circle);
+    }
 
-    <div class="control-section">
-      <h4>Background</h4>
-      <button onclick="changeBackground('https://i.ibb.co/QFBNvd7/bg1.jpg')">Garden</button>
-      <button onclick="changeBackground('https://i.ibb.co/FsxX3pN/bg2.jpg')">Palace</button>
-    </div>
+    function changeBackground(url) {
+      barbieArea.style.background = `url('${url}') no-repeat center/cover`;
+    }
 
-    <div class="control-section">
-      <button onclick="saveImage()">Save Look</button>
-    </div>
-  </div>
-</div>
+    function undo() {
+      const last = historyStack.pop();
+      if (last) last.remove();
+    }
 
-<canvas id="canvas" width="300" height="500"></canvas>
+    function reset() {
+      historyStack.forEach(item => item.remove());
+      historyStack.length = 0;
+    }
 
-<script>
-  const barbieArea = document.getElementById('barbie-area');
+    function saveImage() {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const imgs = Array.from(barbieArea.querySelectorAll('img, .item'));
 
-  function changeDress(src) {
-    addOrReplace('dress', src);
-  }
+      const loadImages = imgs.map(el => {
+        return new Promise(resolve => {
+          if (el.tagName === 'IMG') {
+            const tempImg = new Image();
+            tempImg.crossOrigin = "anonymous";
+            tempImg.src = el.src;
+            tempImg.onload = () => resolve({ img: tempImg, x: el.offsetLeft, y: el.offsetTop, w: el.width, h: el.height });
+          } else {
+            // for makeup circles
+            resolve(null);
+          }
+        });
+      });
 
-  function changeHair(src) {
-    addOrReplace('hair', src);
-  }
+      Promise.all(loadImages).then(images => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        images.forEach(data => {
+          if (data) ctx.drawImage(data.img, data.x, data.y, data.w, data.h);
+        });
+        const link = document.createElement('a');
+        link.download = 'princess-look.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
 
-  function changeHairColor(color) {
-    const hair = document.querySelector('.item.hair');
-    if (hair) hair.style.filter = `hue-rotate(${getHueRotation(color)}deg)`;
-  }
+    function enableDrag(el) {
+      let offsetX, offsetY;
 
-  function applyMakeup(type, color) {
-    alert(`Pretend we applied ${type} with color ${color}!`);
-    // Real makeup overlays would need layered SVGs or filters.
-  }
+      el.addEventListener('mousedown', startDrag);
+      el.addEventListener('touchstart', startDrag);
 
-  function addAccessory(type, src) {
-    addOrReplace(type, src);
-  }
+      function startDrag(e) {
+        e.preventDefault();
+        const evt = e.type === 'touchstart' ? e.touches[0] : e;
+        offsetX = evt.clientX - el.offsetLeft;
+        offsetY = evt.clientY - el.offsetTop;
 
-  function addOrReplace(type, src) {
-    const existing = document.querySelector(`.item.${type}`);
-    if (existing) existing.remove();
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('mouseup', stopDrag);
+        window.addEventListener('touchmove', drag, { passive: false });
+        window.addEventListener('touchend', stopDrag);
+      }
 
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = `item ${type}`;
-    barbieArea.appendChild(img);
+      function drag(e) {
+        const evt = e.type === 'touchmove' ? e.touches[0] : e;
+        el.style.left = `${evt.clientX - offsetX}px`;
+        el.style.top = `${evt.clientY - offsetY}px`;
+      }
 
-    // Positioning logic (basic for now)
-    if (type === 'hair') img.style.top = '0px';
-    if (type === 'dress') img.style.bottom = '0px';
-    if (type === 'hat') img.style.top = '0px';
-    if (type === 'glasses') img.style.top = '80px';
-    if (type === 'bag') img.style.bottom = '20px';
-  }
-
-  function changeBackground(url) {
-    barbieArea.style.background = `url('${url}') no-repeat center/cover`;
-  }
-
-  function saveImage() {
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const images = Array.from(barbieArea.querySelectorAll('img'));
-    let loaded = 0;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    images.forEach(img => {
-      const tempImg = new Image();
-      tempImg.crossOrigin = "anonymous";
-      tempImg.src = img.src;
-      tempImg.onload = () => {
-        const rect = img.getBoundingClientRect();
-        const baseRect = barbieArea.getBoundingClientRect();
-        const x = rect.left - baseRect.left;
-        const y = rect.top - baseRect.top;
-        ctx.drawImage(tempImg, x, y, img.width, img.height);
-        loaded++;
-        if (loaded === images.length) {
-          const link = document.createElement('a');
-          link.download = 'princess-look.png';
-          link.href = canvas.toDataURL();
-          link.click();
-        }
-      };
-    });
-  }
-
-  function getHueRotation(hex) {
-    // Rough approximation for hue-rotate from hex color
-    const r = parseInt(hex.substr(1,2),16);
-    const g = parseInt(hex.substr(3,2),16);
-    const b = parseInt(hex.substr(5,2),16);
-    const hue = Math.atan2(Math.sqrt(3)*(g - b), 2*r - g - b) * 180 / Math.PI;
-    return (hue + 360) % 360;
-  }
-</script>
-
+      function stopDrag() {
+        window.removeEventListener('mousemove', drag);
+        window.removeEventListener('mouseup', stopDrag);
+        window.removeEventListener('touchmove', drag);
+        window.removeEventListener('touchend', stopDrag);
+      }
+    }
+  </script>
 </body>
 </html>
-
