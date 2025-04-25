@@ -36,7 +36,6 @@
       bottom: 0;
       z-index: 1;
       user-select: none;
-      -webkit-user-drag: none;
     }
 
     .item {
@@ -145,7 +144,7 @@
   const barbieArea = document.getElementById('barbie-area');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  let historyStack = [];
+  const historyStack = [];
 
   function changeDress(src) {
     addOrReplace('dress', src);
@@ -161,7 +160,99 @@
   }
 
   function applyMakeup(type, color) {
-    alert(`Pretend we applied ${type} with color ${color}!`);
-    // Real makeup overlays would need
-::contentReference[oaicite:14]{index=14}
- 
+    alert(`Pretend we applied ${type} in color ${color}!`);
+  }
+
+  function changeBackground(src) {
+    barbieArea.style.backgroundImage = `url(${src})`;
+  }
+
+  function addAccessory(type, src) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.classList.add('item', type);
+    img.style.left = '100px';
+    img.style.top = '200px';
+    makeDraggable(img);
+    barbieArea.appendChild(img);
+    historyStack.push(img);
+  }
+
+  function addOrReplace(type, src) {
+    const existing = document.querySelector(`.item.${type}`);
+    if (existing) existing.remove();
+    const img = document.createElement('img');
+    img.src = src;
+    img.classList.add('item', type);
+    img.style.left = '100px';
+    img.style.top = '200px';
+    makeDraggable(img);
+    barbieArea.appendChild(img);
+    historyStack.push(img);
+  }
+
+  function getHueRotation(hexColor) {
+    const rgb = parseInt(hexColor.substring(1), 16);
+    const r = (rgb >> 16) & 255;
+    const g = (rgb >> 8) & 255;
+    const b = rgb & 255;
+    return ((Math.atan2(Math.sqrt(3) * (g - b), 2 * r - g - b) * 180) / Math.PI + 360) % 360;
+  }
+
+  function undo() {
+    const last = historyStack.pop();
+    if (last) last.remove();
+  }
+
+  function reset() {
+    const items = document.querySelectorAll('.item');
+    items.forEach(i => i.remove());
+    historyStack.length = 0;
+  }
+
+  function saveImage() {
+    html2canvas(barbieArea).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'barbie-look.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+
+  function makeDraggable(el) {
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    const onStart = e => {
+      isDragging = true;
+      const rect = el.getBoundingClientRect();
+      offsetX = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      offsetY = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    };
+
+    const onMove = e => {
+      if (!isDragging) return;
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - offsetX - barbieArea.getBoundingClientRect().left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - offsetY - barbieArea.getBoundingClientRect().top;
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+    };
+
+    const onEnd = () => {
+      isDragging = false;
+    };
+
+    el.addEventListener('mousedown', onStart);
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseup', onEnd);
+    el.addEventListener('touchstart', onStart, { passive: true });
+    el.addEventListener('touchmove', onMove, { passive: false });
+    el.addEventListener('touchend', onEnd);
+  }
+</script>
+
+<!-- Load html2canvas from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</body>
+</html>
