@@ -8,39 +8,53 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #d0f0fc;
+            background-color: #e0f7fa;
             overflow: hidden;
+            font-family: 'Arial', sans-serif;
         }
         .character {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff66b2;
             border-radius: 50%;
-            background-color: #ff88cc;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            transition: transform 0.2s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transition: transform 0.1s ease-in-out;
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
         }
         .shadow {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
             top: 0;
             left: 0;
         }
         .light {
             position: absolute;
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             background-color: rgba(255, 255, 255, 0.7);
             border-radius: 50%;
             pointer-events: none;
-            animation: lightAnimation 5s linear infinite;
+            animation: lightAnimation 3s linear infinite;
         }
         @keyframes lightAnimation {
-            0% { transform: translateX(100px) translateY(100px); }
-            50% { transform: translateX(500px) translateY(300px); }
-            100% { transform: translateX(100px) translateY(100px); }
+            0% { transform: translateX(200px) translateY(100px); }
+            50% { transform: translateX(500px) translateY(350px); }
+            100% { transform: translateX(200px) translateY(100px); }
+        }
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.example.com/cute-background.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
         }
         .audio {
             display: none;
@@ -53,6 +67,7 @@
             <source src="cute-sound.mp3" type="audio/mp3">
         </audio>
     </div>
+    <div class="background"></div>
     <div class="shadow"></div>
     <div class="light"></div>
     <div class="character"></div>
@@ -62,7 +77,6 @@
         let shadow = document.querySelector('.shadow');
         let light = document.querySelector('.light');
         let gameSound = document.getElementById('gameSound');
-
         let speed = 5;
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
@@ -77,6 +91,34 @@
         };
 
         window.addEventListener('keydown', moveCharacter);
+
+        // Check if character is in light
+        let checkLightCollision = () => {
+            let lightRect = light.getBoundingClientRect();
+            let charRect = character.getBoundingClientRect();
+
+            if (
+                charRect.left < lightRect.right &&
+                charRect.right > lightRect.left &&
+                charRect.top < lightRect.bottom &&
+                charRect.bottom > lightRect.top
+            ) {
+                // End the game if the character is in the light
+                gameSound.pause();
+                alert("Oops! You got caught by the light. Try again!");
+                resetGame();
+            }
+        };
+
+        let resetGame = () => {
+            x = window.innerWidth / 2;
+            y = window.innerHeight / 2;
+            character.style.transform = `translate(${x}px, ${y}px)`;
+            gameSound.play();
+        };
+
+        setInterval(checkLightCollision, 100);
+
     </script>
 </body>
 </html>
