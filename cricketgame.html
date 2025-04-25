@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enhanced Cricket Game</title>
+  <title>Real Cricket Game</title>
   <style>
     body {
       margin: 0;
@@ -11,7 +11,6 @@
       background-color: #1d1d1d;
       color: white;
       font-family: Arial, sans-serif;
-      user-select: none;
     }
 
     #gameArea {
@@ -25,34 +24,25 @@
       justify-content: center;
     }
 
-    #player {
-      width: 60px;
-      height: 100px;
+    #bat {
+      width: 100px;
+      height: 20px;
       background-color: #fff;
-      border-radius: 10px;
+      border-radius: 5px;
       position: absolute;
-      bottom: 10px;
-      left: 50%;
-      margin-left: -30px;
-      transition: width 0.2s ease;
+      bottom: 50px;
+      cursor: pointer;
     }
 
     #ball {
-      width: 10px;
-      height: 10px;
+      width: 15px;
+      height: 15px;
       background-color: #fff;
       border-radius: 50%;
       position: absolute;
-      left: 50%;
       top: 0;
-    }
-
-    .powerUp {
-      width: 20px;
-      height: 20px;
-      background-color: #ffcc00;
-      border-radius: 50%;
-      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     #scoreBoard {
@@ -62,16 +52,6 @@
       font-size: 2rem;
       background-color: rgba(0, 0, 0, 0.7);
       padding: 10px;
-      border-radius: 8px;
-    }
-
-    #livesBoard {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 1.5rem;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 8px;
       border-radius: 8px;
     }
 
@@ -99,8 +79,7 @@
 <body>
   <div id="gameArea">
     <div id="scoreBoard">Score: 0</div>
-    <div id="livesBoard">Lives: 3</div>
-    <div id="player"></div>
+    <div id="bat"></div>
     <div id="ball"></div>
     <div id="gameOver">
       Game Over! <br> Final Score: <span id="finalScore"></span><br>
@@ -109,88 +88,39 @@
   </div>
 
   <script>
-    const player = document.getElementById("player");
+    const bat = document.getElementById("bat");
     const ball = document.getElementById("ball");
     const scoreBoard = document.getElementById("scoreBoard");
-    const livesBoard = document.getElementById("livesBoard");
     const gameOverText = document.getElementById("gameOver");
     const finalScore = document.getElementById("finalScore");
     const playAgain = document.getElementById("playAgain");
 
     let score = 0;
-    let lives = 3;
-    let gameRunning = true;
-
-    let playerPosX = window.innerWidth / 2 - 30;
-    let playerPosY = window.innerHeight - 100;
     let ballSpeedY = 5;
     let ballSpeedX = 0;
-    let ballPosX = window.innerWidth / 2 - 5;
+    let ballPosX = window.innerWidth / 2 - 7.5;
     let ballPosY = 0;
-    let ballType = 'normal'; // normal or spin
-    let playerWidth = 60;
+    let batPosX = window.innerWidth / 2 - 50;
+    let gameRunning = true;
 
-    player.style.left = `${playerPosX}px`;
-    player.style.top = `${playerPosY}px`;
+    // Set initial positions
+    bat.style.left = `${batPosX}px`;
     ball.style.left = `${ballPosX}px`;
     ball.style.top = `${ballPosY}px`;
 
-    // Move player using arrow keys
-    document.addEventListener("keydown", movePlayer);
-
-    function movePlayer(e) {
+    // Move bat using the mouse or touch
+    document.addEventListener("mousemove", (e) => {
       if (!gameRunning) return;
 
-      if (e.key === "ArrowLeft" && playerPosX > 0) {
-        playerPosX -= 20;
-      }
-      if (e.key === "ArrowRight" && playerPosX < window.innerWidth - playerWidth) {
-        playerPosX += 20;
-      }
+      let mouseX = e.clientX;
+      batPosX = mouseX - bat.offsetWidth / 2;
+      if (batPosX < 0) batPosX = 0;
+      if (batPosX > window.innerWidth - bat.offsetWidth) batPosX = window.innerWidth - bat.offsetWidth;
 
-      player.style.left = `${playerPosX}px`;
-    }
+      bat.style.left = `${batPosX}px`;
+    });
 
-    // Create a power-up
-    function createPowerUp() {
-      const powerUp = document.createElement("div");
-      powerUp.classList.add("powerUp");
-      const x = Math.random() * (window.innerWidth - 20);
-      const y = Math.random() * (window.innerHeight - 100);
-      powerUp.style.left = `${x}px`;
-      powerUp.style.top = `${y}px`;
-      document.getElementById("gameArea").appendChild(powerUp);
-
-      setTimeout(() => {
-        powerUp.remove();
-      }, 5000);
-
-      return powerUp;
-    }
-
-    // Collision with power-up
-    function checkPowerUpCollision(powerUp) {
-      const playerRect = player.getBoundingClientRect();
-      const powerUpRect = powerUp.getBoundingClientRect();
-
-      if (
-        playerRect.bottom >= powerUpRect.top &&
-        playerRect.top <= powerUpRect.bottom &&
-        playerRect.right >= powerUpRect.left &&
-        playerRect.left <= powerUpRect.right
-      ) {
-        playerWidth = 120; // Increase bat width temporarily
-        player.style.width = `${playerWidth}px`;
-        powerUp.remove();
-
-        setTimeout(() => {
-          playerWidth = 60; // Reset bat width
-          player.style.width = `${playerWidth}px`;
-        }, 10000);
-      }
-    }
-
-    // Move ball with added speed variation and spin
+    // Ball movement
     function moveBall() {
       if (!gameRunning) return;
 
@@ -198,7 +128,7 @@
       ballPosY += ballSpeedY;
 
       // Ball bouncing off edges
-      if (ballPosX <= 0 || ballPosX >= window.innerWidth - 10) {
+      if (ballPosX <= 0 || ballPosX >= window.innerWidth - 15) {
         ballSpeedX = -ballSpeedX;  // Reverse direction
       }
       if (ballPosY <= 0) {
@@ -206,47 +136,39 @@
       }
 
       // Ball hitting the bat (player)
-      const playerRect = player.getBoundingClientRect();
+      const batRect = bat.getBoundingClientRect();
       const ballRect = ball.getBoundingClientRect();
 
       if (
-        ballRect.bottom >= playerRect.top &&
-        ballRect.top <= playerRect.bottom &&
-        ballRect.right >= playerRect.left &&
-        ballRect.left <= playerRect.right
+        ballRect.bottom >= batRect.top &&
+        ballRect.top <= batRect.bottom &&
+        ballRect.right >= batRect.left &&
+        ballRect.left <= batRect.right
       ) {
         score++;
-        if (ballPosX > window.innerWidth / 2 - 50 && ballPosX < window.innerWidth / 2 + 50) {
-          score += 4; // Boundary hit
-        }
-
-        ballSpeedY = -ballSpeedY;
-        ballSpeedX = Math.random() * 4 - 2; // Random horizontal speed
         scoreBoard.textContent = `Score: ${score}`;
+        ballSpeedY += 0.1; // Increase ball speed gradually
+        ballSpeedX = (Math.random() - 0.5) * 4; // Add random horizontal speed
+
+        ballSpeedY = Math.min(ballSpeedY, 15); // Cap maximum ball speed
+        resetBall();
       }
 
       // Ball missed
-      if (ballPosY >= window.innerHeight - 10) {
-        lives--;
-        livesBoard.textContent = `Lives: ${lives}`;
-        resetBall();
-
-        if (lives === 0) {
-          endGame();
-        }
+      if (ballPosY >= window.innerHeight - 15) {
+        endGame();
       }
 
       ball.style.left = `${ballPosX}px`;
       ball.style.top = `${ballPosY}px`;
     }
 
-    // Reset ball position after each miss
+    // Reset ball after each hit or miss
     function resetBall() {
-      ballPosX = window.innerWidth / 2 - 5;
+      ballPosX = window.innerWidth / 2 - 7.5;
       ballPosY = 0;
-      ballSpeedY = Math.random() * 4 + 5;
-      ballSpeedX = Math.random() * 2 - 1;
-      ballType = Math.random() > 0.5 ? 'normal' : 'spin'; // Randomly choose ball type
+      ballSpeedX = 0;
+      ballSpeedY = 5;
     }
 
     // End game function
@@ -261,14 +183,7 @@
       location.reload();
     });
 
-    // Power-up creation every 10 seconds
-    setInterval(() => {
-      if (gameRunning) {
-        createPowerUp();
-      }
-    }, 10000);
-
-    // Game loop to move ball
+    // Game loop
     setInterval(moveBall, 30);
   </script>
 </body>
