@@ -3,83 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cute Sneaky Shadow Game</title>
+    <title>Running Man vs Shadow</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #e0f7fa;
+            background-color: white;
             overflow: hidden;
             font-family: 'Arial', sans-serif;
         }
-        .character {
+        .character, .shadow {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            background-color: #ff66b2;
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            width: 50px;
+            height: 50px;
             transition: transform 0.1s ease-in-out;
-            animation: bounce 1s infinite alternate;
         }
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
+        .character {
+            background-image: url('https://emojiapi.dev/api/emoji/running-man.png');
+            background-size: cover;
         }
         .shadow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            top: 0;
-            left: 0;
-        }
-        .light {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: lightAnimation 3s linear infinite;
-        }
-        @keyframes lightAnimation {
-            0% { transform: translateX(200px) translateY(100px); }
-            50% { transform: translateX(500px) translateY(350px); }
-            100% { transform: translateX(200px) translateY(100px); }
-        }
-        .background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.example.com/cute-background.jpg') no-repeat center center;
+            background-image: url('https://emojiapi.dev/api/emoji/shadow.png');
             background-size: cover;
-            z-index: -1;
         }
-        .audio {
+        .bullet {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
             display: none;
         }
     </style>
 </head>
 <body>
-    <div class="audio">
-        <audio id="gameSound" autoplay loop>
-            <source src="cute-sound.mp3" type="audio/mp3">
-        </audio>
-    </div>
-    <div class="background"></div>
-    <div class="shadow"></div>
-    <div class="light"></div>
-    <div class="character"></div>
+    <div class="character" id="character"></div>
+    <div class="shadow" id="shadow1"></div>
+    <div class="bullet" id="bullet"></div>
 
     <script>
-        let character = document.querySelector('.character');
-        let shadow = document.querySelector('.shadow');
-        let light = document.querySelector('.light');
-        let gameSound = document.getElementById('gameSound');
-        let speed = 5;
+        let character = document.getElementById('character');
+        let shadow = document.getElementById('shadow1');
+        let bullet = document.getElementById('bullet');
+        let speed = 2;
+        let bulletSpeed = 5;
+        let level = 1;
+        let shadows = [shadow];
+        let isFiring = false;
+
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
+        let shadowX = window.innerWidth / 2;
+        let shadowY = window.innerHeight / 2;
 
         let moveCharacter = (event) => {
             if (event.key === "ArrowUp" || event.key === "w") y -= speed;
@@ -90,34 +65,86 @@
             character.style.transform = `translate(${x}px, ${y}px)`;
         };
 
-        window.addEventListener('keydown', moveCharacter);
+        let moveShadow = () => {
+            let dx = x - shadowX;
+            let dy = y - shadowY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            let shadowSpeed = speed + (level * 0.5); // Shadow gets faster each level
 
-        // Check if character is in light
-        let checkLightCollision = () => {
-            let lightRect = light.getBoundingClientRect();
+            if (distance > 10) {
+                shadowX += (dx / distance) * shadowSpeed;
+                shadowY += (dy / distance) * shadowSpeed;
+            }
+
+            shadow.style.transform = `translate(${shadowX}px, ${shadowY}px)`;
+        };
+
+        let fireBullet = () => {
+            if (isFiring) return;
+            isFiring = true;
+
+            let bulletX = x + 25;
+            let bulletY = y + 25;
+
+            bullet.style.left = `${bulletX}px`;
+            bullet.style.top = `${bulletY}px`;
+            bullet.style.display = "block";
+
+            let interval = setInterval(() => {
+                bulletX += bulletSpeed;
+
+                bullet.style.left = `${bulletX}px`;
+
+                if (bulletX > window.innerWidth) {
+                    clearInterval(interval);
+                    bullet.style.display = "none";
+                    isFiring = false;
+                }
+            }, 10);
+        };
+
+        let checkBulletCollision = () => {
             let charRect = character.getBoundingClientRect();
+            let shadowRect = shadow.getBoundingClientRect();
+            let bulletRect = bullet.getBoundingClientRect();
 
             if (
-                charRect.left < lightRect.right &&
-                charRect.right > lightRect.left &&
-                charRect.top < lightRect.bottom &&
-                charRect.bottom > lightRect.top
+                bulletRect.left < shadowRect.right &&
+                bulletRect.right > shadowRect.left &&
+                bulletRect.top < shadowRect.bottom &&
+                bulletRect.bottom > shadowRect.top
             ) {
-                // End the game if the character is in the light
-                gameSound.pause();
-                alert("Oops! You got caught by the light. Try again!");
-                resetGame();
+                shadow.style.display = "none";
+                setTimeout(() => {
+                    shadow.style.display = "block";
+                    shadowX = Math.random() * window.innerWidth;
+                    shadowY = Math.random() * window.innerHeight;
+                }, 500);
             }
         };
 
-        let resetGame = () => {
-            x = window.innerWidth / 2;
-            y = window.innerHeight / 2;
-            character.style.transform = `translate(${x}px, ${y}px)`;
-            gameSound.play();
+        let increaseLevel = () => {
+            if (level < 5) {
+                level++;
+                let newShadow = document.createElement('div');
+                newShadow.classList.add('shadow');
+                document.body.appendChild(newShadow);
+                shadows.push(newShadow);
+            }
         };
 
-        setInterval(checkLightCollision, 100);
+        setInterval(() => {
+            moveShadow();
+            checkBulletCollision();
+            if (Math.random() < 0.02) {
+                increaseLevel();
+            }
+        }, 20);
+
+        window.addEventListener('keydown', moveCharacter);
+        window.addEventListener('keydown', (event) => {
+            if (event.key === " ") fireBullet();
+        });
 
     </script>
 </body>
