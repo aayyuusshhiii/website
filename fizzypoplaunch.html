@@ -29,7 +29,8 @@
       transform: translateX(-50%);
       font-size: 60px;
       animation: bounce 1s infinite alternate;
-      cursor: pointer;
+      cursor: grab;
+      user-select: none;
     }
 
     @keyframes bounce {
@@ -51,6 +52,25 @@
       to {
         transform: translateY(-100vh) scale(1.3);
         opacity: 0;
+      }
+    }
+
+    .sparkle {
+      position: absolute;
+      font-size: 14px;
+      color: #fff;
+      animation: sparkle 1s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes sparkle {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(2) translateY(-20px);
       }
     }
 
@@ -100,8 +120,8 @@
     const scoreDisplay = document.getElementById("score");
     let score = 0;
     let isLaunching = false;
-
-    const emojis = ["⭐", "🍬", "❤️", "✨", "🍓", "🌈", "🧃", "🍭"];
+    let dragging = false;
+    const emojis = ["⭐", "🍬", "❤️", "✨", "🍓", "🌈", "🧃", "🍭", "💎", "🧸"];
 
     function createCollectible(x, y) {
       const emoji = document.createElement("div");
@@ -113,9 +133,10 @@
       gameCanvas.appendChild(emoji);
 
       emoji.addEventListener("click", () => {
-        score += 1;
+        score += (emoji.innerText === "💎") ? 5 : 1;
         scoreDisplay.innerText = `Score: ${score}`;
         emoji.remove();
+        sparkle(x, y);
       });
 
       setTimeout(() => {
@@ -123,14 +144,29 @@
       }, 5000);
     }
 
+    function sparkle(x, y) {
+      for (let i = 0; i < 5; i++) {
+        const star = document.createElement("div");
+        star.className = "sparkle";
+        star.innerText = "✨";
+        star.style.left = `${x + Math.random() * 20 - 10}px`;
+        star.style.top = `${y + Math.random() * 20 - 10}px`;
+        gameCanvas.appendChild(star);
+        setTimeout(() => star.remove(), 1000);
+      }
+    }
+
     function launch() {
       if (isLaunching) return;
       isLaunching = true;
 
       let launchHeight = window.innerHeight - 150;
-      let bottleY = launchHeight;
-      let bottleX = window.innerWidth / 2;
+      let bottleRect = bottle.getBoundingClientRect();
+      let bottleY = window.innerHeight - bottleRect.top - bottle.offsetHeight / 2;
+      let bottleX = bottleRect.left + bottle.offsetWidth / 2;
       let velocity = -15;
+
+      bottle.style.animation = "none"; // stop bounce
 
       const move = () => {
         bottleY += velocity;
@@ -138,14 +174,15 @@
 
         bottle.style.bottom = `${window.innerHeight - bottleY}px`;
 
-        // Random emoji collectibles during flight
+        // Sparkle trail
         if (Math.random() < 0.2) {
-          const offsetX = Math.random() * 100 - 50;
+          const offsetX = Math.random() * 80 - 40;
           createCollectible(bottleX + offsetX, bottleY);
         }
 
         if (bottleY >= launchHeight) {
           bottle.style.bottom = `40px`;
+          bottle.style.animation = "bounce 1s infinite alternate";
           isLaunching = false;
         } else {
           requestAnimationFrame(move);
@@ -156,9 +193,40 @@
     }
 
     launchBtn.addEventListener("click", launch);
-
-    // Optional: allow bottle itself to be tapped to launch
     bottle.addEventListener("click", launch);
+
+    // Drag the bottle
+    let offsetX, offsetY;
+
+    function startDrag(e) {
+      dragging = true;
+      const rect = bottle.getBoundingClientRect();
+      offsetX = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      offsetY = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      bottle.style.animation = "none";
+    }
+
+    function drag(e) {
+      if (!dragging) return;
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - offsetX;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - offsetY;
+      bottle.style.left = `${x}px`;
+      bottle.style.bottom = `${window.innerHeight - y - bottle.offsetHeight}px`;
+    }
+
+    function endDrag() {
+      dragging = false;
+      bottle.style.animation = "bounce 1s infinite alternate";
+    }
+
+    bottle.addEventListener("mousedown", startDrag);
+    bottle.addEventListener("touchstart", startDrag);
+
+    window.addEventListener("mousemove", drag);
+    window.addEventListener("touchmove", drag);
+
+    window.addEventListener("mouseup", endDrag);
+    window.addEventListener("touchend", endDrag);
   </script>
 </body>
 </html>
