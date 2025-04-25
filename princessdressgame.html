@@ -1,181 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Princess Barbie Dress-Up</title>
+  <title>Barbie Dress-Up Game</title>
   <style>
     body {
-      font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(to bottom right, #ffe6f9, #ffe0ff);
-      margin: 0;
-      padding: 0;
+      background: #ffe6f2;
       text-align: center;
+      font-family: 'Comic Sans MS', cursive;
     }
-
-    #game-container {
-      padding: 20px;
+    h1 {
+      color: #ff66b2;
     }
-
-    #barbie-area {
+    #game-area {
       position: relative;
-      width: 300px;
-      height: 500px;
-      margin: 0 auto;
-      background: url('https://i.ibb.co/QFBNvd7/bg1.jpg') no-repeat center/cover;
-      border: 5px solid #ffb6c1;
-      border-radius: 15px;
-    }
-
-    #barbie-img {
-      position: absolute;
       width: 100%;
-      bottom: 0;
-      z-index: 1;
+      max-width: 400px;
+      margin: auto;
+      border: 3px dashed #ff99cc;
+      background: #fff;
+      height: 600px;
+      overflow: hidden;
     }
-
-    .draggable {
+    .barbie, .item {
       position: absolute;
       width: 100px;
-      cursor: move;
-      z-index: 2;
+      cursor: grab;
+      user-select: none;
     }
-
-    .controls {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
+    .barbie {
+      left: 150px;
+      top: 250px;
+      width: 120px;
+      z-index: 1;
     }
-
-    .controls button {
+    .buttons {
+      margin-top: 15px;
+    }
+    .buttons button {
+      margin: 5px;
+      padding: 8px 14px;
       background: #ffccff;
       border: none;
       border-radius: 10px;
-      padding: 10px;
+      font-weight: bold;
       cursor: pointer;
-      font-size: 14px;
-    }
-
-    .controls button:hover {
-      background: #ff99cc;
-    }
-
-    canvas {
-      display: none;
     }
   </style>
 </head>
 <body>
 
-<div id="game-container">
-  <h2>Princess Barbie Dress-Up Game</h2>
-  <div id="barbie-area">
-    <img id="barbie-img" src="https://i.ibb.co/VxHbGbG/barbie-base.png" alt="Barbie">
+  <h1>Barbie Dress-Up Game</h1>
+  <div id="game-area">
+    <img src="https://i.imgur.com/3Z9rZwO.png" class="barbie" id="barbie">
   </div>
 
-  <div class="controls">
-    <button onclick="addItem('https://i.ibb.co/yydYMGp/dress1.png')">Dress</button>
-    <button onclick="addItem('https://i.ibb.co/f2F5F6k/hair1.png')">Hair</button>
-    <button onclick="addItem('https://i.ibb.co/3dHdX2V/hat.png')">Hat</button>
-    <button onclick="addItem('https://i.ibb.co/WxvvBqF/glasses.png')">Glasses</button>
-    <button onclick="addItem('https://i.ibb.co/86z5vsX/bag.png')">Handbag</button>
-    <button onclick="undoItem()">Undo</button>
-    <button onclick="resetScene()">Reset</button>
-    <button onclick="saveScene()">Save</button>
+  <div class="buttons">
+    <button onclick="addItem('https://i.imgur.com/UxpAYGq.png')">Dress 1</button>
+    <button onclick="addItem('https://i.imgur.com/xr2UzfU.png')">Dress 2</button>
+    <button onclick="addItem('https://i.imgur.com/ZZx35Te.png')">Crown</button>
+    <button onclick="addItem('https://i.imgur.com/OVBDNyo.png')">Handbag</button>
+    <button onclick="addItem('https://i.imgur.com/p4hSnGK.png')">Sunglasses</button>
+    <button onclick="changeBgColor()">Change Background</button>
+    <button onclick="reset()">Reset</button>
   </div>
 
-  <canvas id="save-canvas" width="300" height="500"></canvas>
-</div>
+  <script>
+    const gameArea = document.getElementById('game-area');
 
-<script>
-  const barbieArea = document.getElementById("barbie-area");
-  let history = [];
+    function addItem(src) {
+      const item = document.createElement('img');
+      item.src = src;
+      item.className = 'item';
+      item.style.left = '50px';
+      item.style.top = '50px';
 
-  function addItem(src) {
-    const img = document.createElement("img");
-    img.src = src;
-    img.classList.add("draggable");
-    img.style.left = "100px";
-    img.style.top = "100px";
+      item.addEventListener('mousedown', dragMouseDown);
+      item.addEventListener('touchstart', dragTouchStart);
+      gameArea.appendChild(item);
+    }
 
-    enableDrag(img);
-    barbieArea.appendChild(img);
-    history.push(img);
-  }
+    function dragMouseDown(e) {
+      e.preventDefault();
+      const elem = this;
+      let shiftX = e.clientX - elem.getBoundingClientRect().left;
+      let shiftY = e.clientY - elem.getBoundingClientRect().top;
 
-  function enableDrag(element) {
-    let offsetX, offsetY, isDragging = false;
+      function moveAt(pageX, pageY) {
+        elem.style.left = pageX - shiftX - gameArea.getBoundingClientRect().left + 'px';
+        elem.style.top = pageY - shiftY - gameArea.getBoundingClientRect().top + 'px';
+      }
 
-    const onStart = (e) => {
-      isDragging = true;
-      const rect = element.getBoundingClientRect();
-      const event = e.touches ? e.touches[0] : e;
-      offsetX = event.clientX - rect.left;
-      offsetY = event.clientY - rect.top;
-    };
+      function onMouseMove(e) {
+        moveAt(e.pageX, e.pageY);
+      }
 
-    const onMove = (e) => {
-      if (!isDragging) return;
-      const event = e.touches ? e.touches[0] : e;
-      const containerRect = barbieArea.getBoundingClientRect();
-      element.style.left = `${event.clientX - containerRect.left - offsetX}px`;
-      element.style.top = `${event.clientY - containerRect.top - offsetY}px`;
-    };
+      document.addEventListener('mousemove', onMouseMove);
 
-    const onEnd = () => {
-      isDragging = false;
-    };
+      document.addEventListener('mouseup', function mouseUpHandler() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', mouseUpHandler);
+      });
+    }
 
-    element.addEventListener("mousedown", onStart);
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseup", onEnd);
+    function dragTouchStart(e) {
+      const touch = e.touches[0];
+      const elem = this;
+      let shiftX = touch.clientX - elem.getBoundingClientRect().left;
+      let shiftY = touch.clientY - elem.getBoundingClientRect().top;
 
-    element.addEventListener("touchstart", onStart);
-    document.addEventListener("touchmove", onMove);
-    document.addEventListener("touchend", onEnd);
-  }
+      function moveAt(pageX, pageY) {
+        elem.style.left = pageX - shiftX - gameArea.getBoundingClientRect().left + 'px';
+        elem.style.top = pageY - shiftY - gameArea.getBoundingClientRect().top + 'px';
+      }
 
-  function undoItem() {
-    const last = history.pop();
-    if (last) last.remove();
-  }
+      function onTouchMove(e) {
+        moveAt(e.touches[0].pageX, e.touches[0].pageY);
+      }
 
-  function resetScene() {
-    history.forEach(el => el.remove());
-    history = [];
-  }
+      document.addEventListener('touchmove', onTouchMove);
 
-  function saveScene() {
-    const canvas = document.getElementById("save-canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.addEventListener('touchend', function touchEndHandler() {
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', touchEndHandler);
+      });
+    }
 
-    const items = Array.from(barbieArea.querySelectorAll("img"));
+    function changeBgColor() {
+      const colors = ['#ffe6f2', '#e6f7ff', '#fff0e6', '#f0fff0'];
+      document.body.style.background = colors[Math.floor(Math.random() * colors.length)];
+    }
 
-    let loaded = 0;
-
-    items.forEach(img => {
-      const tempImg = new Image();
-      tempImg.crossOrigin = "anonymous";
-      tempImg.src = img.src;
-      tempImg.onload = () => {
-        const rect = img.getBoundingClientRect();
-        const baseRect = barbieArea.getBoundingClientRect();
-        const x = rect.left - baseRect.left;
-        const y = rect.top - baseRect.top;
-        ctx.drawImage(tempImg, x, y, img.width, img.height);
-        loaded++;
-        if (loaded === items.length) {
-          const link = document.createElement("a");
-          link.download = "princess-look.png";
-          link.href = canvas.toDataURL();
-          link.click();
-        }
-      };
-    });
-  }
-</script>
-
+    function reset() {
+      document.querySelectorAll('.item').forEach(item => item.remove());
+      document.body.style.background = '#ffe6f2';
+    }
+  </script>
 </body>
 </html>
