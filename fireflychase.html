@@ -2,236 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Bee Chase Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bee Chase</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background-color: #fff; /* Changed background to white */
-      color: black; /* Changed text color to black to contrast with the white background */
-      font-family: 'Arial', sans-serif;
-      user-select: none;
-    }
-
-    #gameArea {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background-color: #fff; /* White background */
       overflow: hidden;
-      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+      background-image: url('https://www.transparenttextures.com/patterns/bee-honeycomb.png');
+      background-color: #fff8dc;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
     }
 
-    #player {
-      font-size: 50px; /* Bee emoji size */
-      position: absolute;
-    }
-
-    .orb {
-      font-size: 50px;
-      position: absolute;
-    }
-
-    .predator {
-      font-size: 50px; /* Person emoji size */
-      position: absolute;
-    }
-
-    #scoreBoard {
+    #scoreboard {
       position: absolute;
       top: 10px;
-      left: 10px;
-      font-size: 1.5rem;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
-      border-radius: 8px;
-    }
-
-    #gameOver {
-      position: absolute;
-      top: 40%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2rem;
-      display: none;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    #playAgain {
-      color: #ff0;
-      font-size: 1.5rem;
-      cursor: pointer;
+    #scoreboard::before {
+      content: '🐝 Bee Chase Score:';
+    }
+
+    .bee, .person {
+      position: absolute;
+      font-size: 48px;
+      pointer-events: none;
+    }
+
+    .bee {
+      transition: transform 0.1s linear;
     }
   </style>
 </head>
 <body>
-  <div id="gameArea">
-    <div id="scoreBoard">Score: 0</div>
-    <div id="player">🐝</div>
-    <div id="gameOver">
-      Game Over! <br> Final Score: <span id="finalScore"></span><br>
-      <span id="playAgain">Click to Play Again</span>
-    </div>
-  </div>
+  <div id="scoreboard">0</div>
+  <div class="bee" id="bee">🐝</div>
+  <div class="person" id="person">🧍</div>
 
   <script>
-    const player = document.getElementById("player");
-    const scoreBoard = document.getElementById("scoreBoard");
-    const gameArea = document.getElementById("gameArea");
-    const gameOverText = document.getElementById("gameOver");
-    const finalScore = document.getElementById("finalScore");
-    const playAgain = document.getElementById("playAgain");
+    const bee = document.getElementById('bee');
+    const person = document.getElementById('person');
+    const scoreboard = document.getElementById('scoreboard');
 
     let score = 0;
-    let gameRunning = true;
+    let beeX = 100, beeY = 100;
+    let personX = 300, personY = 300;
 
-    // Initialize Player (Bee emoji)
-    let playerPos = { x: window.innerWidth / 2 - 25, y: window.innerHeight / 2 - 25 };
-    player.style.left = `${playerPos.x}px`;
-    player.style.top = `${playerPos.y}px`;
+    const speed = 2;
 
-    // Control player movement
-    let playerSpeed = 5;
+    // Move person randomly
+    setInterval(() => {
+      personX += (Math.random() - 0.5) * 50;
+      personY += (Math.random() - 0.5) * 50;
+      personX = Math.max(0, Math.min(window.innerWidth - 50, personX));
+      personY = Math.max(0, Math.min(window.innerHeight - 50, personY));
+      person.style.transform = `translate(${personX}px, ${personY}px)`;
+    }, 700);
 
-    document.addEventListener("keydown", movePlayer);
-    document.addEventListener("touchstart", touchStart);
-    document.addEventListener("touchmove", touchMove);
-
-    function movePlayer(e) {
-      if (!gameRunning) return;
-
-      const playerRect = player.getBoundingClientRect();
-      const gameAreaRect = gameArea.getBoundingClientRect();
-
-      if (e.key === "ArrowLeft" && playerRect.left > gameAreaRect.left) {
-        playerPos.x -= playerSpeed;
-      }
-      if (e.key === "ArrowRight" && playerRect.right < gameAreaRect.right) {
-        playerPos.x += playerSpeed;
-      }
-      if (e.key === "ArrowUp" && playerRect.top > gameAreaRect.top) {
-        playerPos.y -= playerSpeed;
-      }
-      if (e.key === "ArrowDown" && playerRect.bottom < gameAreaRect.bottom) {
-        playerPos.y += playerSpeed;
+    // Move bee toward person
+    function moveBee() {
+      const dx = personX - beeX;
+      const dy = personY - beeY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance > 1) {
+        beeX += (dx / distance) * speed;
+        beeY += (dy / distance) * speed;
+        bee.style.transform = `translate(${beeX}px, ${beeY}px)`;
       }
 
-      player.style.left = `${playerPos.x}px`;
-      player.style.top = `${playerPos.y}px`;
-    }
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    function touchStart(e) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }
-
-    function touchMove(e) {
-      if (!gameRunning) return;
-
-      let diffX = e.touches[0].clientX - touchStartX;
-      let diffY = e.touches[0].clientY - touchStartY;
-
-      playerPos.x += diffX * 0.1;
-      playerPos.y += diffY * 0.1;
-
-      player.style.left = `${playerPos.x}px`;
-      player.style.top = `${playerPos.y}px`;
-
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }
-
-    // Create orbs (person emoji)
-    function createOrb() {
-      const orb = document.createElement("div");
-      orb.classList.add("orb");
-      orb.textContent = "🧑"; // Person emoji
-      const x = Math.random() * (gameArea.offsetWidth - 50);
-      const y = Math.random() * (gameArea.offsetHeight - 50);
-      orb.style.left = `${x}px`;
-      orb.style.top = `${y}px`;
-      gameArea.appendChild(orb);
-      return orb;
-    }
-
-    // Create predators (person emoji)
-    function createPredator() {
-      const predator = document.createElement("div");
-      predator.classList.add("predator");
-      predator.textContent = "🧑"; // Person emoji
-      const x = Math.random() * (gameArea.offsetWidth - 50);
-      const y = Math.random() * (gameArea.offsetHeight - 50);
-      predator.style.left = `${x}px`;
-      predator.style.top = `${y}px`;
-      gameArea.appendChild(predator);
-      return predator;
-    }
-
-    // Detect collisions
-    function checkCollision(orb, predator) {
-      const playerRect = player.getBoundingClientRect();
-      const orbRect = orb.getBoundingClientRect();
-      const predatorRect = predator.getBoundingClientRect();
-
-      if (
-        playerRect.left < orbRect.right &&
-        playerRect.right > orbRect.left &&
-        playerRect.top < orbRect.bottom &&
-        playerRect.bottom > orbRect.top
-      ) {
+      // Check for collision
+      if (distance < 40) {
         score++;
-        scoreBoard.textContent = `Score: ${score}`;
-        orb.remove();
-        createOrb();
+        scoreboard.textContent = score;
+        personX = Math.random() * (window.innerWidth - 50);
+        personY = Math.random() * (window.innerHeight - 50);
       }
 
-      if (
-        playerRect.left < predatorRect.right &&
-        playerRect.right > predatorRect.left &&
-        playerRect.top < predatorRect.bottom &&
-        playerRect.bottom > predatorRect.top
-      ) {
-        endGame();
-      }
+      requestAnimationFrame(moveBee);
     }
 
-    // End the game
-    function endGame() {
-      gameRunning = false;
-      finalScore.textContent = score;
-      gameOverText.style.display = "block";
+    moveBee();
+
+    // Touch or mouse control to move bee
+    function setBeePosition(e) {
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      beeX = clientX;
+      beeY = clientY;
     }
 
-    // Restart the game
-    playAgain.addEventListener("click", () => {
-      location.reload();
-    });
-
-    // Generate random orbs and predators
-    let orb = createOrb();
-    let predator = createPredator();
-
-    setInterval(() => {
-      if (gameRunning) {
-        checkCollision(orb, predator);
-      }
-    }, 100);
-
-    // Random movement for predator
-    setInterval(() => {
-      if (gameRunning) {
-        predator.style.left = `${Math.random() * (gameArea.offsetWidth - 50)}px`;
-        predator.style.top = `${Math.random() * (gameArea.offsetHeight - 50)}px`;
-      }
-    }, 1500);
-
+    window.addEventListener('mousemove', setBeePosition);
+    window.addEventListener('touchmove', setBeePosition);
   </script>
 </body>
 </html>
