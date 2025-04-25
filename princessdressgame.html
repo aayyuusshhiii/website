@@ -1,1 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Princess Barbie Makeover</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: #f0e6ff;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    #game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #barbie-area {
+      position: relative;
+      width: 300px;
+      height: 500px;
+      background: url('https://i.ibb.co/QFBNvd7/bg1.jpg') no-repeat center/cover;
+      border: 4px solid #ffccff;
+      border-radius: 20px;
+    }
+
+    #barbie-img {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .item {
+      position: absolute;
+      z-index: 2;
+      width: 100px;
+      height: auto;
+    }
+
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 10px;
+    }
+
+    .control-section {
+      background: #fff0ff;
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    .color-picker {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    button {
+      margin: 3px;
+      padding: 8px;
+      border: none;
+      background: #ffc0cb;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff88aa;
+    }
+
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <div id="barbie-area">
+    <img id="barbie-img" src="https://i.ibb.co/VxHbGbG/barbie-base.png" alt="Barbie">
+  </div>
+
+  <div id="controls">
+    <div class="control-section">
+      <h4>Dresses</h4>
+      <button onclick="changeDress('https://i.ibb.co/yydYMGp/dress1.png')">One-piece</button>
+      <button onclick="changeDress('https://i.ibb.co/N3rLXL1/dress2.png')">Two-piece</button>
+    </div>
+
+    <div class="control-section">
+      <h4>Hair</h4>
+      <button onclick="changeHair('https://i.ibb.co/f2F5F6k/hair1.png')">Style 1</button>
+      <button onclick="changeHair('https://i.ibb.co/Br5Twv7/hair2.png')">Style 2</button>
+      <input type="color" onchange="changeHairColor(this.value)">
+    </div>
+
+    <div class="control-section">
+      <h4>Makeup</h4>
+      <label>Eyeshadow</label><input type="color" onchange="applyMakeup('eyeshadow', this.value)"><br>
+      <label>Lipstick</label><input type="color" onchange="applyMakeup('lipstick', this.value)"><br>
+      <label>Blush</label><input type="color" onchange="applyMakeup('blush', this.value)">
+    </div>
+
+    <div class="control-section">
+      <h4>Accessories</h4>
+      <button onclick="addAccessory('hat', 'https://i.ibb.co/3dHdX2V/hat.png')">Hat</button>
+      <button onclick="addAccessory('glasses', 'https://i.ibb.co/WxvvBqF/glasses.png')">Sunglasses</button>
+      <button onclick="addAccessory('bag', 'https://i.ibb.co/86z5vsX/bag.png')">Handbag</button>
+    </div>
+
+    <div class="control-section">
+      <h4>Background</h4>
+      <button onclick="changeBackground('https://i.ibb.co/QFBNvd7/bg1.jpg')">Garden</button>
+      <button onclick="changeBackground('https://i.ibb.co/FsxX3pN/bg2.jpg')">Palace</button>
+    </div>
+
+    <div class="control-section">
+      <button onclick="saveImage()">Save Look</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="canvas" width="300" height="500"></canvas>
+
+<script>
+  const barbieArea = document.getElementById('barbie-area');
+
+  function changeDress(src) {
+    addOrReplace('dress', src);
+  }
+
+  function changeHair(src) {
+    addOrReplace('hair', src);
+  }
+
+  function changeHairColor(color) {
+    const hair = document.querySelector('.item.hair');
+    if (hair) hair.style.filter = `hue-rotate(${getHueRotation(color)}deg)`;
+  }
+
+  function applyMakeup(type, color) {
+    alert(`Pretend we applied ${type} with color ${color}!`);
+    // Real makeup overlays would need layered SVGs or filters.
+  }
+
+  function addAccessory(type, src) {
+    addOrReplace(type, src);
+  }
+
+  function addOrReplace(type, src) {
+    const existing = document.querySelector(`.item.${type}`);
+    if (existing) existing.remove();
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = `item ${type}`;
+    barbieArea.appendChild(img);
+
+    // Positioning logic (basic for now)
+    if (type === 'hair') img.style.top = '0px';
+    if (type === 'dress') img.style.bottom = '0px';
+    if (type === 'hat') img.style.top = '0px';
+    if (type === 'glasses') img.style.top = '80px';
+    if (type === 'bag') img.style.bottom = '20px';
+  }
+
+  function changeBackground(url) {
+    barbieArea.style.background = `url('${url}') no-repeat center/cover`;
+  }
+
+  function saveImage() {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const images = Array.from(barbieArea.querySelectorAll('img'));
+    let loaded = 0;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    images.forEach(img => {
+      const tempImg = new Image();
+      tempImg.crossOrigin = "anonymous";
+      tempImg.src = img.src;
+      tempImg.onload = () => {
+        const rect = img.getBoundingClientRect();
+        const baseRect = barbieArea.getBoundingClientRect();
+        const x = rect.left - baseRect.left;
+        const y = rect.top - baseRect.top;
+        ctx.drawImage(tempImg, x, y, img.width, img.height);
+        loaded++;
+        if (loaded === images.length) {
+          const link = document.createElement('a');
+          link.download = 'princess-look.png';
+          link.href = canvas.toDataURL();
+          link.click();
+        }
+      };
+    });
+  }
+
+  function getHueRotation(hex) {
+    // Rough approximation for hue-rotate from hex color
+    const r = parseInt(hex.substr(1,2),16);
+    const g = parseInt(hex.substr(3,2),16);
+    const b = parseInt(hex.substr(5,2),16);
+    const hue = Math.atan2(Math.sqrt(3)*(g - b), 2*r - g - b) * 180 / Math.PI;
+    return (hue + 360) % 360;
+  }
+</script>
+
+</body>
+</html>
 
