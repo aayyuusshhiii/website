@@ -18,16 +18,15 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background-color: #111;
+      background-image: url('https://www.w3schools.com/w3images/mountains.jpg'); /* Background with mountains */
+      background-size: cover;
+      background-position: center;
       overflow: hidden;
     }
 
     #player {
-      width: 30px;
-      height: 30px;
-      background-color: #ff0;
+      font-size: 40px; /* Firefly emoji size */
       position: absolute;
-      border-radius: 50%;
     }
 
     .orb {
@@ -39,11 +38,8 @@
     }
 
     .predator {
-      width: 40px;
-      height: 40px;
-      background-color: #ff0000;
+      font-size: 40px; /* Person emoji size */
       position: absolute;
-      border-radius: 50%;
     }
 
     #scoreBoard {
@@ -79,7 +75,7 @@
 <body>
   <div id="gameArea">
     <div id="scoreBoard">Score: 0</div>
-    <div id="player"></div>
+    <div id="player">🪲</div>
     <div id="gameOver">
       Game Over! <br> Final Score: <span id="finalScore"></span><br>
       <span id="playAgain">Click to Play Again</span>
@@ -97,8 +93,8 @@
     let score = 0;
     let gameRunning = true;
 
-    // Initialize Player
-    let playerPos = { x: window.innerWidth / 2 - 15, y: window.innerHeight / 2 - 15 };
+    // Initialize Player (Firefly emoji)
+    let playerPos = { x: window.innerWidth / 2 - 20, y: window.innerHeight / 2 - 20 };
     player.style.left = `${playerPos.x}px`;
     player.style.top = `${playerPos.y}px`;
 
@@ -168,10 +164,11 @@
       return orb;
     }
 
-    // Create predators
+    // Create predators (Person emoji)
     function createPredator() {
       const predator = document.createElement("div");
       predator.classList.add("predator");
+      predator.textContent = "🧑";
       const x = Math.random() * (gameArea.offsetWidth - 40);
       const y = Math.random() * (gameArea.offsetHeight - 40);
       predator.style.left = `${x}px`;
