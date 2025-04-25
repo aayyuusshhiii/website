@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>❤️ Heart Collector Game</title>
+  <title>💗 Heart Collector Game</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -47,18 +47,23 @@
       position: absolute;
       font-size: 40px;
       cursor: pointer;
-      animation: fall 5s linear forwards;
       user-select: none;
       pointer-events: all;
+      animation: floatUp 3s ease-out forwards;
+      transition: transform 0.2s;
     }
 
-    @keyframes fall {
+    .heart:hover {
+      transform: scale(1.2);
+    }
+
+    @keyframes floatUp {
       0% {
-        transform: translateY(-50px) rotate(0deg);
+        transform: translateY(0px);
         opacity: 1;
       }
       100% {
-        transform: translateY(110vh) rotate(360deg);
+        transform: translateY(-100px);
         opacity: 0;
       }
     }
@@ -96,7 +101,7 @@
   </div>
 
   <script>
-    const colors = ['red', 'pink', 'purple', 'blue', 'green', 'yellow'];
+    const colors = ['red', 'hotpink', 'deeppink', 'mediumvioletred', 'purple'];
     let score = 0;
     let gameInterval, heartSpawner, isPlaying = false;
     const scoreDisplay = document.getElementById('score');
@@ -108,14 +113,15 @@
       if (!isPlaying) return;
 
       const heart = document.createElement('div');
-      heart.textContent = '❤️';
+      heart.textContent = '💗';
       heart.classList.add('heart');
 
       const color = colors[Math.floor(Math.random() * colors.length)];
       heart.style.color = color;
 
-      heart.style.left = Math.random() * 95 + 'vw';
-      heart.style.top = '-40px';
+      // Random position on screen
+      heart.style.left = Math.random() * 90 + 'vw';
+      heart.style.top = Math.random() * 80 + 'vh';
 
       heart.addEventListener('click', () => {
         if (!isPlaying) return;
@@ -126,7 +132,7 @@
 
       document.body.appendChild(heart);
 
-      setTimeout(() => heart.remove(), 6000);
+      setTimeout(() => heart.remove(), 3000);
     }
 
     function startGame(duration) {
@@ -140,7 +146,7 @@
         for (let i = 0; i < Math.floor(Math.random() * 2) + 2; i++) {
           createHeart();
         }
-      }, 400);
+      }, 500);
 
       gameInterval = setTimeout(() => {
         stopGame();
