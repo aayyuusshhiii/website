@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sneaky Shadow</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+      font-family: 'Arial', sans-serif;
+      color: #fff;
+    }
+
+    #gameArea {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .player {
+      width: 40px;
+      height: 40px;
+      background-color: #f0f;
+      position: absolute;
+      border-radius: 50%;
+      transition: left 0.1s, top 0.1s;
+    }
+
+    .light {
+      width: 300px;
+      height: 300px;
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: moveLight 3s linear infinite;
+    }
+
+    @keyframes moveLight {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(200px, 100px); }
+      50% { transform: translate(400px, 0); }
+      75% { transform: translate(600px, 100px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    #scoreBoard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 1.5rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    #gameOver {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      display: none;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="scoreBoard">Score: 0</div>
+    <div class="player" id="player"></div>
+    <div class="light"></div>
+    <div id="gameOver"></div>
+  </div>
+
+  <script>
+    const player = document.getElementById("player");
+    const scoreBoard = document.getElementById("scoreBoard");
+    const gameOverText = document.getElementById("gameOver");
+    const gameArea = document.getElementById("gameArea");
+
+    let score = 0;
+    let gameRunning = true;
+    let playerSpeed = 5;
+
+    // Player Movement
+    document.addEventListener("keydown", (e) => {
+      if (!gameRunning) return;
+
+      const playerRect = player.getBoundingClientRect();
+      const gameAreaRect = gameArea.getBoundingClientRect();
+
+      // Moving left, right, up, or down
+      if (e.key === "ArrowLeft" && playerRect.left > gameAreaRect.left) {
+        player.style.left = `${playerRect.left - playerSpeed}px`;
+      }
+      if (e.key === "ArrowRight" && playerRect.right < gameAreaRect.right) {
+        player.style.left = `${playerRect.left + playerSpeed}px`;
+      }
+      if (e.key === "ArrowUp" && playerRect.top > gameAreaRect.top) {
+        player.style.top = `${playerRect.top - playerSpeed}px`;
+      }
+      if (e.key === "ArrowDown" && playerRect.bottom < gameAreaRect.bottom) {
+        player.style.top = `${playerRect.top + playerSpeed}px`;
+      }
+    });
+
+    // Collision check with light
+    function checkLightCollision() {
+      const light = document.querySelector(".light");
+      const lightRect = light.getBoundingClientRect();
+      const playerRect = player.getBoundingClientRect();
+
+      if (
+        playerRect.left < lightRect.right &&
+        playerRect.right > lightRect.left &&
+        playerRect.top < lightRect.bottom &&
+        playerRect.bottom > lightRect.top
+      ) {
+        gameRunning = false;
+        gameOverText.textContent = `Game Over! Final Score: ${score}`;
+        gameOverText.style.display = "block";
+      }
+    }
+
+    // Increment score every 3 seconds
+    setInterval(() => {
+      if (gameRunning) {
+        score++;
+        scoreBoard.textContent = `Score: ${score}`;
+        checkLightCollision();
+      }
+    }, 1000);
+
+    // Game over after 30 seconds
+    setTimeout(() => {
+      if (gameRunning) {
+        gameRunning = false;
+        gameOverText.textContent = `Game Over! Final Score: ${score}`;
+        gameOverText.style.display = "block";
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
