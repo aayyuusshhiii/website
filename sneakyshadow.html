@@ -1,223 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sneaky Shadow</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #333;
-      color: white;
-      font-family: 'Arial', sans-serif;
-      user-select: none;
-    }
-
-    #gameArea {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background-color: #222;
-      overflow: hidden;
-    }
-
-    #player {
-      width: 40px;
-      height: 40px;
-      background-color: #f0f;
-      position: absolute;
-      border-radius: 50%;
-      transition: left 0.1s, top 0.1s;
-    }
-
-    .light {
-      width: 300px;
-      height: 300px;
-      position: absolute;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 50%;
-      animation: moveLight 3s linear infinite;
-    }
-
-    @keyframes moveLight {
-      0% { transform: translate(0, 0); }
-      25% { transform: translate(200px, 100px); }
-      50% { transform: translate(400px, 0); }
-      75% { transform: translate(600px, 100px); }
-      100% { transform: translate(0, 0); }
-    }
-
-    #scoreBoard {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 1.5rem;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 8px 12px;
-      border-radius: 8px;
-    }
-
-    #instructions {
-      position: absolute;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.2rem;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
-      text-align: center;
-    }
-
-    #gameOver {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2rem;
-      display: none;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    #playAgain {
-      color: #ff0;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Sneaky Shadow Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #d0f0fc;
+            overflow: hidden;
+        }
+        .character {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ff88cc;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transition: transform 0.2s ease;
+        }
+        .shadow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            top: 0;
+            left: 0;
+        }
+        .light {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: lightAnimation 5s linear infinite;
+        }
+        @keyframes lightAnimation {
+            0% { transform: translateX(100px) translateY(100px); }
+            50% { transform: translateX(500px) translateY(300px); }
+            100% { transform: translateX(100px) translateY(100px); }
+        }
+        .audio {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div id="gameArea">
-    <div id="scoreBoard">Score: 0</div>
-    <div id="instructions">
-      <p><strong>Instructions:</strong><br>Move the player (purple circle) by using the arrow keys or swiping on mobile.<br>Avoid the light zones!</p>
+    <div class="audio">
+        <audio id="gameSound" autoplay loop>
+            <source src="cute-sound.mp3" type="audio/mp3">
+        </audio>
     </div>
-    <div id="player"></div>
+    <div class="shadow"></div>
     <div class="light"></div>
-    <div id="gameOver">
-      Game Over! <br> Final Score: <span id="finalScore"></span><br>
-      <span id="playAgain">Click to Play Again</span>
-    </div>
-  </div>
+    <div class="character"></div>
 
-  <script>
-    const player = document.getElementById("player");
-    const scoreBoard = document.getElementById("scoreBoard");
-    const gameArea = document.getElementById("gameArea");
-    const gameOverText = document.getElementById("gameOver");
-    const finalScore = document.getElementById("finalScore");
-    const playAgain = document.getElementById("playAgain");
+    <script>
+        let character = document.querySelector('.character');
+        let shadow = document.querySelector('.shadow');
+        let light = document.querySelector('.light');
+        let gameSound = document.getElementById('gameSound');
 
-    let score = 0;
-    let gameRunning = true;
-    let playerSpeed = 5;
+        let speed = 5;
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
 
-    // Initialize Player
-    let playerPos = { x: window.innerWidth / 2 - 20, y: window.innerHeight / 2 - 20 };
-    player.style.left = `${playerPos.x}px`;
-    player.style.top = `${playerPos.y}px`;
+        let moveCharacter = (event) => {
+            if (event.key === "ArrowUp" || event.key === "w") y -= speed;
+            if (event.key === "ArrowDown" || event.key === "s") y += speed;
+            if (event.key === "ArrowLeft" || event.key === "a") x -= speed;
+            if (event.key === "ArrowRight" || event.key === "d") x += speed;
 
-    // Player Movement
-    document.addEventListener("keydown", movePlayer);
-    document.addEventListener("touchstart", touchStart);
-    document.addEventListener("touchmove", touchMove);
+            character.style.transform = `translate(${x}px, ${y}px)`;
+        };
 
-    function movePlayer(e) {
-      if (!gameRunning) return;
-
-      // Define Player boundaries
-      const playerRect = player.getBoundingClientRect();
-      const gameAreaRect = gameArea.getBoundingClientRect();
-
-      if (e.key === "ArrowLeft" && playerRect.left > gameAreaRect.left) {
-        playerPos.x -= playerSpeed;
-      }
-      if (e.key === "ArrowRight" && playerRect.right < gameAreaRect.right) {
-        playerPos.x += playerSpeed;
-      }
-      if (e.key === "ArrowUp" && playerRect.top > gameAreaRect.top) {
-        playerPos.y -= playerSpeed;
-      }
-      if (e.key === "ArrowDown" && playerRect.bottom < gameAreaRect.bottom) {
-        playerPos.y += playerSpeed;
-      }
-
-      player.style.left = `${playerPos.x}px`;
-      player.style.top = `${playerPos.y}px`;
-    }
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    function touchStart(e) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }
-
-    function touchMove(e) {
-      if (!gameRunning) return;
-
-      let diffX = e.touches[0].clientX - touchStartX;
-      let diffY = e.touches[0].clientY - touchStartY;
-
-      playerPos.x += diffX * 0.1;
-      playerPos.y += diffY * 0.1;
-
-      player.style.left = `${playerPos.x}px`;
-      player.style.top = `${playerPos.y}px`;
-
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }
-
-    // Collision detection with light
-    function checkCollision() {
-      const light = document.querySelector(".light");
-      const lightRect = light.getBoundingClientRect();
-      const playerRect = player.getBoundingClientRect();
-
-      if (
-        playerRect.left < lightRect.right &&
-        playerRect.right > lightRect.left &&
-        playerRect.top < lightRect.bottom &&
-        playerRect.bottom > lightRect.top
-      ) {
-        endGame();
-      }
-    }
-
-    // Update score every second
-    setInterval(() => {
-      if (gameRunning) {
-        score++;
-        scoreBoard.textContent = `Score: ${score}`;
-        checkCollision();
-      }
-    }, 1000);
-
-    // End the game
-    function endGame() {
-      gameRunning = false;
-      finalScore.textContent = score;
-      gameOverText.style.display = "block";
-    }
-
-    // Restart the game
-    playAgain.addEventListener("click", () => {
-      location.reload();
-    });
-
-    // Stop game after 30 seconds
-    setTimeout(() => {
-      if (gameRunning) {
-        endGame();
-      }
-    }, 30000);
-  </script>
+        window.addEventListener('keydown', moveCharacter);
+    </script>
 </body>
 </html>
