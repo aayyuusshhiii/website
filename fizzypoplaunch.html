@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PZ Pop Launch</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(to bottom, #a6e3f7, #2157c1);
+    }
+
+    #gameCanvas {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #bottle {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 60px;
+      animation: bounce 1s infinite alternate;
+      cursor: pointer;
+    }
+
+    @keyframes bounce {
+      0% { transform: translateX(-50%) translateY(0); }
+      100% { transform: translateX(-50%) translateY(-10px); }
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 30px;
+      animation: float 5s linear;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-100vh) scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 1.8em;
+      background: rgba(0,0,0,0.4);
+      padding: 8px 16px;
+      border-radius: 10px;
+    }
+
+    #launchBtn {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff5ec6;
+      color: white;
+      font-size: 1.4em;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px #c70086;
+    }
+
+    #launchBtn:active {
+      box-shadow: 0 2px #c70086;
+      transform: translateX(-50%) translateY(2px);
+    }
+  </style>
+</head>
+<body>
+  <div id="gameCanvas">
+    <div id="score">Score: 0</div>
+    <div id="bottle">🍾</div>
+    <button id="launchBtn">Pop Launch!</button>
+  </div>
+
+  <script>
+    const bottle = document.getElementById("bottle");
+    const launchBtn = document.getElementById("launchBtn");
+    const gameCanvas = document.getElementById("gameCanvas");
+    const scoreDisplay = document.getElementById("score");
+    let score = 0;
+    let isLaunching = false;
+
+    const emojis = ["⭐", "🍬", "❤️", "✨", "🍓", "🌈", "🧃", "🍭"];
+
+    function createCollectible(x, y) {
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = `${x}px`;
+      emoji.style.top = `${y}px`;
+
+      gameCanvas.appendChild(emoji);
+
+      emoji.addEventListener("click", () => {
+        score += 1;
+        scoreDisplay.innerText = `Score: ${score}`;
+        emoji.remove();
+      });
+
+      setTimeout(() => {
+        emoji.remove();
+      }, 5000);
+    }
+
+    function launch() {
+      if (isLaunching) return;
+      isLaunching = true;
+
+      let launchHeight = window.innerHeight - 150;
+      let bottleY = launchHeight;
+      let bottleX = window.innerWidth / 2;
+      let velocity = -15;
+
+      const move = () => {
+        bottleY += velocity;
+        velocity += 0.7;
+
+        bottle.style.bottom = `${window.innerHeight - bottleY}px`;
+
+        // Random emoji collectibles during flight
+        if (Math.random() < 0.2) {
+          const offsetX = Math.random() * 100 - 50;
+          createCollectible(bottleX + offsetX, bottleY);
+        }
+
+        if (bottleY >= launchHeight) {
+          bottle.style.bottom = `40px`;
+          isLaunching = false;
+        } else {
+          requestAnimationFrame(move);
+        }
+      };
+
+      move();
+    }
+
+    launchBtn.addEventListener("click", launch);
+
+    // Optional: allow bottle itself to be tapped to launch
+    bottle.addEventListener("click", launch);
+  </script>
+</body>
+</html>
