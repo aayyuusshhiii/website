@@ -18,9 +18,241 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background-image: url('https://www.w3schools.com/w3images/forest.jpg'); /* Beautiful nature background */
-      background-size: cover;
-      background-position: center;
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bee Chase</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #222;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      user-select: none;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #player {
+      font-size: 50px; /* Bee emoji size */
+      position: absolute;
+    }
+
+    .orb {
+      font-size: 50px;
+      position: absolute;
+    }
+
+    .predator {
+      font-size: 50px; /* Person emoji size */
+      position: absolute;
+    }
+
+    #scoreBoard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 1.5rem;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    #gameOver {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      display: none;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    #playAgain {
+      color: #ff0;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="scoreBoard">Score: 0</div>
+    <div id="player">🐝</div>
+    <div id="gameOver">
+      Game Over! <br> Final Score: <span id="finalScore"></span><br>
+      <span id="playAgain">Click to Play Again</span>
+    </div>
+  </div>
+
+  <script>
+    const player = document.getElementById("player");
+    const scoreBoard = document.getElementById("scoreBoard");
+    const gameArea = document.getElementById("gameArea");
+    const gameOverText = document.getElementById("gameOver");
+    const finalScore = document.getElementById("finalScore");
+    const playAgain = document.getElementById("playAgain");
+
+    let score = 0;
+    let gameRunning = true;
+
+    // Initialize Player (Bee emoji)
+    let playerPos = { x: window.innerWidth / 2 - 25, y: window.innerHeight / 2 - 25 };
+    player.style.left = `${playerPos.x}px`;
+    player.style.top = `${playerPos.y}px`;
+
+    // Control player movement
+    let playerSpeed = 5;
+
+    document.addEventListener("keydown", movePlayer);
+    document.addEventListener("touchstart", touchStart);
+    document.addEventListener("touchmove", touchMove);
+
+    function movePlayer(e) {
+      if (!gameRunning) return;
+
+      const playerRect = player.getBoundingClientRect();
+      const gameAreaRect = gameArea.getBoundingClientRect();
+
+      if (e.key === "ArrowLeft" && playerRect.left > gameAreaRect.left) {
+        playerPos.x -= playerSpeed;
+      }
+      if (e.key === "ArrowRight" && playerRect.right < gameAreaRect.right) {
+        playerPos.x += playerSpeed;
+      }
+      if (e.key === "ArrowUp" && playerRect.top > gameAreaRect.top) {
+        playerPos.y -= playerSpeed;
+      }
+      if (e.key === "ArrowDown" && playerRect.bottom < gameAreaRect.bottom) {
+        playerPos.y += playerSpeed;
+      }
+
+      player.style.left = `${playerPos.x}px`;
+      player.style.top = `${playerPos.y}px`;
+    }
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    function touchStart(e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+
+    function touchMove(e) {
+      if (!gameRunning) return;
+
+      let diffX = e.touches[0].clientX - touchStartX;
+      let diffY = e.touches[0].clientY - touchStartY;
+
+      playerPos.x += diffX * 0.1;
+      playerPos.y += diffY * 0.1;
+
+      player.style.left = `${playerPos.x}px`;
+      player.style.top = `${playerPos.y}px`;
+
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+
+    // Create orbs (person emoji)
+    function createOrb() {
+      const orb = document.createElement("div");
+      orb.classList.add("orb");
+      orb.textContent = "🧑"; // Person emoji
+      const x = Math.random() * (gameArea.offsetWidth - 50);
+      const y = Math.random() * (gameArea.offsetHeight - 50);
+      orb.style.left = `${x}px`;
+      orb.style.top = `${y}px`;
+      gameArea.appendChild(orb);
+      return orb;
+    }
+
+    // Create predators (person emoji)
+    function createPredator() {
+      const predator = document.createElement("div");
+      predator.classList.add("predator");
+      predator.textContent = "🧑"; // Person emoji
+      const x = Math.random() * (gameArea.offsetWidth - 50);
+      const y = Math.random() * (gameArea.offsetHeight - 50);
+      predator.style.left = `${x}px`;
+      predator.style.top = `${y}px`;
+      gameArea.appendChild(predator);
+      return predator;
+    }
+
+    // Detect collisions
+    function checkCollision(orb, predator) {
+      const playerRect = player.getBoundingClientRect();
+      const orbRect = orb.getBoundingClientRect();
+      const predatorRect = predator.getBoundingClientRect();
+
+      if (
+        playerRect.left < orbRect.right &&
+        playerRect.right > orbRect.left &&
+        playerRect.top < orbRect.bottom &&
+        playerRect.bottom > orbRect.top
+      ) {
+        score++;
+        scoreBoard.textContent = `Score: ${score}`;
+        orb.remove();
+        createOrb();
+      }
+
+      if (
+        playerRect.left < predatorRect.right &&
+        playerRect.right > predatorRect.left &&
+        playerRect.top < predatorRect.bottom &&
+        playerRect.bottom > predatorRect.top
+      ) {
+        endGame();
+      }
+    }
+
+    // End the game
+    function endGame() {
+      gameRunning = false;
+      finalScore.textContent = score;
+      gameOverText.style.display = "block";
+    }
+
+    // Restart the game
+    playAgain.addEventListener("click", () => {
+      location.reload();
+    });
+
+    // Generate random orbs and predators
+    let orb = createOrb();
+    let predator = createPredator();
+
+    setInterval(() => {
+      if (gameRunning) {
+        checkCollision(orb, predator);
+      }
+    }, 100);
+
+    // Random movement for predator
+    setInterval(() => {
+      if (gameRunning) {
+        predator.style.left = `${Math.random() * (gameArea.offsetWidth - 50)}px`;
+        predator.style.top = `${Math.random() * (gameArea.offsetHeight - 50)}px`;
+      }
+    }, 1500);
+
+  </script>
+</body>
+</html>
+
       overflow: hidden;
       box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7); /* Soft inner shadow for a light effect */
     }
