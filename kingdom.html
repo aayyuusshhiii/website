@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: #f5f0dc;
+      background: linear-gradient(to top, #f5f0dc, #d6c2a3);
       color: #333;
       text-align: center;
       padding: 20px;
@@ -18,6 +18,7 @@
     }
     .resource {
       margin: 10px 0;
+      font-size: 1.2em;
     }
     button {
       padding: 10px 20px;
@@ -28,33 +29,46 @@
       color: white;
       border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
     button:hover {
       background-color: #6da943;
     }
     .log {
       margin-top: 20px;
-      max-height: 100px;
+      max-height: 120px;
       overflow-y: auto;
       font-size: 0.9em;
       background: #fff;
       padding: 10px;
       border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .kingdom {
+      margin-top: 30px;
+      height: 150px;
+      background: url('https://i.imgur.com/HZfZGaX.png') center/contain no-repeat;
+      animation: bounce 2s infinite ease-in-out;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
   </style>
 </head>
 <body>
-  <h1>Tiny Kingdom Builder</h1>
-  <div class="resource">Gold: <span id="gold">100</span></div>
-  <div class="resource">Peasants: <span id="peasants">5</span></div>
-  <div class="resource">Defenders: <span id="defenders">0</span></div>
+  <h1>Tiny Kingdom Builder 🏰</h1>
+  <div class="resource">Gold: <span id="gold">100</span> 🪙</div>
+  <div class="resource">Peasants: <span id="peasants">5</span> 🧑‍🌾</div>
+  <div class="resource">Defenders: <span id="defenders">0</span> 🛡️</div>
 
-  <button onclick="collectTaxes()">Collect Taxes (10g per peasant)</button>
-  <button onclick="hirePeasant()">Hire Peasant (50g)</button>
-  <button onclick="trainDefender()">Train Defender (1 peasant, 100g)</button>
-  <button onclick="defendRaid()">Defend Raid</button>
+  <button onclick="collectTaxes()">💰 Collect Taxes (10g/peasant)</button>
+  <button onclick="hirePeasant()">➕ Hire Peasant (50g)</button>
+  <button onclick="trainDefender()">🛡️ Train Defender (100g + 1 peasant)</button>
+  <button onclick="defendRaid()">⚔️ Defend Raid</button>
 
   <div class="log" id="log"></div>
+  <div class="kingdom"></div>
 
   <script>
     let gold = 100;
@@ -70,7 +84,9 @@
     function logMessage(message) {
       const log = document.getElementById('log');
       const timestamp = new Date().toLocaleTimeString();
-      log.innerHTML = `<div>[${timestamp}] ${message}</div>` + log.innerHTML;
+      const entry = document.createElement('div');
+      entry.textContent = `[${timestamp}] ${message}`;
+      log.prepend(entry);
     }
 
     function collectTaxes() {
@@ -106,20 +122,23 @@
     function defendRaid() {
       const raidStrength = Math.floor(Math.random() * 5) + 1;
       if (defenders >= raidStrength) {
-        logMessage(`Defended against a raid of strength ${raidStrength}.`);
+        logMessage(`Defended against a raid of strength ${raidStrength}. No gold lost!`);
       } else {
         const loss = raidStrength * 10;
         const actualLoss = Math.min(loss, gold);
         gold -= actualLoss;
-        logMessage(`Lost ${actualLoss} gold to a raid of strength ${raidStrength}.`);
+        logMessage(`Raid of strength ${raidStrength}! Lost ${actualLoss} gold.`);
       }
       updateUI();
     }
 
+    // Passive income
     setInterval(() => {
-      gold += peasants;
+      const passiveGold = peasants;
+      gold += passiveGold;
       updateUI();
-    }, 3000); // Passive gold income
+      logMessage(`Peasants earned ${passiveGold} gold passively.`);
+    }, 5000);
 
     updateUI();
   </script>
