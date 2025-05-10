@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tiny Kingdom Builder</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f5f0dc;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    .resource {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1em;
+      border: none;
+      background-color: #88c057;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #6da943;
+    }
+    .log {
+      margin-top: 20px;
+      max-height: 100px;
+      overflow-y: auto;
+      font-size: 0.9em;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tiny Kingdom Builder</h1>
+  <div class="resource">Gold: <span id="gold">100</span></div>
+  <div class="resource">Peasants: <span id="peasants">5</span></div>
+  <div class="resource">Defenders: <span id="defenders">0</span></div>
+
+  <button onclick="collectTaxes()">Collect Taxes (10g per peasant)</button>
+  <button onclick="hirePeasant()">Hire Peasant (50g)</button>
+  <button onclick="trainDefender()">Train Defender (1 peasant, 100g)</button>
+  <button onclick="defendRaid()">Defend Raid</button>
+
+  <div class="log" id="log"></div>
+
+  <script>
+    let gold = 100;
+    let peasants = 5;
+    let defenders = 0;
+
+    function updateUI() {
+      document.getElementById('gold').textContent = gold;
+      document.getElementById('peasants').textContent = peasants;
+      document.getElementById('defenders').textContent = defenders;
+    }
+
+    function logMessage(message) {
+      const log = document.getElementById('log');
+      const timestamp = new Date().toLocaleTimeString();
+      log.innerHTML = `<div>[${timestamp}] ${message}</div>` + log.innerHTML;
+    }
+
+    function collectTaxes() {
+      const earned = peasants * 10;
+      gold += earned;
+      updateUI();
+      logMessage(`Collected ${earned} gold from taxes.`);
+    }
+
+    function hirePeasant() {
+      if (gold >= 50) {
+        gold -= 50;
+        peasants += 1;
+        updateUI();
+        logMessage("Hired a new peasant.");
+      } else {
+        logMessage("Not enough gold to hire a peasant.");
+      }
+    }
+
+    function trainDefender() {
+      if (peasants >= 1 && gold >= 100) {
+        peasants -= 1;
+        gold -= 100;
+        defenders += 1;
+        updateUI();
+        logMessage("Trained a new defender.");
+      } else {
+        logMessage("Need 1 peasant and 100 gold to train a defender.");
+      }
+    }
+
+    function defendRaid() {
+      const raidStrength = Math.floor(Math.random() * 5) + 1;
+      if (defenders >= raidStrength) {
+        logMessage(`Defended against a raid of strength ${raidStrength}.`);
+      } else {
+        const loss = raidStrength * 10;
+        const actualLoss = Math.min(loss, gold);
+        gold -= actualLoss;
+        logMessage(`Lost ${actualLoss} gold to a raid of strength ${raidStrength}.`);
+      }
+      updateUI();
+    }
+
+    setInterval(() => {
+      gold += peasants;
+      updateUI();
+    }, 3000); // Passive gold income
+
+    updateUI();
+  </script>
+</body>
+</html>
